@@ -1,0 +1,41 @@
+<view class="page">
+  <custom-navbar
+    center-text="选择学生"
+    show-left="{{true}}"
+    show-right="{{false}}"
+    show-back="{{true}}"
+    left-text="返回"
+  />
+
+  <view class="page-container" style="padding-top: {{navBarHeight}}px;">
+    <view class="content">
+      <view class="card">
+        <view class="card-title">选择报名学生</view>
+        <view
+          class="student-item {{selectedStudentId === item.id ? 'is-active' : ''}}"
+          wx:for="{{students}}"
+          wx:key="id"
+          data-id="{{item.id}}"
+          bindtap="onSelectStudent"
+        >
+          <image class="avatar" src="{{item.avatar}}" mode="aspectFill" />
+          <view class="student-info">
+            <text class="student-name">{{item.name}}</text>
+            <text class="student-meta">
+              <text wx:if="{{item.needTest === true}}" class="book-test-link" data-id="{{item.id}}" bindtap="onBookTest">待评测</text>
+              <text wx:else>{{item.level}}</text>
+            </text>
+          </view>
+        </view>
+      </view>
+
+      <view 
+        class="primary-btn {{!canProceed ? 'disabled' : ''}}" 
+        bindtap="onNext"
+        hover-class="{{canProceed ? 'primary-btn-hover' : ''}}"
+        hover-stop-propagation="{{true}}"
+        data-tooltip="{{!canProceed ? '请先完成等级测试' : ''}}"
+      >下一步</view>
+    </view>
+  </view>
+</view>

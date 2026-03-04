@@ -1,0 +1,265 @@
+page {
+  height: 100vh;
+  background: linear-gradient(180deg, #f8f4ff 0%, #ffffff 200rpx, #f5f6f8 400rpx);
+  color: #1f2d3d;
+}
+
+.page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 120rpx;
+}
+
+.scrollarea {
+  flex: 1;
+}
+
+.content {
+  padding: 24rpx 24rpx 40rpx;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 10rpx 24rpx rgba(31, 45, 61, 0.08);
+}
+
+.card-title {
+  margin-bottom: 20rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1f2d3d;
+}
+
+/* 班级信息卡片样式 */
+.info-card {
+  background: linear-gradient(135deg, #faf8ff 0%, #ffffff 100%);
+  border: 1rpx solid rgba(158, 142, 241, 0.08);
+}
+
+.info-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.product-name {
+  font-size: 28rpx;
+  color: #333333;
+  font-weight: 500;
+}
+
+.tag {
+  padding: 4rpx 12rpx;
+  border-radius: 6rpx;
+  font-size: 22rpx;
+}
+
+.tag-type {
+  background: #9e8ef1;
+  color: #ffffff;
+}
+
+.tag-level {
+  background: rgba(158, 142, 241, 0.1);
+  color: #9e8ef1;
+}
+
+.info-icon {
+  width: 36rpx;
+  height: 36rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.icon-svg {
+  width: 32rpx;
+  height: 32rpx;
+  color: #9ca3af;
+}
+
+.info-text {
+  font-size: 26rpx;
+  color: #333333;
+}
+
+/* 费用信息卡片样式 */
+.fee-card {
+  background: linear-gradient(135deg, #faf8ff 0%, #ffffff 100%);
+  border: 1rpx solid rgba(158, 142, 241, 0.1);
+}
+
+.fee-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 24rpx;
+  margin-bottom: 16rpx;
+}
+
+.fee-row .fee-item {
+  flex: 1;
+  background: rgba(158, 142, 241, 0.03);
+  border-radius: 12rpx;
+  padding: 20rpx 16rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.fee-row.fee-total {
+  padding-top: 16rpx;
+  border-top: 1rpx dashed #e0d8f5;
+  margin-top: 8rpx;
+  margin-bottom: 0;
+}
+
+.fee-row.fee-total .fee-item {
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  background: transparent;
+}
+
+.fee-label {
+  font-size: 26rpx;
+  color: #666666;
+}
+
+.fee-value-wrap {
+  display: flex;
+  align-items: baseline;
+}
+
+.fee-value {
+  font-size: 28rpx;
+  color: #1f2d3d;
+  font-weight: 600;
+}
+
+.fee-value.price {
+  color: #1f2d3d;
+}
+
+.fee-value.price-highlight {
+  color: #f59e0b;
+  font-weight: 600;
+}
+
+.fee-value.price-total {
+  color: #9e8ef1;
+  font-weight: 700;
+  font-size: 32rpx;
+}
+
+.fee-sessions {
+  font-size: 22rpx;
+  color: #999999;
+  margin-left: 4rpx;
+}
+
+/* 教师介绍卡片样式 */
+.teacher-card {
+  background: linear-gradient(135deg, #fffbf5 0%, #ffffff 100%);
+  border: 1rpx solid rgba(251, 191, 36, 0.1);
+}
+
+.teacher-poster {
+  width: 100%;
+  border-radius: 16rpx;
+  display: block;
+}
+
+/* 教学计划卡片样式 */
+.plan-card {
+  background: #ffffff;
+}
+
+.plan-list {
+  padding-top: 8rpx;
+}
+
+.plan-item {
+  display: flex;
+  flex-direction: column;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid #eef0f3;
+}
+
+.plan-item:last-child {
+  border-bottom: none;
+}
+
+.plan-time {
+  font-size: 24rpx;
+  color: #999999;
+  margin-bottom: 8rpx;
+}
+
+.plan-title {
+  font-size: 28rpx;
+  color: #1f2d3d;
+}
+
+/* 底部操作栏 */
+.bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16rpx 24rpx;
+  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
+  background: #ffffff;
+  box-shadow: 0 -4rpx 16rpx rgba(31, 45, 61, 0.08);
+}
+
+.total {
+  display: flex;
+  align-items: baseline;
+}
+
+.total-label {
+  font-size: 26rpx;
+  color: #666666;
+}
+
+.total-price {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #9e8ef1;
+}
+
+.total-sessions {
+  font-size: 22rpx;
+  color: #999999;
+  margin-left: 4rpx;
+}
+
+.action-btn {
+  padding: 20rpx 60rpx;
+  border-radius: 40rpx;
+  background: #9e8ef1;
+  color: #ffffff;
+  font-size: 30rpx;
+  font-weight: 500;
+}

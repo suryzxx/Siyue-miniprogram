@@ -1,0 +1,49 @@
+<view class="page">
+  <custom-navbar
+    center-text="候补状态"
+    show-left="{{true}}"
+    show-right="{{false}}"
+    show-back="{{true}}"
+    left-text="返回"
+  />
+
+  <view class="page-container" style="padding-top: {{navBarHeight}}px;">
+    <scroll-view class="scrollarea" scroll-y>
+      <view class="content">
+        <view class="card">
+          <view class="card-title">候补信息</view>
+          <text class="course-title">{{waitlist.course}}</text>
+          <text class="course-sub">{{waitlist.term}} · {{waitlist.level}}</text>
+          <view class="status-chip">{{waitlist.statusLabel}}</view>
+          <text class="queue">当前排队位置：第{{waitlist.position}}位</text>
+        </view>
+
+        <view class="card">
+          <view class="card-title">流程状态</view>
+          <view class="stepper">
+            <view class="step" wx:for="{{steps}}" wx:key="value">
+              <view class="dot {{item.value === waitlist.status ? 'active' : ''}}"></view>
+              <view class="step-text">{{item.label}}</view>
+            </view>
+          </view>
+        </view>
+
+        <view class="card">
+          <view class="card-title">候补规则</view>
+          <text class="plain-text">
+            申请按提交时间排序，名额释放时通知下一位家长。请在24小时内完成支付，超时名额将顺延。
+          </text>
+        </view>
+
+        <view class="action-row">
+          <view class="primary-btn" wx:if="{{waitlist.status === 'notified'}}" bindtap="onPay">
+            去支付
+          </view>
+          <view class="ghost-btn" wx:if="{{waitlist.status === 'pending'}}" bindtap="onCancel">
+            取消候补
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+</view>

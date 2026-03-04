@@ -1,0 +1,40 @@
+<view class="filter-bar">
+  <view class="filter-item" bindtap="onSemesterTap">
+    <text class="filter-label {{currentFilters.semester ? 'is-active' : ''}}">{{currentFilters.semester || '学期'}}</text>
+    <image class="filter-arrow" src="/images/icons/arrow-down.svg" mode="aspectFit" />
+  </view>
+  <view class="filter-item" bindtap="onCampusTap">
+    <text class="filter-label {{currentFilters.campusId ? 'is-active' : ''}}">{{currentFilters.campusName || '校区'}}</text>
+    <image class="filter-arrow" src="/images/icons/arrow-down.svg" mode="aspectFit" />
+  </view>
+  <view class="filter-item" bindtap="onTeacherTap">
+    <text class="filter-label {{currentFilters.teacherId ? 'is-active' : ''}}">{{currentFilters.teacherName || '主教老师'}}</text>
+    <image class="filter-arrow" src="/images/icons/arrow-down.svg" mode="aspectFit" />
+  </view>
+  <view class="filter-reset" wx:if="{{hasFilters}}" bindtap="onReset">
+    <text>重置</text>
+  </view>
+</view>
+
+
+<!-- 筛选弹窗 -->
+<view class="filter-popup {{showPopup ? 'is-visible' : ''}}" catchtap="onMaskTap">
+  <view class="popup-content" catchtap="stopPropagation">
+    <view class="popup-header">
+      <text class="popup-title">{{popupTitle}}</text>
+      <view class="popup-close" bindtap="onClosePopup">×</view>
+    </view>
+    <scroll-view class="popup-list" scroll-y>
+      <view 
+        class="popup-item {{item.selected ? 'is-selected' : ''}}"
+        wx:for="{{popupOptions}}"
+        wx:key="id"
+        data-item="{{item}}"
+        bindtap="onSelectOption"
+      >
+        <text>{{item.name}}</text>
+        <image wx:if="{{item.selected}}" class="check-icon" src="/images/pic/check.png" mode="aspectFit" />
+      </view>
+    </scroll-view>
+  </view>
+</view>

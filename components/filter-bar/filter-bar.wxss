@@ -1,0 +1,156 @@
+/* 筛选栏 */
+.filter-bar {
+  display: flex;
+  align-items: center;
+  padding: 12rpx 24rpx;
+  background: #ffffff;
+  border-bottom: 1rpx solid rgba(158, 142, 241, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.filter-item {
+  display: flex;
+  align-items: center;
+  padding: 8rpx 16rpx;
+  margin-right: 12rpx;
+  background: #f5f6f8;
+  border-radius: 20rpx;
+  border: 1rpx solid transparent;
+  transition: all 0.2s ease;
+}
+
+.filter-item:active {
+  transform: scale(0.96);
+}
+
+.filter-label {
+  font-size: 24rpx;
+  color: #666666;
+  max-width: 140rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.filter-label.is-active {
+  color: #9e8ef1;
+  font-weight: 500;
+}
+
+.filter-arrow {
+  width: 20rpx;
+  height: 20rpx;
+  margin-left: 6rpx;
+  opacity: 0.6;
+}
+
+.filter-reset {
+  margin-left: auto;
+  padding: 14rpx 24rpx;
+  font-size: 26rpx;
+  color: #9e8ef1;
+  font-weight: 500;
+}
+
+/* 弹窗遮罩 */
+.filter-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.filter-popup.is-visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* 弹窗内容 */
+.popup-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-height: 70vh;
+  background: #ffffff;
+  border-radius: 32rpx 32rpx 0 0;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+  overflow: hidden;
+}
+
+.filter-popup.is-visible .popup-content {
+  transform: translateY(0);
+}
+
+/* 弹窗头部 */
+.popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32rpx 32rpx 24rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.popup-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1f2d3d;
+}
+
+.popup-close {
+  width: 56rpx;
+  height: 56rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 44rpx;
+  color: #999999;
+  background: #f5f6f8;
+  border-radius: 50%;
+}
+
+/* 选项列表 */
+.popup-list {
+  max-height: 60vh;
+  padding: 16rpx 0 32rpx;
+}
+
+.popup-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28rpx 32rpx;
+  transition: background 0.2s ease;
+}
+
+.popup-item:active {
+  background: #faf8ff;
+}
+
+.popup-item text {
+  font-size: 30rpx;
+  color: #333333;
+}
+
+.popup-item.is-selected {
+  background: linear-gradient(90deg, rgba(158, 142, 241, 0.05), transparent);
+}
+
+.popup-item.is-selected text {
+  color: #9e8ef1;
+  font-weight: 500;
+}
+
+.check-icon {
+  width: 40rpx;
+  height: 40rpx;
+}

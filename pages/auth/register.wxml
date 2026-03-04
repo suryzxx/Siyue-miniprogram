@@ -1,0 +1,134 @@
+<view class="page">
+  <custom-navbar
+    center-text="注册"
+    show-left="{{true}}"
+    show-right="{{false}}"
+    show-back="{{true}}"
+    left-text="返回"
+  />
+
+  <view class="page-container" style="padding-top: {{navBarHeight}}px;">
+    <scroll-view class="scrollarea" scroll-y>
+      <view class="content">
+        <!-- 步骤1: 验证手机号 -->
+        <block wx:if="{{step === 1}}">
+          <view class="card">
+            <view class="card-title">家长账号</view>
+            <view class="field">
+              <text class="label">手机号</text>
+              <input
+                class="input"
+                type="number"
+                maxlength="11"
+                placeholder="请输入手机号"
+                value="{{parent.phone}}"
+                bindinput="onParentPhone"
+              />
+            </view>
+            <view class="field code-row">
+              <view class="code-input">
+                <text class="label">验证码</text>
+                <input
+                  class="input"
+                  type="number"
+                  maxlength="6"
+                  placeholder="请输入验证码"
+                  value="{{parent.code}}"
+                  bindinput="onParentCode"
+                />
+              </view>
+              <view class="code-btn {{!canSend ? 'disabled' : ''}}" bindtap="onSendCode">{{sendText}}</view>
+            </view>
+          </view>
+
+          <view class="hint-text">验证码为 123456（模拟数据）</view>
+          <view class="primary-btn" bindtap="onVerifyCode">下一步</view>
+        </block>
+
+        <!-- 步骤2: 填写学生信息 -->
+        <block wx:else>
+          <view class="card">
+            <view class="card-title">创建学生档案</view>
+            <view class="field">
+              <text class="label">学生姓名 *</text>
+              <input
+                class="input"
+                placeholder="请输入姓名"
+                value="{{student.studentName}}"
+                bindinput="onStudentName"
+              />
+            </view>
+            <view class="field">
+              <text class="label">英文名</text>
+              <input
+                class="input"
+                placeholder="请输入英文名（选填）"
+                value="{{student.englishName}}"
+                bindinput="onEnglishName"
+              />
+            </view>
+            <view class="field">
+              <text class="label">性别 *</text>
+              <view class="chip-group">
+                <view
+                  class="chip {{student.gender === '男' ? 'is-active' : ''}}"
+                  data-value="男"
+                  bindtap="onGenderSelect"
+                >
+                  男
+                </view>
+                <view
+                  class="chip {{student.gender === '女' ? 'is-active' : ''}}"
+                  data-value="女"
+                  bindtap="onGenderSelect"
+                >
+                  女
+                </view>
+              </view>
+            </view>
+            <view class="field">
+              <text class="label">年级 *</text>
+              <picker mode="selector" range="{{gradeOptions}}" value="{{gradeIndex}}" bindchange="onGradeChange">
+                <view class="date-picker">
+                  <text>{{student.grade}}</text>
+                  <text class="arrow">▼</text>
+                </view>
+              </picker>
+            </view>
+            <view class="field">
+              <text class="label">学校</text>
+              <input
+                class="input"
+                placeholder="请输入学校名称（选填）"
+                value="{{student.school}}"
+                bindinput="onSchool"
+              />
+            </view>
+            <view class="field">
+              <text class="label">城市</text>
+              <input
+                class="input"
+                placeholder="请输入城市（选填）"
+                value="{{student.city}}"
+                bindinput="onCity"
+              />
+            </view>
+            <view class="field">
+              <text class="label">了解渠道</text>
+              <picker mode="selector" range="{{sourceOptions}}" value="{{sourceIndex}}" bindchange="onSourceChange">
+                <view class="date-picker">
+                  <text>{{student.customerSource}}</text>
+                  <text class="arrow">▼</text>
+                </view>
+              </picker>
+            </view>
+          </view>
+
+          <view class="primary-btn {{loading ? 'disabled' : ''}}" bindtap="onRegister">
+            {{loading ? '注册中...' : '完成注册'}}
+          </view>
+        </block>
+      </view>
+    </scroll-view>
+  </view>
+</view>

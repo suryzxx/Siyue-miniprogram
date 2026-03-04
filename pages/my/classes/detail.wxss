@@ -1,0 +1,144 @@
+page {
+  height: 100vh;
+  background: #f6f6f8;
+  color: #1f2d3d;
+}
+
+.page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.scrollarea {
+  flex: 1;
+}
+
+.content {
+  padding: 32rpx;
+  padding-bottom: 120rpx;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 100rpx 0;
+  color: #64748b;
+}
+
+.section {
+  margin-bottom: 24rpx;
+}
+
+.section-title {
+  font-size: 28rpx;
+  color: #1f2d3d;
+  font-weight: 500;
+  margin-bottom: 16rpx;
+}
+
+/* 班级信息卡片 */
+.class-card {
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  box-shadow: 0 4rpx 12rpx rgba(31, 45, 61, 0.04);
+  border: 1rpx solid rgba(158, 142, 241, 0.2);
+}
+
+.card-title {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #1f2d3d;
+  margin-bottom: 20rpx;
+  padding-bottom: 16rpx;
+  border-bottom: 1rpx solid #f6f6f8;
+}
+
+.info-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.info-row {
+  display: flex;
+  gap: 24rpx;
+}
+
+.info-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+
+.info-item.full-width {
+  flex: none;
+  width: 100%;
+}
+
+.info-label {
+  font-size: 22rpx;
+  color: #64748b;
+}
+
+.info-value {
+  font-size: 26rpx;
+  color: #1f2d3d;
+  font-weight: 500;
+}
+
+.info-value.remaining {
+  color: #9e8ef1;
+}
+
+/* 教师海报 */
+.teacher-poster {
+  width: 100%;
+  border-radius: 16rpx;
+  display: block;
+}
+
+/* 教学大纲 */
+.syllabus-list {
+  background: #ffffff;
+  border-radius: 24rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 12rpx rgba(31, 45, 61, 0.04);
+  border: 1rpx solid rgba(158, 142, 241, 0.2);
+}
+
+.syllabus-item {
+  padding: 20rpx 24rpx;
+  border-bottom: 1rpx solid #f6f6f8;
+}
+
+.syllabus-item:last-child {
+  border-bottom: none;
+}
+
+.syllabus-week {
+  font-size: 24rpx;
+  color: #9e8ef1;
+  font-weight: 500;
+  margin-bottom: 6rpx;
+}
+
+.syllabus-title {
+  font-size: 26rpx;
+  color: #1f2d3d;
+  margin-bottom: 4rpx;
+}
+
+.syllabus-time {
+  font-size: 22rpx;
+  color: #64748b;
+}

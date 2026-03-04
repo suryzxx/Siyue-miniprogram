@@ -1,0 +1,45 @@
+<view class="page">
+  <custom-navbar
+    center-text="申请退款"
+    show-left="{{true}}"
+    show-right="{{false}}"
+    show-back="{{true}}"
+    left-text="返回"
+  />
+
+  <view class="page-container" style="padding-top: {{navBarHeight}}px;">
+    <view class="content">
+      <view class="card">
+        <view class="card-title">退款信息</view>
+        <view class="info-row">
+          <text class="label">课程售价</text>
+          <text class="value">{{refund.price}}</text>
+        </view>
+        <view class="info-row">
+          <text class="label">实付金额</text>
+          <text class="value">{{refund.paid}}</text>
+        </view>
+        <view class="info-row">
+          <text class="label">已使用课次</text>
+          <text class="value">{{refund.usedLessons}}</text>
+        </view>
+        <view class="info-row">
+          <text class="label">应退金额</text>
+          <text class="value highlight">{{refund.refundAmount}}</text>
+        </view>
+      </view>
+
+      <view class="card">
+        <view class="card-title">退款原因</view>
+        <textarea
+          class="textarea"
+          placeholder="请填写退款原因"
+          value="{{refund.reason}}"
+          bindinput="onReasonInput"
+        />
+      </view>
+
+      <view class="primary-btn" bindtap="onSubmit">提交申请</view>
+    </view>
+  </view>
+</view>

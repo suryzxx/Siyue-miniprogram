@@ -1,0 +1,92 @@
+<view class="page">
+  <custom-navbar
+    center-text="思悦"
+    show-left="{{false}}"
+    show-right="{{false}}"
+  />
+
+  <view class="page-container" style="padding-top: {{navBarHeight}}px;">
+    <scroll-view class="scrollarea" scroll-y>
+      <view class="content">
+      <view class="quick-actions">
+        <view class="action-item" bindtap="onAssessmentTap" hover-class="is-pressed" hover-stay-time="120">
+          <image class="action-icon" src="/images/icons/收藏.png" mode="aspectFit" />
+          <text class="action-text">预约评测</text>
+        </view>
+        <view class="action-item" bindtap="onConsultantTap" hover-class="is-pressed" hover-stay-time="120">
+          <image class="action-icon" src="/images/icons/收藏.png" mode="aspectFit" />
+          <text class="action-text">课程顾问</text>
+        </view>
+      </view>
+
+      <view class="card">
+        <view class="card-title">名师风采</view>
+        <swiper
+          class="teacher-swiper"
+          circular
+          autoplay="{{false}}"
+          bindchange="onTeacherChange"
+        >
+          <swiper-item wx:for="{{mockData.teachers}}" wx:key="id">
+            <view
+              class="teacher-item"
+              data-id="{{item.id}}"
+              bindtap="onTeacherTap"
+              hover-class="is-pressed"
+              hover-stay-time="120"
+            >
+              <image class="teacher-avatar" src="{{item.avatar}}" mode="aspectFill" />
+              <view class="teacher-info">
+                <view class="teacher-name-row">
+                  <text class="teacher-name">{{item.name}}</text>
+                  <text class="teacher-tag">{{item.tag}}</text>
+                </view>
+                <text class="teacher-desc">{{item.desc}}</text>
+              </view>
+            </view>
+          </swiper-item>
+        </swiper>
+        <view class="dots">
+          <view
+            class="dot {{index === teacherIndex ? 'is-active' : ''}}"
+            wx:for="{{mockData.teachers}}"
+            wx:key="id"
+            wx:for-index="index"
+          ></view>
+        </view>
+      </view>
+
+      <view class="card">
+        <view class="card-title">校区环境</view>
+        <scroll-view class="campus-scroll" scroll-x>
+          <view class="campus-list">
+            <image
+              class="campus-img"
+              wx:for="{{mockData.campusImages}}"
+              wx:key="id"
+              src="{{item.url}}"
+              data-id="{{item.id}}"
+              mode="aspectFill"
+              bindtap="onCampusTap"
+              hover-class="is-pressed"
+              hover-stay-time="120"
+            />
+          </view>
+        </scroll-view>
+      </view>
+
+      <view class="card">
+        <view class="card-title">品牌介绍</view>
+        <text
+          class="brand-text"
+          bindtap="onBrandTap"
+          hover-class="is-pressed"
+          hover-stay-time="120"
+        >
+          {{mockData.brandIntro}}
+        </text>
+      </view>
+      </view>
+    </scroll-view>
+  </view>
+</view>

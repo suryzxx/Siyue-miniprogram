@@ -1,0 +1,45 @@
+<view class="page">
+  <custom-navbar
+    center-text="课表"
+    show-left="{{true}}"
+    show-right="{{false}}"
+    show-back="{{true}}"
+    left-text="返回"
+  />
+
+  <view class="page-container" style="padding-top: {{navBarHeight}}px;">
+    <scroll-view class="scrollarea" scroll-y>
+      <view class="content">
+        <!-- 加载中 -->
+        <view class="loading" wx:if="{{loading}}">
+          <text>加载中...</text>
+        </view>
+
+        <block wx:else>
+          <!-- 课表 -->
+          <view class="section" wx:if="{{schedule.length > 0}}">
+            <view class="schedule-list">
+              <view class="schedule-item" wx:for="{{schedule}}" wx:key="date">
+                <view class="schedule-date">
+                  <text class="date-day">{{item.dateText}}</text>
+                  <text class="date-weekday">{{item.weekdayText}}</text>
+                </view>
+                <view class="schedule-content">
+                  <text class="schedule-session">{{item.sessionText}}</text>
+                  <text class="schedule-topic">{{item.topic}}</text>
+                  <text class="schedule-time">{{item.timeText}}</text>
+                  <text class="schedule-status {{item.statusClass}}">{{item.statusText}}</text>
+                </view>
+              </view>
+            </view>
+          </view>
+
+          <!-- 空状态 -->
+          <view class="empty" wx:else>
+            <text>暂无课表信息</text>
+          </view>
+        </block>
+      </view>
+    </scroll-view>
+  </view>
+</view>

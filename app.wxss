@@ -1,0 +1,107 @@
+/* 全局样式 - 渐变背景 */
+page {
+  background: linear-gradient(180deg, #f8f4ff 0%, #faf8fc 30%, #f7f8fa 100%);
+  color: #1a1a1a;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+view, text {
+  box-sizing: border-box;
+}
+
+button {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  line-height: inherit;
+}
+
+button::after {
+  border: none;
+}
+
+/* 全局渐变按钮样式 */
+.btn-gradient {
+  background: linear-gradient(135deg, #a78bfa 0%, #c4b5fd 50%, #fcd34d 100%);
+  color: #ffffff;
+  border-radius: 12rpx;
+  padding: 20rpx 40rpx;
+  font-weight: 500;
+  text-align: center;
+  box-shadow: 0 8rpx 24rpx rgba(167, 139, 250, 0.3);
+}
+
+/* 全局渐变文字样式 */
+.text-gradient {
+  background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* 卡片统一样式 */
+.card {
+  background: #ffffff;
+  border-radius: 16rpx;
+  box-shadow: 0 10rpx 24rpx rgba(31, 45, 61, 0.08);
+}
+
+/* 按下状态 */
+.is-pressed {
+  opacity: 0.7;
+  transform: scale(0.98);
+  transition: all 0.15s ease;
+}
+
+/* 标签样式 */
+.tag-purple {
+  background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%);
+  color: #7c3aed;
+  padding: 6rpx 16rpx;
+  border-radius: 8rpx;
+  font-size: 22rpx;
+}
+
+.tag-yellow {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  color: #d97706;
+  padding: 6rpx 16rpx;
+  border-radius: 8rpx;
+  font-size: 22rpx;
+}
+
+/* 分割线 */
+.divider {
+  height: 1rpx;
+  background: #f0f0f0;
+  margin: 20rpx 0;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80rpx 40rpx;
+  color: #9ca3af;
+}
+
+.empty-state image {
+  width: 200rpx;
+  height: 200rpx;
+  opacity: 0.5;
+  margin-bottom: 24rpx;
+}
+
+.empty-state text {
+  font-size: 28rpx;
+}

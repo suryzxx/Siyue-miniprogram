@@ -1,0 +1,97 @@
+<view class="page">
+  <custom-navbar
+    center-text="班级列表"
+    show-left="{{false}}"
+    show-right="{{false}}"
+  />
+
+  <view class="page-container" style="padding-top: {{navBarHeight}}px;">
+    <!-- 筛选栏 -->
+    <filter-bar
+      filters="{{filters}}"
+      currentFilters="{{currentFilters}}"
+      bind:change="onFilterChange"
+    />
+
+    <scroll-view 
+      class="scrollarea" 
+      scroll-y 
+      bindscrolltolower="onReachBottom"
+      lower-threshold="100"
+    >
+      <view class="content">
+        <!-- 加载中 -->
+        <view class="loading" wx:if="{{loading}}">
+          <text>加载中...</text>
+        </view>
+
+        <!-- 班级列表 -->
+        <view class="class-list" wx:elif="{{classes.length > 0}}">
+          <view
+            class="class-card"
+            wx:for="{{classes}}"
+            wx:key="id"
+            data-id="{{item.id}}"
+            bindtap="onClassTap"
+            hover-class="is-pressed"
+            hover-stay-time="120"
+          >
+            <!-- 卡片头部：班级名称 + 标签 -->
+            <view class="card-header">
+              <text class="class-name">{{item.name}}</text>
+              <view class="tag-group">
+                <text class="tag tag-type">{{item.productType === 'system' ? '体系课' : '专项课'}}</text>
+                <text class="tag tag-level">{{item.level}}</text>
+              </view>
+            </view>
+
+            <!-- 卡片内容 -->
+            <view class="card-body">
+              <!-- 上课时间 -->
+              <view class="info-row">
+                <view class="info-icon">
+                  <image class="icon-svg" src="/images/icons/clock.svg" mode="aspectFit" />
+                </view>
+                <text class="info-text">{{item.time}}</text>
+              </view>
+
+              <!-- 上课地点 -->
+              <view class="info-row">
+                <view class="info-icon">
+                  <image class="icon-svg" src="/images/icons/location.svg" mode="aspectFit" />
+                </view>
+                <text class="info-text">{{item.location}}</text>
+              </view>
+
+              <!-- 主教老师 -->
+              <view class="info-row teacher-row">
+                <image class="teacher-avatar" src="{{item.teacher.avatar}}" mode="aspectFill" />
+                <text class="teacher-name">{{item.teacher.name}}</text>
+              </view>
+            </view>
+
+            <!-- 分割线 -->
+            <view class="divider"></view>
+
+            <!-- 卡片底部：余位和价格 -->
+            <view class="card-footer">
+              <view class="status-wrap">
+                <text class="class-status {{item.statusClass}}">{{item.statusText}}</text>
+              </view>
+              <view class="price-wrap">
+                <text class="class-price">{{item.price}}</text>
+                <text class="class-unit">{{item.unit}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 空状态 -->
+        <view class="empty" wx:else>
+          <image class="empty-icon" src="/images/pic/empty.png" mode="aspectFit" />
+          <text class="empty-text">暂无符合条件的班级</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+</view>

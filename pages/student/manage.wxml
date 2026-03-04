@@ -1,0 +1,163 @@
+<view class="page">
+  <custom-navbar
+    center-text="学生管理"
+    show-left="{{true}}"
+    show-right="{{false}}"
+    show-back="{{true}}"
+    left-icon="/images/icons/back.svg"
+  />
+
+  <view class="page-container" style="padding-top: {{navBarHeight}}px;">
+    <scroll-view class="scrollarea" scroll-y enhanced show-scrollbar="{{false}}">
+      <view class="content">
+        <!-- 当前学生区块 -->
+        <view class="current-section" wx:if="{{currentStudent}}">
+          <view class="section-header">
+            <text class="section-title">当前学生</text>
+          </view>
+          
+          <view class="current-card">
+            <view class="card-content">
+              <view class="card-left">
+                <image 
+                  class="student-avatar" 
+                  src="{{currentStudent.avatar || '/images/pic/avatar.png'}}" 
+                  mode="aspectFill"
+                />
+              </view>
+              
+              <view class="card-right">
+                <view class="student-header">
+                  <text class="student-name">{{currentStudent.name}}</text>
+                  <text class="english-name" wx:if="{{currentStudent.englishName}}">({{currentStudent.englishName}})</text>
+                </view>
+                
+                <view class="student-meta">
+                  <text class="meta-text">{{currentStudent.gender === 'male' ? '男' : currentStudent.gender === 'female' ? '女' : '未设置'}} • {{currentStudent.grade}}</text>
+                </view>
+                
+                <view class="student-info">
+                  <view class="info-item" wx:if="{{currentStudent.school}}">
+                    <image class="info-icon" src="/images/icons/school.svg" mode="aspectFit" />
+                    <text class="info-text">{{currentStudent.school}}</text>
+                  </view>
+                  <view class="info-item" wx:if="{{currentStudent.cityName}}">
+                    <image class="info-icon" src="/images/icons/location.svg" mode="aspectFit" />
+                    <text class="info-text">{{currentStudent.cityName}}</text>
+                  </view>
+                </view>
+                
+                <view class="student-id">
+                  <image class="info-icon" src="/images/icons/id-card.svg" mode="aspectFit" />
+                  <text class="id-text">学号: {{currentStudent.id}}</text>
+                </view>
+              </view>
+            </view>
+            
+            <view class="card-footer">
+              <view class="edit-btn" data-id="{{currentStudent.id}}" bindtap="onEditStudent">
+                <image class="btn-icon" src="/images/icons/edit.svg" mode="aspectFit" />
+                <text class="btn-text">编辑资料</text>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 无学生时提示 -->
+        <view class="empty-state" wx:if="{{students.length === 0}}">
+          <view class="empty-icon-wrapper">
+            <image class="empty-icon" src="/images/pic/avatar.png" mode="aspectFit" />
+          </view>
+          <text class="empty-title">暂无学生信息</text>
+          <text class="empty-desc">请先添加学生以使用完整功能</text>
+        </view>
+
+        <!-- 学生列表区块 -->
+        <view class="list-section" wx:if="{{students.length > 0}}">
+          <view class="list-header">
+            <text class="list-title">账号下学生</text>
+            <view class="quota-wrapper">
+              <text class="quota-text">({{students.length}}/{{maxStudents}})</text>
+            </view>
+            <view class="progress-bar">
+              <view class="progress-fill" style="width: {{students.length / maxStudents * 100}}%"></view>
+            </view>
+          </view>
+          
+          <view class="student-list">
+            <view 
+              class="student-item {{currentStudent.id === item.id ? 'is-current' : ''}}"
+              wx:for="{{students}}"
+              wx:key="id"
+            >
+              <view class="item-left">
+                <image 
+                  class="item-avatar" 
+                  src="{{item.avatar || '/images/pic/avatar.png'}}" 
+                  mode="aspectFill"
+                />
+              </view>
+              
+              <view class="item-center">
+                <view class="item-name-row">
+                  <text class="item-name">{{item.name}}</text>
+                  <view class="current-badge" wx:if="{{currentStudent.id === item.id}}">
+                    <text class="badge-text">当前</text>
+                  </view>
+                </view>
+                <view class="item-meta-row">
+                  <text class="item-meta">{{item.gender === 'male' ? '男生' : item.gender === 'female' ? '女生' : '未设置'}} • {{item.grade}}</text>
+                </view>
+              </view>
+              
+              <view class="item-right">
+                <!-- 切换按钮 -->
+                <view 
+                  wx:if="{{currentStudent.id !== item.id}}" 
+                  class="action-btn switch-btn"
+                  data-id="{{item.id}}"
+                  bindtap="onSwitchStudent"
+                >
+                  <text class="action-text">切换</text>
+                </view>
+                
+                <!-- 编辑按钮 -->
+                <view 
+                  class="action-btn icon-btn"
+                  data-id="{{item.id}}"
+                  bindtap="onEditStudent"
+                >
+                  <image class="action-icon" src="/images/icons/edit.svg" mode="aspectFit" />
+                </view>
+                
+                <!-- 删除按钮 -->
+                <view 
+                  class="action-btn icon-btn delete-btn"
+                  data-id="{{item.id}}"
+                  data-name="{{item.name}}"
+                  bindtap="onDeleteStudent"
+                >
+                  <image class="action-icon" src="/images/icons/delete.svg" mode="aspectFit" />
+                </view>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 底部安全区域 -->
+        <view class="safe-area-bottom"></view>
+      </view>
+    </scroll-view>
+
+    <!-- 底部固定按钮 -->
+    <view class="bottom-bar">
+      <view 
+        class="add-button {{students.length >= maxStudents ? 'disabled' : ''}}" 
+        bindtap="onAddStudent"
+      >
+        <image class="add-icon" src="/images/icons/plus.svg" mode="aspectFit" />
+        <text class="add-text">添加学生</text>
+      </view>
+    </view>
+  </view>
+</view>

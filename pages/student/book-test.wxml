@@ -1,0 +1,156 @@
+<view class="page">
+  <custom-navbar
+    center-text="预约评测"
+    show-left="{{true}}"
+    show-right="{{false}}"
+    show-back="{{true}}"
+    left-icon="/images/icons/back.svg"
+  />
+
+  <view class="page-container" style="padding-top: {{navBarHeight}}px;">
+    <scroll-view class="scrollarea" scroll-y>
+      <view class="content">
+        <block wx:if="{{step === 1}}">
+          <view class="card">
+            <view class="section-title">评测学生</view>
+            <view class="student-row" wx:if="{{student}}">
+              <image class="avatar" src="{{student.avatar || '/images/pic/avatar.png'}}" mode="aspectFill" />
+              <view class="student-info">
+                <text class="student-name">{{student.name}}</text>
+                <text class="student-meta">{{student.grade ? '年级：' + student.grade : ''}}</text>
+              </view>
+            </view>
+          </view>
+
+          <view class="card">
+            <view class="section-title">选择校区</view>
+            
+            <view class="field">
+              <text class="label">省份</text>
+              <picker mode="selector" range="{{provinces}}" value="{{provinceIndex}}" bindchange="onProvinceChange">
+                <view class="picker-box">
+                  <text class="{{selectedProvince ? '' : 'placeholder'}}">{{selectedProvince || '请选择省份'}}</text>
+                  <image class="picker-arrow" src="/images/icons/arrow-down.svg" mode="aspectFit" />
+                </view>
+              </picker>
+            </view>
+
+            <view class="field">
+              <text class="label">城市</text>
+              <picker mode="selector" range="{{currentCities}}" value="{{cityIndex}}" bindchange="onCityChange" disabled="{{!selectedProvince}}">
+                <view class="picker-box {{!selectedProvince ? 'is-disabled' : ''}}">
+                  <text class="{{selectedCity ? '' : 'placeholder'}}">{{selectedCity || '请选择城市'}}</text>
+                  <image class="picker-arrow" src="/images/icons/arrow-down.svg" mode="aspectFit" />
+                </view>
+              </picker>
+            </view>
+
+            <view class="field">
+              <text class="label">校区</text>
+              <picker mode="selector" range="{{currentCampuses}}" range-key="name" value="{{campusIndex}}" bindchange="onCampusChange" disabled="{{!selectedCity}}">
+                <view class="picker-box {{!selectedCity ? 'is-disabled' : ''}}">
+                  <text class="{{selectedCampus ? '' : 'placeholder'}}">{{selectedCampus.name || '请选择校区'}}</text>
+                  <image class="picker-arrow" src="/images/icons/arrow-down.svg" mode="aspectFit" />
+                </view>
+              </picker>
+            </view>
+
+            <view class="campus-address" wx:if="{{selectedCampus}}">
+              <image class="address-icon" src="/images/icons/location.svg" mode="aspectFit" />
+              <text class="address-text">{{selectedCampus.address}}</text>
+            </view>
+          </view>
+
+          <view class="card" wx:if="{{selectedCampus}}">
+            <view class="section-title">选择时间</view>
+            
+            <view class="field">
+              <text class="label">日期</text>
+              <picker mode="selector" range="{{availableSlots}}" range-key="date" value="{{dateIndex}}" bindchange="onDateChange">
+                <view class="picker-box">
+                  <text class="{{selectedDate ? '' : 'placeholder'}}">{{selectedDate || '请选择日期'}}</text>
+                  <image class="picker-arrow" src="/images/icons/arrow-down.svg" mode="aspectFit" />
+                </view>
+              </picker>
+            </view>
+
+            <view class="field" wx:if="{{selectedDate}}">
+              <text class="label">时间段</text>
+              <picker mode="selector" range="{{availableSlots[dateIndex].slots}}" range-key="time" value="{{slotIndex}}" bindchange="onSlotChange">
+                <view class="picker-box">
+                  <text class="{{selectedSlot ? '' : 'placeholder'}}">{{selectedSlot.time || '请选择时间段'}}</text>
+                  <image class="picker-arrow" src="/images/icons/arrow-down.svg" mode="aspectFit" />
+                </view>
+              </picker>
+            </view>
+          </view>
+
+          <view class="primary-btn {{loading ? 'is-disabled' : ''}}" bindtap="onSubmit">
+            <text>{{loading ? '提交中...' : '提交预约'}}</text>
+          </view>
+        </block>
+
+        <block wx:else>
+          <view class="card success-card">
+            <view class="success-icon">
+              <text>✓</text>
+            </view>
+            <view class="success-title">预约成功</view>
+            <view class="success-desc">请按时到校区参加评测</view>
+          </view>
+
+          <view class="card">
+            <view class="section-title">预约信息</view>
+            <view class="info-row">
+              <text class="info-label">评测学生</text>
+              <text class="info-value">{{student.name}}</text>
+            </view>
+            <view class="info-row">
+              <text class="info-label">校区</text>
+              <text class="info-value">{{bookingResult.campusName}}</text>
+            </view>
+            <view class="info-row">
+              <text class="info-label">地址</text>
+              <text class="info-value">{{bookingResult.campusAddress}}</text>
+            </view>
+            <view class="info-row">
+              <text class="info-label">日期</text>
+              <text class="info-value">{{bookingResult.bookDate}}</text>
+            </view>
+            <view class="info-row">
+              <text class="info-label">时间</text>
+              <text class="info-value">{{bookingResult.bookTime}}</text>
+            </view>
+          </view>
+
+          <view class="card" wx:if="{{bookingResult.teacherPhone}}">
+            <view class="section-title">联系方式</view>
+            <view class="contact-row">
+              <view class="contact-info">
+                <text class="contact-label">咨询电话</text>
+                <text class="contact-phone">{{bookingResult.teacherPhone}}</text>
+              </view>
+              <view class="contact-actions">
+                <view class="contact-btn" bindtap="onCopyPhone">
+                  <text>复制</text>
+                </view>
+                <view class="contact-btn is-primary" bindtap="onCallTeacher">
+                  <text>拨打</text>
+                </view>
+              </view>
+            </view>
+          </view>
+
+          <view class="btn-group">
+            <view class="secondary-btn" bindtap="onBack">
+              <text>返回</text>
+            </view>
+            <view class="primary-btn" bindtap="onViewHistory">
+              <text>查看预约记录</text>
+            </view>
+          </view>
+        </block>
+      </view>
+    </scroll-view>
+  </view>
+</view>

@@ -1,0 +1,105 @@
+<view class="page">
+
+  <view class="page-container" style="--status-bar-height: {{statusBarHeight}}px;">
+    <scroll-view class="scrollarea" scroll-y>
+      <view class="content">
+        <!-- 头部个人信息卡片 -->
+        <view class="profile-header" style="--status-bar-height: {{statusBarHeight}}px;">
+          <!-- 未登录状态 -->
+          <view wx:if="{{!isLoggedIn}}" class="profile-card" bindtap="onLoginTap" hover-class="is-pressed" hover-stay-time="120">
+            <view class="profile-avatar-wrapper">
+              <image 
+                class="profile-avatar" 
+                src="/images/pic/avatar.png"
+                mode="aspectFill" 
+              />
+            </view>
+            <view class="profile-info">
+              <view class="profile-login-row">
+                <text class="profile-name">登录/注册</text>
+                <view class="login-btn">
+                  <text class="login-btn-text">立即登录</text>
+                  <text class="login-btn-arrow">›</text>
+                </view>
+              </view>
+              <text class="profile-subtitle">登录后查看更多信息</text>
+            </view>
+          </view>
+
+          <!-- 已登录状态 -->
+          <view wx:else class="profile-card" bindtap="onUserCardTap" hover-class="is-pressed" hover-stay-time="120">
+            <view class="profile-avatar-wrapper">
+              <image 
+                class="profile-avatar" 
+                src="/images/pic/avatar.png"
+                mode="aspectFill" 
+              />
+              <view wx:if="{{currentStudent}}" class="profile-badge">{{currentStudent.grade}}</view>
+            </view>
+            <view class="profile-info">
+              <view class="profile-logged">
+                <view class="profile-name-row">
+                  <text class="profile-name">{{currentStudent.name}}</text>
+                  <text class="profile-level-tag">{{currentStudent.level || '未评测'}}</text>
+                </view>
+                <text class="profile-id">ID: {{currentStudent.id}}</text>
+              </view>
+            </view>
+          </view>
+
+          <!-- 当前班级卡片 - 仅已登录时显示 -->
+          <view wx:if="{{isLoggedIn && currentClasses.length > 0}}" class="current-class-card">
+            <view class="class-card-header">
+              <view class="class-status-dot"></view>
+              <text class="class-card-name">{{currentClasses[0].displayName}}</text>
+            </view>
+            <text class="class-card-schedule">{{currentClasses[0].progressText}} {{currentClasses[0].displaySchedule}}</text>
+            <view class="class-card-action" bindtap="onClassScheduleTap" hover-class="is-pressed" hover-stay-time="120">
+              <image class="class-card-icon" src="/images/icons/calendar-white.svg" mode="aspectFit" />
+              <text class="class-card-btn-text">课表</text>
+            </view>
+          </view>
+
+          <!-- 未加入班级提示 - 仅已登录时显示 -->
+          <view wx:elif="{{isLoggedIn && currentClasses.length === 0}}" class="current-class-card empty">
+            <text class="empty-text">暂未加入班级</text>
+          </view>
+        </view>
+
+        <!-- 课程服务 -->
+        <view class="section">
+          <view class="service-card">
+          <view class="service-grid">
+            <view
+              class="service-item"
+              wx:for="{{mockData.services}}"
+              wx:key="id"
+              data-id="{{item.id}}"
+              bindtap="onServiceTap"
+              hover-class="is-pressed"
+              hover-stay-time="120"
+            >
+              <view class="service-icon-wrapper">
+                <view class="service-icon-bg"></view>
+                <image class="service-icon" src="{{item.icon}}" mode="aspectFit" />
+              </view>
+              <text class="service-text">{{item.label}}</text>
+            </view>
+          </view>
+          </view>
+        </view>
+
+        <!-- 设置入口 -->
+        <view class="settings-entry" bindtap="onSettingsTap" hover-class="is-pressed" hover-stay-time="120">
+          <view class="settings-left">
+            <view class="settings-icon-wrapper">
+              <image class="settings-icon" src="/images/icons/settings.svg" mode="aspectFit" />
+            </view>
+            <text class="settings-text">设置</text>
+          </view>
+          <text class="arrow">›</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+</view>

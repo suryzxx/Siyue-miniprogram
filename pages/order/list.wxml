@@ -1,0 +1,106 @@
+<view class="page">
+  <custom-navbar
+    center-text="我的订单"
+    show-left="{{true}}"
+    show-right="{{false}}"
+    show-back="{{true}}"
+    left-icon="/images/icons/back.svg"
+  />
+
+  <view class="page-container" style="padding-top: {{navBarHeight}}px;">
+    <!-- Tab栏 -->
+    <view class="tabs">
+      <view
+        class="tab {{item.value === currentTab ? 'is-active' : ''}}"
+        wx:for="{{tabs}}"
+        wx:key="value"
+        data-value="{{item.value}}"
+        bindtap="onTabChange"
+      >
+        {{item.label}}
+      </view>
+    </view>
+
+    <scroll-view class="scrollarea" scroll-y>
+      <view class="content">
+        <!-- 订单列表 -->
+        <block wx:if="{{filteredOrders.length > 0}}">
+          <view
+            class="order-card"
+            wx:for="{{filteredOrders}}"
+            wx:key="id"
+            data-id="{{item.id}}"
+            bindtap="onOrderTap"
+            hover-class="is-pressed"
+          >
+            <!-- 卡片头部 -->
+            <view class="card-header">
+              <view class="header-left">
+                <text class="class-name">{{item.className}}</text>
+                <view class="tag-group">
+                  <text class="tag {{item.productType === 'system' ? 'tag-system' : 'tag-special'}}">
+                    {{item.productType === 'system' ? '体系课' : '专项课'}}
+                  </text>
+                  <text class="tag tag-level" wx:if="{{item.level}}">{{item.level}}</text>
+                </view>
+              </view>
+              <text class="status-label" style="color: {{item.statusColor}}">{{item.statusLabel}}</text>
+            </view>
+
+            <!-- 卡片内容 -->
+            <view class="card-body">
+              <view class="info-row">
+                <text class="info-label">学生</text>
+                <text class="info-value">{{item.studentName}}</text>
+              </view>
+              <view class="info-row">
+                <text class="info-label">课次</text>
+                <text class="info-value">{{item.sessions}}课次</text>
+              </view>
+              <view class="info-row" wx:if="{{item.schedule}}">
+                <text class="info-label">时间</text>
+                <text class="info-value schedule">{{item.schedule}}</text>
+              </view>
+            </view>
+
+            <!-- 退费信息 -->
+            <view class="refund-info" wx:if="{{item.refundAmount > 0}}">
+              <text class="refund-label">退费金额</text>
+              <text class="refund-amount">¥{{item.refundAmount}}</text>
+            </view>
+
+            <!-- 卡片底部 -->
+            <view class="card-footer">
+              <view class="price-wrap">
+                <text class="price-label">订单金额</text>
+                <text class="price-value">{{item.totalPriceText}}</text>
+              </view>
+              <view class="action-wrap">
+                <view
+                  class="pay-btn"
+                  wx:if="{{item.showPayBtn}}"
+                  data-id="{{item.id}}"
+                  catchtap="onPayTap"
+                >
+                  {{item.payBtnText}}
+                </view>
+                <view class="detail-btn" wx:else>查看详情</view>
+              </view>
+            </view>
+
+            <!-- 锁单标识 -->
+            <view class="locked-badge" wx:if="{{item.isLocked}}">
+              <text>已锁定</text>
+            </view>
+          </view>
+        </block>
+
+        <!-- 空状态 -->
+        <view class="empty" wx:else>
+          <image class="empty-icon" src="/images/pic/empty.png" mode="aspectFit" />
+          <text class="empty-text">暂无订单</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+</view>

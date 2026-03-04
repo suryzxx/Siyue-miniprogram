@@ -1,0 +1,222 @@
+page {
+  height: 100vh;
+  background: #f7f8fa;
+  color: #1a1a1a;
+}
+
+.page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-container {
+  flex: 1;
+  overflow: hidden;
+}
+
+.scrollarea {
+  height: 100%;
+}
+
+.content {
+  padding: 24rpx 24rpx 60rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.status-banner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48rpx 24rpx;
+  border-radius: 16rpx;
+}
+
+.status-banner.status-pending {
+  background: linear-gradient(135deg, #fff7e6 0%, #ffe7ba 100%);
+}
+
+.status-banner.status-completed {
+  background: linear-gradient(135deg, #f3f0ff 0%, #d9d2ff 100%);
+}
+
+.status-banner.status-cancelled {
+  background: #f5f5f5;
+}
+
+.status-icon {
+  font-size: 64rpx;
+  margin-bottom: 16rpx;
+}
+
+.status-text {
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+.status-pending .status-text {
+  color: #fa8c16;
+}
+
+.status-completed .status-text {
+  color: #6b4ce6;
+}
+
+.status-cancelled .status-text {
+  color: #86909c;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 28rpx;
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 24rpx;
+  padding-bottom: 16rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-label {
+  font-size: 26rpx;
+  color: #86909c;
+  flex-shrink: 0;
+}
+
+.info-value {
+  font-size: 26rpx;
+  color: #1a1a1a;
+  text-align: right;
+  flex: 1;
+  margin-left: 24rpx;
+}
+
+.info-value.sub {
+  color: #c0c4cc;
+  font-size: 24rpx;
+}
+
+.result-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx;
+  background: #f3f0ff;
+  border-radius: 12rpx;
+  margin-bottom: 16rpx;
+}
+
+.result-label {
+  font-size: 26rpx;
+  color: #4a4a4a;
+}
+
+.result-level {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #6b4ce6;
+}
+
+.result-tip {
+  font-size: 24rpx;
+  color: #86909c;
+  line-height: 1.6;
+  margin-top: 8rpx;
+}
+
+.contact-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx;
+  background: #f7f8fa;
+  border-radius: 12rpx;
+}
+
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+
+.contact-label {
+  font-size: 22rpx;
+  color: #86909c;
+}
+
+.contact-phone {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.contact-actions {
+  display: flex;
+  gap: 16rpx;
+}
+
+.contact-btn {
+  padding: 12rpx 24rpx;
+  border-radius: 8rpx;
+  background: #f3f0ff;
+  color: #6b4ce6;
+  font-size: 24rpx;
+}
+
+.contact-btn.is-primary {
+  background: #6b4ce6;
+  color: #ffffff;
+}
+
+.btn-group {
+  margin-top: 16rpx;
+}
+
+.primary-btn {
+  height: 88rpx;
+  border-radius: 44rpx;
+  background: #6b4ce6;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30rpx;
+  font-weight: 500;
+}
+
+.cancel-btn {
+  height: 88rpx;
+  border-radius: 44rpx;
+  background: #ffffff;
+  color: #86909c;
+  border: 2rpx solid #e5e5e5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30rpx;
+}
+
+.loading {
+  text-align: center;
+  padding: 80rpx;
+  color: #86909c;
+  font-size: 26rpx;
+}

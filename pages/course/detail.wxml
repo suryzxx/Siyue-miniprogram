@@ -1,0 +1,103 @@
+<view class="page">
+  <custom-navbar
+    center-text="班级详情"
+    show-left="{{true}}"
+    show-right="{{false}}"
+    show-back="{{true}}"
+    left-icon="/images/icons/back.svg"
+  />
+
+  <view class="page-container" style="padding-top: {{navBarHeight}}px;">
+    <scroll-view class="scrollarea" scroll-y>
+      <view class="content" wx:if="{{!loading}}">
+        <!-- 班级信息卡片 -->
+        <view class="card info-card">
+          <view class="card-title">{{classInfo.name}}</view>
+          <view class="info-content">
+            <!-- 第一行：产品名称 + 标签 -->
+            <view class="info-row">
+              <text class="product-name">{{classInfo.productName}}</text>
+              <text class="tag tag-type">{{classInfo.productTypeName}}</text>
+              <text class="tag tag-level">{{classInfo.level}}</text>
+            </view>
+            <!-- 第二行：上课时间 -->
+            <view class="info-row">
+              <view class="info-icon">
+                <image class="icon-svg" src="/images/icons/clock.svg" mode="aspectFit" />
+              </view>
+              <text class="info-text">{{classInfo.schedule}}</text>
+            </view>
+            <!-- 第三行：上课地点 -->
+            <view class="info-row">
+              <view class="info-icon">
+                <image class="icon-svg" src="/images/icons/location.svg" mode="aspectFit" />
+              </view>
+              <text class="info-text">{{classInfo.location}}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 费用信息卡片 -->
+        <view class="card fee-card">
+          <view class="card-title">费用信息</view>
+          <view class="fee-row">
+            <view class="fee-item">
+              <text class="fee-label">课程费用</text>
+              <view class="fee-value-wrap">
+                <text class="fee-value price">¥{{classInfo.price}}</text>
+                <text class="fee-sessions">/{{classInfo.totalSessions}}课次</text>
+              </view>
+            </view>
+            <view class="fee-item">
+              <text class="fee-label">教辅费</text>
+              <text class="fee-value price-highlight">¥{{classInfo.materialPrice}}</text>
+            </view>
+          </view>
+          <view class="fee-row fee-total">
+            <view class="fee-item">
+              <text class="fee-label">合计</text>
+              <view class="fee-value-wrap">
+                <text class="fee-value price-total">¥{{classInfo.totalPrice}}</text>
+                <text class="fee-sessions">/{{classInfo.totalSessions}}课次</text>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 教师介绍卡片 -->
+        <view class="card teacher-card">
+          <view class="card-title">教师介绍</view>
+          <image class="teacher-poster" src="{{teacher.poster}}" mode="widthFix"></image>
+        </view>
+
+        <!-- 教学计划 -->
+        <view class="card plan-card">
+          <view class="card-title">教学计划</view>
+          <view class="plan-list">
+            <view class="plan-item" wx:for="{{planItems}}" wx:key="index">
+              <view class="plan-time">{{item.time}}</view>
+              <view class="plan-title">{{item.title}}</view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 加载中 -->
+      <view class="loading" wx:else>
+        <text>加载中...</text>
+      </view>
+    </scroll-view>
+
+    <!-- 底部操作栏 -->
+    <view class="bottom-bar" wx:if="{{!loading}}">
+      <view class="total">
+        <text class="total-label">合计：</text>
+        <text class="total-price">¥{{classInfo.totalPrice}}</text>
+        <text class="total-sessions">/{{classInfo.totalSessions}}课次</text>
+      </view>
+      <view class="action-btn gradient" bindtap="onEnrollTap">
+        {{classInfo.remaining > 0 ? '立即报名' : '排队候补'}}
+      </view>
+    </view>
+  </view>
+</view>

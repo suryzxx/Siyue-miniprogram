@@ -1,0 +1,144 @@
+<view class="page">
+  <custom-navbar
+    center-text="编辑学生"
+    show-left="{{true}}"
+    show-right="{{false}}"
+    show-back="{{true}}"
+    left-icon="/images/icons/back.svg"
+  />
+
+  <view class="page-container" style="padding-top: {{navBarHeight}}px;">
+    <scroll-view class="scrollarea" scroll-y enhanced show-scrollbar="{{false}}">
+      <view class="content">
+        <!-- 头像区域 -->
+        <view class="avatar-section">
+          <view class="avatar-wrapper" bindtap="onChooseAvatar">
+            <image 
+              class="avatar-image" 
+              src="{{student.avatar || '/images/pic/avatar.png'}}" 
+              mode="aspectFill"
+            />
+            <view class="avatar-camera">
+              <image class="camera-icon" src="/images/icons/camera.svg" mode="aspectFit" />
+            </view>
+          </view>
+        </view>
+
+        <!-- 基本信息区块 -->
+        <view class="form-section">
+          <view class="section-label">基本信息</view>
+          <view class="form-card">
+            <!-- 学生姓名 -->
+            <view class="form-field">
+              <text class="field-label">学生姓名</text>
+              <input
+                class="field-input"
+                placeholder="请输入学生姓名"
+                value="{{student.name}}"
+                bindinput="onNameInput"
+              />
+            </view>
+
+            <!-- 在读年级 -->
+            <view class="form-field">
+              <text class="field-label">在读年级</text>
+              <picker mode="selector" range="{{grades}}" range-key="name" value="{{gradeIndex}}" bindchange="onGradeChange">
+                <view class="field-picker">
+                  <text class="{{gradeIndex >= 0 ? 'picker-value' : 'picker-placeholder'}}">
+                    {{gradeIndex >= 0 ? grades[gradeIndex].name : '请选择年级'}}
+                  </text>
+                  <image class="picker-arrow" src="/images/icons/arrow-down.svg" mode="aspectFit" />
+                </view>
+              </picker>
+            </view>
+
+            <!-- 性别 -->
+            <view class="form-field">
+              <text class="field-label">性别</text>
+              <view class="gender-group">
+                <view 
+                  class="gender-btn {{student.gender === 'male' ? 'is-active' : ''}}"
+                  data-value="male"
+                  bindtap="onGenderSelect"
+                >
+                  <text class="gender-text">男</text>
+                </view>
+                <view 
+                  class="gender-btn {{student.gender === 'female' ? 'is-active' : ''}}"
+                  data-value="female"
+                  bindtap="onGenderSelect"
+                >
+                  <text class="gender-text">女</text>
+                </view>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 其他信息区块 -->
+        <view class="form-section">
+          <view class="section-label">其他信息</view>
+          <view class="form-card">
+            <!-- 英文名 -->
+            <view class="form-field">
+              <text class="field-label">英文名</text>
+              <input
+                class="field-input"
+                placeholder="选填"
+                value="{{student.englishName}}"
+                bindinput="onEnglishNameInput"
+              />
+            </view>
+
+            <!-- 在读学校 -->
+            <view class="form-field">
+              <text class="field-label">在读学校</text>
+              <input
+                class="field-input"
+                placeholder="输入学校名称"
+                value="{{student.school}}"
+                bindinput="onSchoolInput"
+              />
+            </view>
+
+            <!-- 就读城市 -->
+            <view class="form-field">
+              <text class="field-label">就读城市</text>
+              <picker mode="selector" range="{{cities}}" range-key="name" value="{{cityIndex}}" bindchange="onCityChange">
+                <view class="field-picker">
+                  <text class="{{cityIndex >= 0 ? 'picker-value' : 'picker-placeholder'}}">
+                    {{cityIndex >= 0 ? cities[cityIndex].name : '选填'}}
+                  </text>
+                  <image class="picker-arrow" src="/images/icons/arrow-down.svg" mode="aspectFit" />
+                </view>
+              </picker>
+            </view>
+          </view>
+        </view>
+
+        <!-- 评测信息区块 -->
+        <view class="form-section" wx:if="{{student.assessmentLevel}}">
+          <view class="section-label">评测信息</view>
+          <view class="form-card">
+            <view class="form-field">
+              <text class="field-label">评测等级</text>
+              <view class="level-display">
+                <text class="level-text">{{student.assessmentLevel}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 底部安全区域 -->
+        <view class="safe-area-bottom"></view>
+      </view>
+    </scroll-view>
+
+    <!-- 底部固定按钮 -->
+    <view class="bottom-bar">
+      <view class="save-btn {{loading ? 'is-loading' : ''}}" bindtap="onSave">
+        <text class="save-text">{{loading ? '保存中...' : '保存修改'}}</text>
+      </view>
+    </view>
+  </view>
+</view>

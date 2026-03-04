@@ -1,0 +1,191 @@
+<view class="page">
+  <custom-navbar
+    center-text="订单详情"
+    show-left="{{true}}"
+    show-right="{{false}}"
+    show-back="{{true}}"
+    left-icon="/images/icons/back.svg"
+  />
+
+  <view class="page-container" style="padding-top: {{navBarHeight}}px;">
+    <scroll-view class="scrollarea" scroll-y>
+      <view class="content" wx:if="{{!loading}}">
+        <!-- 订单状态 -->
+        <view class="status-card">
+          <view class="status-info">
+            <text class="status-label">{{order.statusLabel}}</text>
+            <text class="status-tip">{{order.statusTip}}</text>
+          </view>
+          <view class="locked-tag" wx:if="{{order.isLocked}}">已锁定</view>
+        </view>
+
+        <!-- 班级信息 -->
+        <view class="card">
+          <view class="card-title">班级信息</view>
+          <view class="class-header">
+            <text class="class-name">{{order.className}}</text>
+            <view class="tag-group">
+              <text class="tag tag-type">{{order.productTypeName}}</text>
+              <text class="tag tag-level" wx:if="{{order.level}}">{{order.level}}</text>
+            </view>
+          </view>
+          <view class="info-list">
+            <view class="info-row">
+              <text class="info-label">上课时间</text>
+              <text class="info-value">{{order.schedule}}</text>
+            </view>
+            <view class="info-row">
+              <text class="info-label">上课地点</text>
+              <text class="info-value">{{order.location}}</text>
+            </view>
+            <view class="info-row">
+              <text class="info-label">主教老师</text>
+              <text class="info-value">{{order.teacherName}}</text>
+            </view>
+            <view class="info-row">
+              <text class="info-label">课次</text>
+              <text class="info-value">{{order.sessions}}课次</text>
+            </view>
+            <view class="info-row">
+              <text class="info-label">报名学生</text>
+              <text class="info-value">{{order.studentName}}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 费用信息 -->
+        <view class="card">
+          <view class="card-title">费用信息</view>
+          <view class="info-list">
+            <!-- 普通订单 -->
+            <block wx:if="{{!order.depositAmount && !order.firstTermAmount}}">
+              <view class="info-row">
+                <text class="info-label">订单金额</text>
+                <text class="info-value price">{{order.totalPriceText}}</text>
+              </view>
+              <view class="info-row" wx:if="{{order.paidAmount > 0}}">
+                <text class="info-label">已付金额</text>
+                <text class="info-value">{{order.paidAmountText}}</text>
+              </view>
+            </block>
+            
+            <!-- 预售订单 -->
+            <block wx:if="{{order.depositAmount}}">
+              <view class="info-row">
+                <text class="info-label">订单金额</text>
+                <text class="info-value price">{{order.totalPriceText}}</text>
+              </view>
+              <view class="info-row">
+                <text class="info-label">定金</text>
+                <text class="info-value">{{order.depositAmountText}}</text>
+              </view>
+              <view class="info-row" wx:if="{{order.balanceAmount}}">
+                <text class="info-label">尾款</text>
+                <text class="info-value">{{order.balanceAmountText}}</text>
+              </view>
+            </block>
+            
+            <!-- 分期订单 -->
+            <block wx:if="{{order.firstTermAmount}}">
+              <view class="info-row">
+                <text class="info-label">订单金额</text>
+                <text class="info-value price">{{order.totalPriceText}}</text>
+              </view>
+              <view class="info-row">
+                <text class="info-label">秋上（前3讲）</text>
+                <text class="info-value">{{order.firstTermAmountText}}</text>
+              </view>
+              <view class="info-row">
+                <text class="info-label">秋下（后续）</text>
+                <text class="info-value">{{order.secondTermAmountText}}</text>
+              </view>
+              <view class="info-row">
+                <text class="info-label">已付金额</text>
+                <text class="info-value">{{order.paidAmountText}}</text>
+              </view>
+            </block>
+            
+            <!-- 已上课次 -->
+            <view class="info-row" wx:if="{{order.usedSessions > 0}}">
+              <text class="info-label">已上课次</text>
+              <text class="info-value">{{order.usedSessions}}课次</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 退费信息 -->
+        <view class="card refund-card" wx:if="{{order.refundAmount > 0 || order.status === 'presale_failed' || order.status === 'partial_paid'}}">
+          <view class="card-title">退费信息</view>
+          <view class="info-list">
+            <view class="info-row" wx:if="{{order.refundAmount > 0}}">
+              <text class="info-label">退费金额</text>
+              <text class="info-value refund">{{order.refundAmountText}}</text>
+            </view>
+            <view class="info-row" wx:if="{{order.refundTime}}">
+              <text class="info-label">退费时间</text>
+              <text class="info-value">{{order.refundTime}}</text>
+            </view>
+            <view class="info-row" wx:if="{{order.refundReason}}">
+              <text class="info-label">退费原因</text>
+              <text class="info-value">{{order.refundReason}}</text>
+            </view>
+            <view class="info-row" wx:if="{{order.failReason}}">
+              <text class="info-label">失败原因</text>
+              <text class="info-value">{{order.failReason}}</text>
+            </view>
+            <view class="info-row" wx:if="{{order.exitReason}}">
+              <text class="info-label">退出原因</text>
+              <text class="info-value">{{order.exitReason}}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 订单信息 -->
+        <view class="card">
+          <view class="card-title">订单信息</view>
+          <view class="info-list">
+            <view class="info-row" bindtap="onCopyOrderId">
+              <text class="info-label">订单编号</text>
+              <text class="info-value copy">{{order.id}}</text>
+            </view>
+            <view class="info-row">
+              <text class="info-label">创建时间</text>
+              <text class="info-value">{{order.createTime}}</text>
+            </view>
+            <view class="info-row" wx:if="{{order.payTime}}">
+              <text class="info-label">支付时间</text>
+              <text class="info-value">{{order.payTime}}</text>
+            </view>
+            <view class="info-row" wx:if="{{order.depositPayTime}}">
+              <text class="info-label">定金支付</text>
+              <text class="info-value">{{order.depositPayTime}}</text>
+            </view>
+            <view class="info-row" wx:if="{{order.cancelTime}}">
+              <text class="info-label">取消时间</text>
+              <text class="info-value">{{order.cancelTime}}</text>
+            </view>
+            <view class="info-row" wx:if="{{order.cancelReason}}">
+              <text class="info-label">取消原因</text>
+              <text class="info-value">{{order.cancelReason}}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 底部占位 -->
+        <view class="bottom-placeholder" wx:if="{{order.showPayBtn || order.showCancelBtn}}"></view>
+      </view>
+
+      <!-- 加载中 -->
+      <view class="loading" wx:else>
+        <text>加载中...</text>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 底部操作栏 -->
+  <view class="bottom-bar" wx:if="{{!loading && order.showPayBtn && !order.isLocked}}">
+    <view class="pay-btn-full" bindtap="onPay">
+      <text>立即支付 {{order.pendingAmountText}}</text>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,50 @@
+<view class="page">
+  <custom-navbar
+    center-text="用户协议"
+    show-left="{{true}}"
+    show-right="{{false}}"
+    show-back="{{true}}"
+    left-icon="/images/icons/back.svg"
+  />
+
+  <view class="page-container" style="padding-top: {{navBarHeight}}px;">
+    <scroll-view class="scrollarea" scroll-y>
+      <view class="content">
+        <view class="article">
+          <text class="article-title">用户协议</text>
+          <text class="article-meta">更新日期：2023年10月24日 | 生效日期：2023年10月24日</text>
+          
+          <text class="section-title">1. 服务说明</text>
+          <text class="section-text">欢迎使用思悦云学习小程序。在使用我们的服务之前，请仔细阅读以下用户协议。本协议是您与思悦云学习之间关于使用本服务的法律协议。</text>
+          
+          <text class="section-title">2. 账号注册</text>
+          <text class="section-text">使用本服务需要注册账号。您需要提供有效的手机号码进行注册。您提供的手机号码将用于账号身份验证，我们会通过短信验证您的手机号码。请妥善保管您的账号信息，不要泄露给他人。</text>
+          
+          <text class="section-title">3. 用户行为规范</text>
+          <text class="section-text">在使用本服务时，您需要遵守以下规范：不得发布违法违规内容；不得侵犯他人知识产权；不得恶意攻击系统或干扰服务；不得利用本服务从事任何违法活动。</text>
+          
+          <text class="section-title">4. 隐私保护</text>
+          <text class="section-text">我们重视您的隐私保护。我们会按照《隐私政策》的规定收集、使用和保护您的个人信息。未经您的同意，我们不会向第三方提供您的个人信息。</text>
+          
+          <text class="section-title">5. 知识产权</text>
+          <text class="section-text">本服务中的所有内容，包括但不限于文字、图片、音频、视频等，均受知识产权法保护。未经授权，您不得复制、传播或用于商业目的。</text>
+          
+          <text class="section-title">6. 免责声明</text>
+          <text class="section-text">本服务按"现状"提供，我们不对服务的准确性、完整性、及时性做任何保证。因使用本服务产生的任何直接或间接损失，我们不承担责任。</text>
+          
+          <text class="section-title">7. 服务变更与终止</text>
+          <text class="section-text">我们保留随时修改或终止服务的权利，无需事先通知。如果您不同意修改后的协议，可以停止使用本服务。</text>
+          
+          <text class="section-title">8. 争议解决</text>
+          <text class="section-text">本协议的解释、效力及纠纷的解决，适用中华人民共和国法律。若发生争议，双方应友好协商解决；协商不成的，任何一方可向本服务提供者所在地人民法院提起诉讼。</text>
+          
+          <text class="section-title">9. 联系我们</text>
+          <text class="section-text">如果您对本协议有任何疑问或建议，请通过小程序内的客服功能联系我们。我们会在收到您的反馈后尽快回复。</text>
+          
+          <text class="section-title">10. 其他条款</text>
+          <text class="section-text">本协议的任何条款无论因何种原因无效或不具可执行性，其余条款仍有效，对双方具有约束力。我们未行使或执行本协议任何权利或规定，不构成对该权利或规定的放弃。</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+</view>

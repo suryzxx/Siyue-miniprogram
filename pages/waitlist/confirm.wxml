@@ -1,0 +1,49 @@
+<view class="page">
+  <custom-navbar
+    center-text="候补确认"
+    show-left="{{true}}"
+    show-right="{{false}}"
+    show-back="{{true}}"
+    left-text="返回"
+  />
+
+  <view class="page-container" style="padding-top: {{navBarHeight}}px;">
+    <scroll-view class="scrollarea" scroll-y>
+      <view class="content">
+        <view class="card">
+          <view class="card-title">课程信息</view>
+          <text class="course-title">{{course.title}}</text>
+          <text class="course-sub">{{course.time}}</text>
+          <text class="course-sub">{{course.location}}</text>
+        </view>
+
+        <view class="card">
+          <view class="card-title">候补学生</view>
+          <view class="student-row">
+            <image class="avatar" src="{{student.avatar}}" mode="aspectFill" />
+            <view class="student-info">
+              <text class="student-name">{{student.name}}</text>
+              <text class="student-meta">年级：{{student.grade}} · 性别：{{student.gender}}</text>
+              <text class="student-meta">学号：{{student.id}}</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="card">
+          <view class="card-title">候补须知</view>
+          <text class="plain-text">
+            申请按提交时间排序，名额释放后按顺序通知。请在24小时内完成支付，超时将顺延下一位。
+          </text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <view class="bottom-bar">
+    <view class="total">
+      <text class="total-label">合计：</text>
+      <text class="total-price">{{course.price}}</text>
+    </view>
+    <view class="action-btn" bindtap="onConfirm">确认候补</view>
+  </view>
+</view>

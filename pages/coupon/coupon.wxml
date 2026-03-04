@@ -1,0 +1,19 @@
+<view class="page">
+  <custom-navbar
+    center-text="优惠券"
+    show-left="{{true}}"
+    show-right="{{false}}"
+    show-back="{{true}}"
+    left-text="返回"
+  />
+
+  <view class="page-container" style="padding-top: {{navBarHeight}}px;">
+    <view class="content">
+      <view class="dev-notice">
+        <image class="dev-icon" src="/images/pic/empty.png" mode="aspectFit" />
+        <text class="dev-text">开发中...</text>
+        <text class="dev-desc">该功能正在开发中，敬请期待</text>
+      </view>
+    </view>
+  </view>
+</view>

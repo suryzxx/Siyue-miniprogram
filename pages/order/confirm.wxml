@@ -1,0 +1,50 @@
+<view class="page">
+  <custom-navbar
+    center-text="确认订单"
+    show-left="{{true}}"
+    show-right="{{false}}"
+    show-back="{{true}}"
+    left-text="返回"
+  />
+
+  <view class="page-container" style="padding-top: {{navBarHeight}}px;">
+    <scroll-view class="scrollarea" scroll-y>
+      <view class="content">
+        <view class="card">
+          <view class="card-title">课程信息</view>
+          <text class="course-title">{{course.title}}</text>
+          <text class="course-sub">{{course.time}}</text>
+          <text class="course-sub">{{course.location}}</text>
+        </view>
+
+        <view class="card">
+          <view class="card-title">报名学生</view>
+          <view class="student-row">
+            <image class="avatar" src="{{student.avatar}}" mode="aspectFill" />
+            <view class="student-info">
+              <text class="student-name">{{student.name}}</text>
+              <text class="student-meta">年级：{{student.grade}} · 性别：{{student.gender}}</text>
+              <text class="student-meta">学号：{{student.id}}</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="card">
+          <view class="card-title">金额</view>
+          <view class="info-row">
+            <text class="label">课程费用</text>
+            <text class="value">{{course.price}}</text>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <view class="bottom-bar">
+    <view class="total">
+      <text class="total-label">合计：</text>
+      <text class="total-price">{{course.price}}</text>
+    </view>
+    <view class="action-btn" bindtap="onPay">微信支付</view>
+  </view>
+</view>

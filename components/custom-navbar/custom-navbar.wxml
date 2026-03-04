@@ -1,0 +1,19 @@
+<view class="custom-navbar" style="height: {{navBarHeight}}px;">
+  <view class="status-bar" style="height: {{statusBarHeight}}px;"></view>
+
+  <view class="navbar-content" style="height: 60rpx;">
+    <view class="navbar-left" wx:if="{{showLeft}}" bindtap="onLeftTap">
+      <image wx:if="{{leftIcon}}" src="{{leftIcon}}" class="left-icon"></image>
+      <text class="left-text">{{leftText}}</text>
+    </view>
+
+    <view class="navbar-center" wx:if="{{centerText}}">
+      <text class="center-text">{{centerText}}</text>
+    </view>
+
+    <view class="navbar-right" wx:if="{{showRight}}" bindtap="onRightTap">
+      <text class="right-text">{{rightText}}</text>
+      <image wx:if="{{rightIcon}}" src="{{rightIcon}}" class="right-icon"></image>
+    </view>
+  </view>
+</view>

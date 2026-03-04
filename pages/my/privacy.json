@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "隐私政策",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "custom-navbar": "/components/custom-navbar/custom-navbar"
+  }
+}

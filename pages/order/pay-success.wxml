@@ -1,0 +1,27 @@
+<view class="page">
+  <custom-navbar
+    center-text="支付完成"
+    show-left="{{false}}"
+    show-right="{{false}}"
+  />
+
+  <view class="page-container" style="padding-top: {{navBarHeight}}px;">
+    <view class="content">
+      <view class="success-card">
+        <image class="success-image" src="/images/icons/支付完成.png" mode="aspectFit" />
+        <text class="success-title">支付成功</text>
+        <text class="success-desc">恭喜您报名成功！可在"我的班级"中查看课程信息</text>
+      </view>
+
+      <view class="action-row">
+        <view class="action-btn ghost" bindtap="onGoHome">返回首页</view>
+        <view class="action-btn primary" bindtap="onViewMyClasses">查看我的班级</view>
+      </view>
+
+      <view class="link-row" bindtap="onViewOrder">
+        <text class="link-text">查看订单详情</text>
+        <text class="link-arrow">›</text>
+      </view>
+    </view>
+  </view>
+</view>

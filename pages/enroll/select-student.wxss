@@ -1,0 +1,117 @@
+page {
+  height: 100vh;
+  background: #f5f6f8;
+  color: #1f2d3d;
+}
+
+.page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-container {
+  flex: 1;
+}
+
+.content {
+  padding: 24rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  box-shadow: 0 10rpx 24rpx rgba(31, 45, 61, 0.08);
+}
+
+.card-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  margin-bottom: 16rpx;
+}
+
+.student-item {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 16rpx;
+  border-radius: 12rpx;
+  background: #f9fafb;
+  margin-bottom: 12rpx;
+}
+
+.student-item.is-active {
+  background: #e8edf8;
+  border: 1rpx solid #1a5fdb;
+}
+
+.avatar {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 36rpx;
+}
+
+.student-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+
+.student-name {
+  font-size: 26rpx;
+  font-weight: 600;
+}
+
+.student-meta {
+  font-size: 24rpx;
+  color: #6b7280;
+}
+
+.student-meta .evaluation-status {
+  color: #1a5fdb;
+  text-decoration: underline;
+}
+
+.student-meta .pending-eval {
+  color: #d97706;
+}
+
+.student-meta .has-eval {
+  color: #1a5fdb;
+}
+
+.book-test-link {
+  color: #1a5fdb;
+  text-decoration: underline;
+}
+
+.primary-btn {
+  height: 72rpx;
+  border-radius: 12rpx;
+  background: #1a5fdb;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+
+.primary-btn-hover {
+  background: #0f4bc2;
+}
+
+.primary-btn.disabled {
+  background: #d1d5db;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.primary-btn.disabled:active {
+  background: #d1d5db;
+}

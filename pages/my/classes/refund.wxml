@@ -1,0 +1,66 @@
+<view class="page">
+  <custom-navbar
+    center-text="退班"
+    show-left="{{true}}"
+    show-right="{{false}}"
+    show-back="{{true}}"
+    left-text="返回"
+  />
+
+  <view class="page-container" style="padding-top: {{navBarHeight}}px;">
+    <scroll-view class="scrollarea" scroll-y>
+      <view class="content">
+        <!-- 加载中 -->
+        <view class="loading" wx:if="{{loading}}">
+          <text>加载中...</text>
+        </view>
+
+        <block wx:else>
+          <!-- 班级信息 -->
+          <view class="section">
+            <view class="section-title">班级信息</view>
+            <view class="class-card">
+              <text class="class-name">{{classInfo.displayName}}</text>
+              <text class="class-info">{{classInfo.displayCampus}} · {{classInfo.displayTeacher}}</text>
+              <text class="class-schedule">{{classInfo.displaySchedule}}</text>
+            </view>
+          </view>
+
+          <!-- 退班信息 -->
+          <view class="section">
+            <view class="section-title">退班信息</view>
+            <view class="refund-info-card">
+              <view class="info-row">
+                <text class="info-label">总课次</text>
+                <text class="info-value">{{refundInfo.totalSessions}}讲</text>
+              </view>
+              <view class="info-row">
+                <text class="info-label">已上课次</text>
+                <text class="info-value">{{refundInfo.attendedSessions}}讲</text>
+              </view>
+              <view class="info-row">
+                <text class="info-label">剩余课次</text>
+                <text class="info-value">{{refundInfo.remainingSessions}}讲</text>
+              </view>
+              <view class="info-row highlight">
+                <text class="info-label">可退金额</text>
+                <text class="info-value price">{{refundInfo.refundableAmountText}}</text>
+              </view>
+            </view>
+          </view>
+
+          <!-- 退班原因 -->
+          <view class="section">
+            <view class="section-title">退班原因</view>
+            <textarea class="reason-input" placeholder="请输入退班原因" value="{{reason}}" bindinput="onReasonInput" maxlength="200" />
+          </view>
+
+          <!-- 提交按钮 -->
+          <view class="submit-section">
+            <button class="submit-btn" bindtap="onSubmit">确认退班</button>
+          </view>
+        </block>
+      </view>
+    </scroll-view>
+  </view>
+</view>

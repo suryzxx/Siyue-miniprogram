@@ -1,0 +1,36 @@
+Task 1: Grade Field Discrepancy Fix - Evidence
+================================================
+
+Updated File: pages/enroll/select-student.wxml
+Updated Line: 24
+Timestamp: Thu Jan 29 2026
+
+BEFORE (line 24):
+<text class="student-meta">年级：{{item.grade}} · 性别：{{item.gender}}</text>
+
+AFTER (line 24):
+<text class="student-meta">性别：{{item.gender}}</text>
+
+Verification:
+- ✅ Line 24 no longer contains "{{item.grade}}"
+- ✅ Line shows "性别：{{item.gender}}" only
+- ✅ No grade-related styles found in pages/enroll/select-student.wxss
+- ✅ Student data structure in app.js (lines 98-106) confirms no grade field exists
+- ✅ Alternative format in pages/student/manage.wxml shows "出生：{{currentStudent.birthDate}} · 性别：{{currentStudent.gender}}" (line 23)
+
+Files Checked:
+1. pages/enroll/select-student.wxml - Updated
+2. pages/enroll/select-student.wxss - No grade-related styles found
+3. app.js - Student data structure verified (no grade field)
+4. pages/student/manage.wxml - Alternative metadata format verified
+
+Changes Made:
+- Removed "年级：{{item.grade}} · " from line 24
+- Updated to show only "性别：{{item.gender}}"
+- No other files modified as per requirements
+
+Additional Findings:
+- Similar grade discrepancies found in:
+  1. pages/waitlist/confirm.wxml:26 - "年级：{{student.grade}} · 性别：{{student.gender}}"
+  2. pages/order/confirm.wxml:26 - "年级：{{student.grade}} · 性别：{{student.gender}}"
+- These were NOT modified per task requirements ("Don't modify other pages")

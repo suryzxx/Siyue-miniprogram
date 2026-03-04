@@ -1,0 +1,343 @@
+/* 个人中心页面样式 */
+page {
+  height: 100vh;
+  background: #f6f6f8;
+}
+
+.page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-container {
+  flex: 1;
+  overflow: hidden;
+}
+
+.scrollarea {
+  height: 100%;
+}
+
+.content {
+  padding: 0 0 40rpx;
+}
+
+/* 头部区域 */
+.profile-header {
+  position: relative;
+  background: linear-gradient(135deg, #b3a7f4 0%, #8a76ed 100%);
+  padding-top: calc(var(--status-bar-height, 44px) + 48rpx);
+  padding-left: 32rpx;
+  padding-right: 32rpx;
+  padding-bottom: 200rpx;
+  border-radius: 0 0 64rpx 64rpx;
+  box-shadow: 0 16rpx 48rpx rgba(138, 118, 237, 0.3);
+}
+
+/* 个人信息卡片 */
+.profile-card {
+  display: flex;
+  align-items: center;
+  gap: 32rpx;
+}
+
+.profile-avatar-wrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.profile-avatar {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 80rpx;
+  border: 8rpx solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.2);
+}
+
+.profile-badge {
+  position: absolute;
+  bottom: -4rpx;
+  right: -4rpx;
+  background: #ffd666;
+  color: #1f2937;
+  font-size: 20rpx;
+  font-weight: 700;
+  padding: 4rpx 16rpx;
+  border-radius: 9999rpx;
+  border: 4rpx solid #9e8ef1;
+}
+
+.profile-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  min-width: 0;
+}
+
+/* 未登录状态样式 */
+.profile-login-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.profile-name {
+  color: #ffffff;
+  font-size: 48rpx;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.profile-subtitle {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 26rpx;
+  margin-top: 4rpx;
+}
+
+.login-btn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8rpx;
+  background: #ffffff;
+  padding: 16rpx 32rpx;
+  border-radius: 9999rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.15);
+}
+
+.login-btn-text {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #9e8ef1;
+}
+
+.login-btn-arrow {
+  font-size: 36rpx;
+  color: #9e8ef1;
+  font-weight: 300;
+  margin-left: 4rpx;
+}
+
+/* 已登录状态样式 */
+.profile-logged {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.profile-name-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.profile-level-tag {
+  background: #ffd666;
+  color: #1f2937;
+  font-size: 20rpx;
+  font-weight: 700;
+  padding: 4rpx 16rpx;
+  border-radius: 16rpx;
+}
+
+.profile-id {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 24rpx;
+  margin-top: 4rpx;
+}
+
+/* 班级卡片 */
+.current-class-card {
+  position: absolute;
+  bottom: -100rpx;
+  left: 32rpx;
+  right: 32rpx;
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 40rpx;
+  box-shadow: 0 24rpx 64rpx rgba(0, 0, 0, 0.1);
+  border: 2rpx solid #f3f4f6;
+}
+
+.current-class-card.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32rpx;
+  bottom: -60rpx;
+}
+
+.class-card-header {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.class-status-dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  background: #9e8ef1;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.class-card-name {
+  color: #1f2937;
+  font-size: 36rpx;
+  font-weight: 700;
+}
+
+.class-card-schedule {
+  color: #6b7280;
+  font-size: 24rpx;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 24rpx;
+}
+
+.class-card-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  background: #9e8ef1;
+  padding: 16rpx 40rpx;
+  border-radius: 16rpx;
+  box-shadow: 0 8rpx 24rpx rgba(158, 142, 241, 0.3);
+}
+
+.class-card-icon {
+  width: 32rpx;
+  height: 32rpx;
+}
+
+.class-card-btn-text {
+  color: #ffffff;
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+.empty-text {
+  color: #9ca3af;
+  font-size: 28rpx;
+}
+
+/* 课程服务区域 */
+.section {
+  margin-top: 120rpx;
+  padding: 0 32rpx;
+}
+
+.service-card {
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.06);
+}
+
+.service-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.service-item {
+  width: 25%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24rpx 0;
+}
+
+.service-icon-wrapper {
+  position: relative;
+  width: 96rpx;
+  height: 96rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16rpx;
+}
+
+.service-icon-bg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #f3f0ff 0%, #e8e4ff 100%);
+  border-radius: 24rpx;
+}
+
+.service-icon {
+  position: relative;
+  width: 48rpx;
+  height: 48rpx;
+  z-index: 1;
+}
+
+.service-text {
+  font-size: 24rpx;
+  color: #374151;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* 设置入口 */
+.settings-entry {
+  margin: 32rpx 32rpx 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.06);
+}
+
+.settings-left {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+}
+
+.settings-icon-wrapper {
+  width: 72rpx;
+  height: 72rpx;
+  background: linear-gradient(135deg, #f3f0ff 0%, #e8e4ff 100%);
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.settings-icon {
+  width: 40rpx;
+  height: 40rpx;
+}
+
+.settings-text {
+  font-size: 32rpx;
+  color: #1f2937;
+  font-weight: 500;
+}
+
+.arrow {
+  font-size: 40rpx;
+  color: #9ca3af;
+  font-weight: 300;
+}
+
+/* 按压效果 */
+.is-pressed {
+  opacity: 0.7;
+}

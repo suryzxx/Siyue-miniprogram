@@ -1,0 +1,63 @@
+<view class="page">
+  <custom-navbar
+    center-text="设置"
+    show-left="{{true}}"
+    show-right="{{false}}"
+    show-back="{{true}}"
+    left-icon="/images/icons/back.svg"
+  />
+
+  <view class="page-container" style="padding-top: {{navBarHeight}}px;">
+    <scroll-view class="scrollarea" scroll-y>
+      <view class="content">
+        <!-- User Profile Preview -->
+        <view class="profile-preview">
+          <view class="profile-card">
+            <view class="profile-avatar">
+              <image class="avatar-icon" src="/images/pic/avatar.png" mode="aspectFill" />
+            </view>
+            <view class="profile-info">
+              <text class="profile-name">{{userInfo.name}}</text>
+              <text class="profile-id">ID: {{userInfo.id}}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- Account Section -->
+        <view class="section">
+          <view class="section-title">账号与安全</view>
+          <view class="menu-card">
+            <view class="menu-item" bindtap="onSwitchAccount" hover-class="menu-item-active">
+              <view class="menu-icon-wrapper">
+              <image class="menu-icon" src="/images/icons/switch.svg" mode="aspectFit" />
+              </view>
+              <text class="menu-text">切换账号</text>
+              <image class="menu-arrow" src="/images/icons/arrow-right.svg" mode="aspectFit" />
+            </view>
+          </view>
+        </view>
+
+        <!-- Privacy Section -->
+        <view class="section">
+          <view class="section-title">法律与隐私</view>
+          <view class="menu-card">
+            <view class="menu-item" bindtap="onPrivacyTap" hover-class="menu-item-active">
+              <view class="menu-icon-wrapper">
+                <image class="menu-icon" src="/images/icons/privacy-o.svg" mode="aspectFit" />
+              </view>
+              <text class="menu-text">隐私协议</text>
+              <image class="menu-arrow" src="/images/icons/arrow-right.svg" mode="aspectFit" />
+            </view>
+          </view>
+        </view>
+
+        <!-- Logout Button -->
+        <view class="logout-section">
+          <view class="logout-btn" bindtap="onLogout" hover-class="logout-btn-active">
+            <text class="logout-text">退出登录</text>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+</view>

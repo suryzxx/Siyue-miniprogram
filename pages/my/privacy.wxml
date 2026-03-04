@@ -1,0 +1,47 @@
+<view class="page">
+  <custom-navbar
+    center-text="隐私政策"
+    show-left="{{true}}"
+    show-right="{{false}}"
+    show-back="{{true}}"
+    left-icon="/images/icons/back.svg"
+  />
+
+  <view class="page-container" style="padding-top: {{navBarHeight}}px;">
+    <scroll-view class="scrollarea" scroll-y>
+      <view class="content">
+        <view class="article">
+          <text class="article-title">隐私政策</text>
+          <text class="article-meta">更新日期：2023年10月24日 | 生效日期：2023年10月24日</text>
+          
+          <text class="section-title">1. 信息收集</text>
+          <text class="section-text">为了向您提供更好的服务，我们会收集以下信息：手机号码（用于账号注册、登录验证和课程通知）、学生信息（姓名、年级、学习进度等）、学习记录（课程进度、作业成绩等）。我们承诺仅收集为提供服务所必需的信息。</text>
+          
+          <text class="section-title">2. 信息使用</text>
+          <text class="section-text">我们会使用收集的信息用于：提供课程服务和教学支持、发送课程通知和学习提醒、改进产品功能和用户体验、保障账号和信息安全。我们不会将您的个人信息用于其他未经授权的用途。</text>
+          
+          <text class="section-title">3. 数据安全保护</text>
+          <text class="section-text">我们采用业界标准的安全技术来保护您的个人信息，包括SSL加密传输、分级访问控制、数据备份机制等。我们会定期进行安全审计，确保您的数据安全。</text>
+          
+          <text class="section-title">4. 信息共享</text>
+          <text class="section-text">未经您的明确同意，我们不会与第三方共享您的个人信息。在以下情况下，我们可能需要共享信息：法律法规要求、保护用户或公众的合法权益、经您明确授权的情况。</text>
+          
+          <text class="section-title">5. 您的权利</text>
+          <text class="section-text">您有权随时查看、修改、删除个人信息。您可以通过小程序内的设置功能管理您的个人信息，也可以联系客服处理相关请求。我们会在合理期限内响应您的请求。</text>
+          
+          <text class="section-title">6. Cookie和类似技术</text>
+          <text class="section-text">我们可能使用Cookie和类似技术来改善用户体验。这些技术帮助我们记住您的偏好设置，分析服务使用情况。您可以通过设备设置管理Cookie。</text>
+          
+          <text class="section-title">7. 未成年人保护</text>
+          <text class="section-text">我们非常重视未成年人的个人信息保护。如果您是未成年人的监护人，请协助未成年人使用我们的服务。我们不会在明知的情况下收集未成年人的个人信息。</text>
+          
+          <text class="section-title">8. 政策更新</text>
+          <text class="section-text">随着法律法规的变化或产品功能的调整，我们可能会适时修订本隐私政策。任何重大修订，我们将通过站内信或弹窗通知的方式告知您。继续使用服务即表示您接受更新后的政策。</text>
+          
+          <text class="section-title">9. 联系我们</text>
+          <text class="section-text">如果您对本隐私政策有任何疑问、意见或建议，或需要行使您的权利，请通过小程序内的客服功能联系我们。我们会在收到您的反馈后尽快回复。</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+</view>
