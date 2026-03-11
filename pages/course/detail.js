@@ -1,152 +1,5 @@
 const { orderService } = require('../../services/order')
-
-// 模拟数据
-const MOCK_CLASSES = {
-  'class-001': {
-    id: 'class-001',
-    name: 'K3进阶一班',
-    productName: 'K3进阶体系课',
-    productType: 'system',
-    productTypeName: '体系课',
-    level: 'G2A',
-    campus: { id: 'campus-001', name: '同曦校区', address: '同曦万尚城二楼' },
-    mainTeacher: { id: 'teacher-001', name: 'Esther于哲敏' },
-    schedule: '2026.03.07-2026.06.20 周六12:00-14:30',
-    classroom: '201教室',
-    totalSessions: 15,
-    remaining: 2,
-    capacity: 10,
-    price: 5475,
-    materialPrice: 100,
-    teacherPoster: 'https://web-anli01.oss-cn-hangzhou.aliyuncs.com/miniprogram/images/teacherEsther.jpg',
-  },
-  'class-002': {
-    id: 'class-002',
-    name: 'K2启蒙二班',
-    productName: 'K2启蒙体系课',
-    productType: 'system',
-    productTypeName: '体系课',
-    level: 'G1B',
-    campus: { id: 'campus-002', name: '奥体网球中心校区', address: '奥体网球中心三楼' },
-    mainTeacher: { id: 'teacher-002', name: 'Shirley苡爽' },
-    schedule: '2026.03.07-2026.06.20 周二、周六 14:50-16:50',
-    classroom: '302教室',
-    totalSessions: 12,
-    remaining: 3,
-    capacity: 8,
-    price: 4380,
-    materialPrice: 80,
-    teacherPoster: 'https://web-anli01.oss-cn-hangzhou.aliyuncs.com/miniprogram/images/teacherEsther.jpg',
-  },
-  'class-003': {
-    id: 'class-003',
-    name: '剑少一级周末班',
-    productName: '剑少一级',
-    productType: 'special',
-    productTypeName: '专项课',
-    level: '剑少一级',
-    campus: { id: 'campus-001', name: '同曦校区', address: '同曦万尚城二楼' },
-    mainTeacher: { id: 'teacher-001', name: 'Esther于哲敏' },
-    schedule: '2026.03.08-2026.06.21 周三、周日 10:00-12:00',
-    classroom: '103教室',
-    totalSessions: 15,
-    remaining: 5,
-    capacity: 12,
-    price: 4950,
-    materialPrice: 150,
-    teacherPoster: 'https://web-anli01.oss-cn-hangzhou.aliyuncs.com/miniprogram/images/teacherEsther.jpg',
-  },
-  'class-004': {
-    id: 'class-004',
-    name: 'K1基础三班',
-    productName: 'K1基础体系课',
-    productType: 'system',
-    productTypeName: '体系课',
-    level: 'G0A',
-    campus: { id: 'campus-003', name: '河西万达校区', address: '河西万达广场B座三楼' },
-    mainTeacher: { id: 'teacher-003', name: 'Mia米娅' },
-    schedule: '2026.03.09-2026.05.25 周一、周五 16:00-18:00',
-    classroom: 'A101教室',
-    totalSessions: 10,
-    remaining: 4,
-    capacity: 8,
-    price: 3650,
-    materialPrice: 60,
-    teacherPoster: 'https://web-anli01.oss-cn-hangzhou.aliyuncs.com/miniprogram/images/teacherEsther.jpg',
-  },
-  'class-005': {
-    id: 'class-005',
-    name: '自然拼读强化班',
-    productName: '自然拼读',
-    productType: 'special',
-    productTypeName: '专项课',
-    level: 'Phonics',
-    campus: { id: 'campus-001', name: '同曦校区', address: '同曦万尚城二楼' },
-    mainTeacher: { id: 'teacher-004', name: 'Lily莉莉' },
-    schedule: '2026.03.10-2026.04.28 周二、周四 18:30-20:00',
-    classroom: '205教室',
-    totalSessions: 8,
-    remaining: 1,
-    capacity: 8,
-    price: 2640,
-    materialPrice: 50,
-    teacherPoster: 'https://web-anli01.oss-cn-hangzhou.aliyuncs.com/miniprogram/images/teacherEsther.jpg',
-  },
-  'class-006': {
-    id: 'class-006',
-    name: 'K4高阶一班',
-    productName: 'K4高阶体系课',
-    productType: 'system',
-    productTypeName: '体系课',
-    level: 'G3A',
-    campus: { id: 'campus-001', name: '同曦校区', address: '同曦万尚城二楼' },
-    mainTeacher: { id: 'teacher-001', name: 'Esther于哲敏' },
-    schedule: '2026.03.11-2026.06.24 周三、周六 09:00-11:30',
-    classroom: '301教室',
-    totalSessions: 15,
-    remaining: 0,
-    capacity: 10,
-    price: 5975,
-    materialPrice: 120,
-    teacherPoster: 'https://web-anli01.oss-cn-hangzhou.aliyuncs.com/miniprogram/images/teacherEsther.jpg',
-  },
-  'class-007': {
-    id: 'class-007',
-    name: '阅读写作专项班',
-    productName: '阅读写作',
-    productType: 'special',
-    productTypeName: '专项课',
-    level: '读写进阶',
-    campus: { id: 'campus-002', name: '奥体网球中心校区', address: '奥体网球中心三楼' },
-    mainTeacher: { id: 'teacher-002', name: 'Shirley苡爽' },
-    schedule: '2026.03.12-2026.05.28 周四、周日 14:00-16:00',
-    classroom: '201教室',
-    totalSessions: 10,
-    remaining: 6,
-    capacity: 10,
-    price: 3980,
-    materialPrice: 80,
-    teacherPoster: 'https://web-anli01.oss-cn-hangzhou.aliyuncs.com/miniprogram/images/teacherEsther.jpg',
-  },
-  'class-008': {
-    id: 'class-008',
-    name: '剑少二级集训班',
-    productName: '剑少二级',
-    productType: 'special',
-    productTypeName: '专项课',
-    level: '剑少二级',
-    campus: { id: 'campus-003', name: '河西万达校区', address: '河西万达广场B座三楼' },
-    mainTeacher: { id: 'teacher-003', name: 'Mia米娅' },
-    schedule: '2026.03.13-2026.06.05 周五、周六 18:00-20:00',
-    classroom: 'B202教室',
-    totalSessions: 12,
-    remaining: 8,
-    capacity: 15,
-    price: 5280,
-    materialPrice: 180,
-    teacherPoster: 'https://web-anli01.oss-cn-hangzhou.aliyuncs.com/miniprogram/images/teacherEsther.jpg',
-  },
-}
+const { classService } = require('../../services/class')
 
 Page({
   data: {
@@ -156,12 +9,7 @@ Page({
     classId: '',
     classInfo: {},
     teacher: {},
-    planItems: [
-      { time: '2026.03.07 周二 12:00-14:30', title: '课程导学与能力评估' },
-      { time: '2026.03.10 周六 12:00-14:30', title: '核心主题训练一' },
-      { time: '2026.03.14 周二 12:00-14:30', title: '核心主题训练二' },
-      { time: '2026.03.17 周六 12:00-14:30', title: '阶段复盘与反馈' },
-    ],
+    planItems: [],
   },
 
   onLoad(options) {
@@ -184,28 +32,158 @@ Page({
   },
 
   loadClassDetail(id) {
+    if (!id) {
+      wx.showToast({ title: '班级ID不存在', icon: 'none' })
+      return
+    }
+
     this.setData({ loading: true })
-    
-    setTimeout(() => {
-      const data = MOCK_CLASSES[id] || MOCK_CLASSES['class-001']
-      
-      const classInfo = {
-        ...data,
-        location: data.campus ? `${data.campus.name} ${data.classroom || ''}` : '',
-        totalPrice: data.price + data.materialPrice,
+
+    classService.getOpenDetail(id).then(res => {
+      if (res.code === 200 && res.data) {
+        const data = res.data
+        const classInfo = this.formatClassInfo(data)
+        const planItems = this.formatPlanItems(data.class_schedule)
+        const teacher = {
+          name: data.teacher_name || (data.teacher_info && data.teacher_info.name) || '',
+          poster: (data.teacher_info && data.teacher_info.poster) || '',
+        }
+
+        this.setData({
+          classInfo,
+          teacher,
+          planItems,
+          loading: false,
+        })
+      } else {
+        wx.showToast({ title: res.msg || '获取班级详情失败', icon: 'none' })
+        this.setData({ loading: false })
       }
-      
-      const teacher = {
-        name: data.mainTeacher?.name || '',
-        poster: data.teacherPoster || 'https://web-anli01.oss-cn-hangzhou.aliyuncs.com/miniprogram/images/teacherEsther.jpg',
+    }).catch(err => {
+      console.error('[detail] loadClassDetail error:', err)
+      wx.showToast({ title: err.message || '网络错误', icon: 'none' })
+      this.setData({ loading: false })
+    })
+  },
+
+  /**
+   * 格式化班级信息，将接口数据映射为前端需要的格式
+   */
+  formatClassInfo(data) {
+    // 计算剩余名额
+    const remaining = data.person_max > 0 ? data.person_max - (data.student_num || 0) : 0
+
+    // 组合时间信息
+    const timeParts = []
+    if (data.first_in_class_time && data.first_out_class_time) {
+      const dateStr = data.first_in_class_time.substring(0, 10)
+      const startTime = data.first_in_class_time.substring(11, 16)
+      const endTime = data.first_out_class_time.substring(11, 16)
+      timeParts.push(dateStr + ' ' + startTime + '-' + endTime)
+    }
+
+    // 转换星期为中文
+    if (data.class_days) {
+      const weekDayMap = {
+        'Mon': '周一', 'Tue': '周二', 'Wed': '周三',
+        'Thu': '周四', 'Fri': '周五', 'Sat': '周六', 'Sun': '周日'
       }
+      let daysArray = data.class_days
+
+      if (typeof daysArray === 'string') {
+        try {
+          const parsed = JSON.parse(daysArray)
+          if (Array.isArray(parsed)) {
+            daysArray = parsed
+          }
+        } catch (e) {
+          daysArray = daysArray.split(',')
+        }
+      }
+
+      if (Array.isArray(daysArray)) {
+        const daysStr = daysArray
+          .filter(function(d) { return d })
+          .map(function(d) { return weekDayMap[d.trim ? d.trim() : d] || d })
+          .join('、')
+        if (daysStr) timeParts.push(daysStr)
+      }
+    }
+    const schedule = timeParts.join(' ')
+
+    // 组合地点信息
+    const locationParts = []
+    if (data.campus_city_name) locationParts.push(data.campus_city_name)
+    if (data.campus_area_name) locationParts.push(data.campus_area_name)
+    if (data.campus_name) locationParts.push(data.campus_name)
+    if (data.class_room_name) locationParts.push(data.class_room_name)
+    const location = locationParts.join(' ')
+
+    // 判断产品类型
+    const isSystem = data.course_class_type === 0 || data.course_class_type_name === '体系课'
+    const productType = isSystem ? 'system' : 'special'
+    const productTypeName = data.course_class_type_name || (isSystem ? '体系课' : '专项课')
+
+    // 价格信息
+    const price = data.course_fee || 0           // 课程费用
+    const materialPrice = data.assistant_fee || 0 // 教辅费
+    const totalPrice = price + materialPrice
+
+    return {
+      id: data.id,
+      name: data.name,
+      productName: data.course_name || '',
+      productType: productType,
+      productTypeName: productTypeName,
+      level: data.course_category_name || '',
+      campus: {
+        id: data.campus_id,
+        name: data.campus_name || '',
+        address: location
+      },
+      mainTeacher: {
+        id: data.teacher_id,
+        name: data.teacher_name || ''
+      },
+      schedule: schedule,
+      classroom: data.class_room_name || '',
+      totalSessions: data.sum_lesson_num || 0,
+      remaining: remaining,
+      capacity: data.person_max || 0,
+      price: price,
+      materialPrice: materialPrice,
+      totalPrice: totalPrice,
+      location: location,
+    }
+  },
+
+  /**
+   * 格式化教学计划，将接口的 class_schedule 转换为前端需要的格式
+   */
+  formatPlanItems(classSchedule) {
+    if (!classSchedule || !Array.isArray(classSchedule)) {
+      return []
+    }
+
+    return classSchedule.map(item => {
+      let timeStr = ''
       
-      this.setData({
-        classInfo,
-        teacher,
-        loading: false,
-      })
-    }, 300)
+      if (item.in_class_time) {
+        // 提取日期部分：2026-03-07 -> 2026.03.07
+        const datePart = item.in_class_time.substring(0, 10).replace(/-/g, '.')
+        // 提取上课时间：12:00
+        const startTime = item.in_class_time.substring(11, 16)
+        // 提取下课时间：14:30
+        const endTime = item.out_class_time ? item.out_class_time.substring(11, 16) : ''
+        
+        timeStr = datePart + ' ' + startTime + (endTime ? '-' + endTime : '')
+      }
+
+      return {
+        time: timeStr,
+        title: item.lesson_name || ''
+      }
+    })
   },
 
   async onEnrollTap() {

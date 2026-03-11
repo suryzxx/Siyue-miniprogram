@@ -1,18 +1,12 @@
 const { authService } = require('../../services/auth')
+const { setToken } = require('../../utils/request')
 
 Page({
   data: {
     navBarHeight: 0,
-    phone: '',
-    code: '',
     agreed: false,
-    loading: false,
-    sendText: '获取验证码',
-    countdown: 0,
-    canSend: true,
-    timer: null
+    loading: false
   },
-
   onLoad() {
     const app = getApp()
     if (!app.globalData.navBarHeight) {
@@ -23,35 +17,11 @@ Page({
     })
   },
 
-  onShow() {
-    // 清空表单
-    this.setData({
-      phone: '',
-      code: ''
-    })
-  },
-
-  onUnload() {
-    if (this.data.timer) {
-      clearInterval(this.data.timer)
-    }
-  },
-
   // 关闭登录页 - 返回个人中心
   onCloseTap() {
     wx.switchTab({
       url: '/pages/my/my'
     })
-  },
-
-  // 手机号输入
-  onPhoneInput(e) {
-    this.setData({ phone: e.detail.value })
-  },
-
-  // 验证码输入
-  onCodeInput(e) {
-    this.setData({ code: e.detail.value })
   },
 
   // 协议勾选
@@ -68,65 +38,27 @@ Page({
   onPrivacyAgreementTap() {
     wx.navigateTo({ url: '/pages/my/privacy' })
   },
-
-  // 发送验证码
-  async onSendCode() {
-    const { phone, canSend } = this.data
-    if (!canSend) return
-
-    if (!phone || phone.length !== 11) {
-      wx.showToast({ title: '请输入正确的手机号', icon: 'none' })
-      return
-    }
-
-    try {
-      const res = await authService.sendCode(phone)
-      if (res.code === 200) {
-        wx.showToast({ title: '验证码已发送', icon: 'success' })
-        this.startCountdown()
-      } else {
-        wx.showToast({ title: res.message || '发送失败', icon: 'none' })
-      }
-    } catch (err) {
-      wx.showToast({ title: '发送失败', icon: 'none' })
-    }
-  },
-
-  // 倒计时
-  startCountdown() {
-    this.setData({ canSend: false, countdown: 60, sendText: '60s后重发' })
+  // 微信手机号授权回调
+  async onGetPhoneNumber(e) {
+    console.log('[Login] getPhoneNumber callback:', e)
     
-    const timer = setInterval(() => {
-      const { countdown } = this.data
-      if (countdown <= 1) {
-        clearInterval(timer)
-        this.setData({ canSend: true, countdown: 0, sendText: '获取验证码' })
-      } else {
-        this.setData({ countdown: countdown - 1, sendText: `${countdown - 1}s后重发` })
-      }
-    }, 1000)
-    
-    this.setData({ timer })
-  },
-
-  // 登录
-  async onLogin() {
-    const { phone, code, agreed, loading } = this.data
-
-    if (!agreed) {
+    if (!this.data.agreed) {
       wx.showToast({ title: '请先同意用户协议和隐私协议', icon: 'none' })
       return
     }
 
-    if (loading) return
+    if (this.data.loading) return
 
-    if (!phone || phone.length !== 11) {
-      wx.showToast({ title: '请输入正确的手机号', icon: 'none' })
+    // 用户拒绝授权
+    if (e.detail.errMsg !== 'getPhoneNumber:ok') {
+      wx.showToast({ title: '需要授权手机号才能登录', icon: 'none' })
       return
     }
 
-    if (!code || code.length !== 6) {
-      wx.showToast({ title: '请输入6位验证码', icon: 'none' })
+    // 获取微信登录 code
+    const code = e.detail.code
+    if (!code) {
+      wx.showToast({ title: '获取授权失败，请重试', icon: 'none' })
       return
     }
 
@@ -134,54 +66,96 @@ Page({
     wx.showLoading({ title: '登录中...' })
 
     try {
-      // 先验证验证码
-      const verifyRes = await authService.verifyCode(phone, code)
-      if (verifyRes.code !== 200) {
-        wx.hideLoading()
-        this.setData({ loading: false })
-        wx.showToast({ title: verifyRes.message || '验证码错误', icon: 'none' })
-        return
-      }
-
-      // 登录
-      const loginRes = await authService.login(phone)
+      const res = await authService.wxPhoneLogin(code)
+      console.log('[Login] wxPhoneLogin response:', res)
+      
       wx.hideLoading()
 
-      if (loginRes.code === 200 && loginRes.data) {
+      if (res.code === 200 && res.data) {
+        // 保存 token
+        if (res.data.token) {
+          setToken(res.data.token)
+        }
+
         const app = getApp()
         
-        // 保存登录状态
-        app.globalData.isLoggedIn = true
-        app.globalData.parent = loginRes.data.user
-        app.globalData.students = loginRes.data.students || []
-        
-        // 如果有学生，设置当前学生
-        if (loginRes.data.students && loginRes.data.students.length > 0) {
-          app.globalData.currentStudentId = loginRes.data.students[0].id
-        }
-        
-        app.saveLoginState()
+        // 判断是否为临时 token（新用户）
+        const isTempToken = res.data.is_temp_token
 
-        wx.showToast({ title: '登录成功', icon: 'success' })
-
-        // 延迟跳转
-        setTimeout(() => {
-          if (loginRes.data.hasStudents) {
-            // 有学生 -> 个人中心
-            wx.switchTab({ url: '/pages/my/my' })
-          } else {
-            // 无学生 -> 添加学生页
+        if (isTempToken) {
+          // 新用户，跳转到添加学生页面
+          wx.showToast({ title: '请创建学生档案', icon: 'success' })
+          setTimeout(() => {
             wx.redirectTo({ url: '/pages/student/add?from=login' })
-          }
-        }, 1000)
+          }, 1000)
+        } else {
+          // 老用户，获取用户信息后跳转
+          await this.fetchUserInfo()
+          wx.showToast({ title: '登录成功', icon: 'success' })
+          setTimeout(() => {
+            wx.switchTab({ url: '/pages/my/my' })
+          }, 1000)
+        }
       } else {
         this.setData({ loading: false })
-        wx.showToast({ title: loginRes.message || '登录失败', icon: 'none' })
+        wx.showToast({ title: res.message || '登录失败', icon: 'none' })
       }
     } catch (err) {
       wx.hideLoading()
       this.setData({ loading: false })
+      console.error('[Login] Error:', err)
       wx.showToast({ title: err.message || '网络错误', icon: 'none' })
+    }
+  },
+
+  // 获取用户信息（包含学生列表）
+  async fetchUserInfo() {
+    try {
+      const res = await authService.getUserInfoWithToken()
+      console.log('[Login] getUserInfo response:', res)
+      
+      if (res.code === 200 && res.data) {
+        const app = getApp()
+        const data = res.data
+        
+        // 当前学生（主学生）
+        const currentStudent = {
+          id: data.id,
+          code: data.code,
+          name: data.name,
+          sex: data.sex,
+          sex_name: data.sex_name,
+          en_name: data.en_name,
+          birthday: data.birthday,
+          school: data.school,
+          city: data.city
+        }
+        
+        // 其他学生
+        const otherStudents = (data.others || []).map(s => ({
+          id: s.id,
+          code: s.code,
+          name: s.name,
+          sex: s.sex,
+          sex_name: s.sex_name,
+          en_name: s.en_name,
+          birthday: s.birthday,
+          school: s.school,
+          city: s.city
+        }))
+        
+        // 所有学生
+        const allStudents = [currentStudent, ...otherStudents]
+        
+        app.globalData.isLoggedIn = true
+        app.globalData.students = allStudents
+        app.globalData.currentStudentId = currentStudent.id
+        app.globalData.parent = { phone: '' }
+        
+        app.saveLoginState()
+      }
+    } catch (err) {
+      console.error('[Login] fetchUserInfo error:', err)
     }
   }
 })

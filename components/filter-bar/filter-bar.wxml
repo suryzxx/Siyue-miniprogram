@@ -1,6 +1,6 @@
 <view class="filter-bar">
   <view class="filter-item" bindtap="onSemesterTap">
-    <text class="filter-label {{currentFilters.semester ? 'is-active' : ''}}">{{currentFilters.semester || '学期'}}</text>
+    <text class="filter-label {{currentFilters.semester ? 'is-active' : ''}}">{{currentFilters.semesterName || '学期'}}</text>
     <image class="filter-arrow" src="/images/icons/arrow-down.svg" mode="aspectFit" />
   </view>
   <view class="filter-item" bindtap="onCampusTap">
@@ -33,7 +33,7 @@
         bindtap="onSelectOption"
       >
         <text>{{item.name}}</text>
-        <image wx:if="{{item.selected}}" class="check-icon" src="/images/pic/check.png" mode="aspectFit" />
+        <text wx:if="{{item.selected}}" class="check-icon">✓</text>
       </view>
     </scroll-view>
   </view>

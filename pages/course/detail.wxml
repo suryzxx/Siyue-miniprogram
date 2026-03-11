@@ -96,7 +96,7 @@
         <text class="total-sessions">/{{classInfo.totalSessions}}课次</text>
       </view>
       <view class="action-btn gradient" bindtap="onEnrollTap">
-        {{classInfo.remaining > 0 ? '立即报名' : '排队候补'}}
+        {{classInfo.remaining > 0 ? '立即报名' : '候补报名'}}
       </view>
     </view>
   </view>

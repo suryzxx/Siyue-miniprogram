@@ -13,6 +13,14 @@ const envConfig = {
     useMock: true,
     debug: true
   },
+  // 测试环境：使用测试后端
+  test: {
+    name: '测试环境',
+    baseURL: 'https://api.test.siyueyun.com',
+    useLocalMock: false,
+    useMock: false,
+    debug: true
+  },
   // 生产环境：使用真实后端数据
   production: {
     name: '生产环境',
@@ -26,20 +34,17 @@ const envConfig = {
 // ============================================
 // 【开关控制】修改这里切换环境
 // ============================================
-const CURRENT_ENV = 'development' // 'development' 或 'production'
+const CURRENT_ENV = 'test' // 'development' / 'test' / 'production'
 // ============================================
 
 // 获取当前环境配置
 const config = envConfig[CURRENT_ENV]
 
-// API 版本
-config.apiVersion = 'v1'
-
 // 请求超时时间（毫秒）
 config.timeout = 10000
 
-// 构建完整的 API 基础路径
-config.apiBaseURL = `${config.baseURL}/api/${config.apiVersion}`
+// 构建完整的 API 基础路径（测试环境直接使用 baseURL，接口路径是 /client/...）
+config.apiBaseURL = config.baseURL
 
 // 调试日志
 if (config.debug) {

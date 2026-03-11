@@ -151,6 +151,7 @@
 }
 
 .check-icon {
-  width: 40rpx;
-  height: 40rpx;
+  color: #1989fa;
+  font-size: 32rpx;
+  font-weight: bold;
 }

@@ -47,22 +47,28 @@
             </view>
           </view>
 
-          <!-- 当前班级卡片 - 仅已登录时显示 -->
-          <view wx:if="{{isLoggedIn && currentClasses.length > 0}}" class="current-class-card">
-            <view class="class-card-header">
-              <view class="class-status-dot"></view>
-              <text class="class-card-name">{{currentClasses[0].displayName}}</text>
+          <!-- 当前班级卡片区域 - 始终显示 -->
+          <view class="current-class-card{{isLoggedIn && currentClasses.length > 0 ? '' : ' empty'}}">
+            <!-- 未登录状态 -->
+            <view wx:if="{{!isLoggedIn}}" class="class-card-empty-content" bindtap="onLoginTap" hover-class="is-pressed" hover-stay-time="120">
+              <text class="empty-text">登录后查看班级信息</text>
             </view>
-            <text class="class-card-schedule">{{currentClasses[0].progressText}} {{currentClasses[0].displaySchedule}}</text>
-            <view class="class-card-action" bindtap="onClassScheduleTap" hover-class="is-pressed" hover-stay-time="120">
-              <image class="class-card-icon" src="/images/icons/calendar-white.svg" mode="aspectFit" />
-              <text class="class-card-btn-text">课表</text>
+            <!-- 已登录但未加入班级 -->
+            <view wx:elif="{{currentClasses.length === 0}}" class="class-card-empty-content">
+              <text class="empty-text">暂未加入班级</text>
             </view>
-          </view>
-
-          <!-- 未加入班级提示 - 仅已登录时显示 -->
-          <view wx:elif="{{isLoggedIn && currentClasses.length === 0}}" class="current-class-card empty">
-            <text class="empty-text">暂未加入班级</text>
+            <!-- 已登录且有班级 -->
+            <block wx:else>
+              <view class="class-card-header">
+                <view class="class-status-dot"></view>
+                <text class="class-card-name">{{currentClasses[0].displayName}}</text>
+              </view>
+              <text class="class-card-schedule">{{currentClasses[0].progressText}} {{currentClasses[0].displaySchedule}}</text>
+              <view class="class-card-action" bindtap="onClassScheduleTap" hover-class="is-pressed" hover-stay-time="120">
+                <image class="class-card-icon" src="/images/icons/calendar-white.svg" mode="aspectFit" />
+                <text class="class-card-btn-text">课表</text>
+              </view>
+            </block>
           </view>
         </view>
 

@@ -33,10 +33,20 @@ const request = (options) => {
       ...options.header
     }
     
-    if (token) {
-      header['Authorization'] = `Bearer ${token}`
+// 如果没有传入 Authorization 且有 token，则添加 token
+if (!header['Authorization'] && token) {
+header['Authorization'] = token
     }
-
+    
+    // 调试日志：打印请求头中的 Authorization
+    console.log('[Request] Storage Token:', token ? (token.substring(0, 50) + '...') : 'EMPTY')
+    console.log('[Request] Final Auth Header:', header['Authorization'] ? (header['Authorization'].substring(0, 50) + '...') : 'NOT SET')
+    
+    // 调试日志：打印请求头中的 Authorization
+    if (config.debug) {
+      console.log('[Request] Token:', token ? token.substring(0, 20) + '...' : 'empty')
+      console.log('[Request] Authorization header:', header['Authorization'] || 'not set')
+    }
     const url = options.url.startsWith('http') 
       ? options.url 
       : `${config.apiBaseURL}${options.url}`

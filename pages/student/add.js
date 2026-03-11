@@ -1,5 +1,6 @@
-const { studentService } = require('../../services/student')
+const { authService } = require('../../services/auth')
 const { commonService } = require('../../services/common')
+const { setToken } = require('../../utils/request')
 
 Page({
   data: {
@@ -9,19 +10,20 @@ Page({
     student: {
       name: '',
       grade: '',
-      gender: '',
-      englishName: '',
+      sex: 0,  // 0=未知, 1=男, 2=女
+      en_name: '',
+      birthday: '',
       school: '',
-      cityCode: '',
-      customerSource: ''
+      city: '',
+      discover_channel: 0
     },
     grades: [],
     gradeIndex: -1,
     cities: [],
     cityIndex: -1,
     genderOptions: [
-      { label: '男', value: 'male' },
-      { label: '女', value: 'female' }
+      { label: '男', value: 1 },
+      { label: '女', value: 2 }
     ],
     sourceOptions: [
       { label: '朋友/熟人推荐', value: 1 },
@@ -82,11 +84,15 @@ Page({
 
   onGenderSelect(e) {
     const { value } = e.currentTarget.dataset
-    this.setData({ 'student.gender': value })
+    this.setData({ 'student.sex': value })
   },
 
   onEnglishNameInput(e) {
-    this.setData({ 'student.englishName': e.detail.value })
+    this.setData({ 'student.en_name': e.detail.value })
+  },
+
+  onBirthdayChange(e) {
+    this.setData({ 'student.birthday': e.detail.value })
   },
 
   onSchoolInput(e) {
@@ -98,7 +104,7 @@ Page({
     const city = this.data.cities[index]
     this.setData({
       cityIndex: index,
-      'student.cityCode': city?.code || ''
+      'student.city': city?.code || city?.name || ''
     })
   },
 
@@ -107,7 +113,7 @@ Page({
     const source = this.data.sourceOptions[index]
     this.setData({
       sourceIndex: index,
-      'student.customerSource': source?.value || ''
+      'student.discover_channel': source?.value || 0
     })
   },
 
@@ -116,6 +122,7 @@ Page({
 
     if (loading) return
 
+    // 必填验证
     if (!student.name || !student.name.trim()) {
       wx.showToast({ title: '请输入学生姓名', icon: 'none' })
       return
@@ -126,32 +133,75 @@ Page({
       return
     }
 
+    if (!student.birthday) {
+      wx.showToast({ title: '请选择出生日期', icon: 'none' })
+      return
+    }
+
+    if (!student.school || !student.school.trim()) {
+      wx.showToast({ title: '请输入在读学校', icon: 'none' })
+      return
+    }
+
+    if (!student.discover_channel) {
+      wx.showToast({ title: '请选择了解渠道', icon: 'none' })
+      return
+    }
+
     this.setData({ loading: true })
     wx.showLoading({ title: '提交中...' })
 
     try {
-      const res = await studentService.create({
+      const { fromLogin } = this.data
+      let res
+      
+      // 构建学生信息参数
+      const studentInfo = {
         name: student.name.trim(),
+        en_name: student.en_name || '',
+        sex: student.sex || 0,
+        birthday: student.birthday,
         grade: student.grade,
-        gender: student.gender || undefined,
-        englishName: student.englishName || undefined,
-        school: student.school || undefined,
-        cityCode: student.cityCode || undefined,
-        customerSource: student.customerSource || undefined
-      })
+        school: student.school.trim(),
+        city: student.city || '',
+        discover_channel: student.discover_channel,
+        regist_channel: 2
+      }
+
+      if (fromLogin) {
+        // 新用户首次注册：使用 temp_token
+        const tempToken = wx.getStorageSync('token') || ''
+        const requestData = {
+          ...studentInfo,
+          temp_token: tempToken
+        }
+        console.log('[Student Add] New user registration, Request data:', requestData)
+        res = await authService.createStudentWithTempToken(requestData)
+      } else {
+        // 老用户新增学生：使用正式 token
+        console.log('[Student Add] Existing user adding student, Request data:', studentInfo)
+        res = await authService.addStudent(studentInfo)
+      }
+      
+      console.log('[Student Add] Response:', res)
 
       wx.hideLoading()
       this.setData({ loading: false })
 
-      if (res.code === 200 && res.data) {
-        const app = getApp()
-        app.globalData.students.push(res.data)
-        if (!app.globalData.currentStudentId) {
-          app.globalData.currentStudentId = res.data.id
+      if (res.code === 200) {
+        // 保存新 token（仅新用户注册时返回）
+        if (res.data && res.data.token) {
+          setToken(res.data.token)
         }
-        app.saveLoginState()
 
-        wx.showToast({ title: '添加成功', icon: 'success' })
+        // 更新全局状态
+        const app = getApp()
+        app.globalData.isLoggedIn = true
+        
+        // 获取用户信息更新学生列表
+        await this.fetchAndUpdateStudents()
+
+        wx.showToast({ title: '创建成功', icon: 'success' })
         setTimeout(() => {
           if (fromLogin) {
             wx.switchTab({ url: '/pages/my/my' })
@@ -160,12 +210,62 @@ Page({
           }
         }, 1000)
       } else {
-        wx.showToast({ title: res.message || '添加失败', icon: 'none' })
+        wx.showToast({ title: res.msg || res.message || '创建失败', icon: 'none' })
       }
     } catch (err) {
       wx.hideLoading()
       this.setData({ loading: false })
-      wx.showToast({ title: err.message || '网络错误', icon: 'none' })
+      console.error('[Student Add] Error:', err)
+      wx.showToast({ title: err.message || err.msg || '网络错误', icon: 'none' })
+    }
+  },
+
+  // 获取并更新学生列表
+  async fetchAndUpdateStudents() {
+    try {
+      const res = await authService.getUserInfoWithToken()
+      console.log('[Student Add] getUserInfo response:', res)
+      
+      if (res.code === 200 && res.data) {
+        const app = getApp()
+        const data = res.data
+        
+        // 当前学生（主学生）
+        const currentStudent = {
+          id: data.id,
+          code: data.code,
+          name: data.name,
+          sex: data.sex,
+          sex_name: data.sex_name,
+          en_name: data.en_name,
+          birthday: data.birthday,
+          school: data.school,
+          city: data.city
+        }
+        
+        // 其他学生
+        const otherStudents = (data.others || []).map(s => ({
+          id: s.id,
+          code: s.code,
+          name: s.name,
+          sex: s.sex,
+          sex_name: s.sex_name,
+          en_name: s.en_name,
+          birthday: s.birthday,
+          school: s.school,
+          city: s.city
+        }))
+        
+        // 所有学生
+        const allStudents = [currentStudent, ...otherStudents]
+        
+        app.globalData.students = allStudents
+        app.globalData.currentStudentId = currentStudent.id
+        
+        app.saveLoginState()
+      }
+    } catch (err) {
+      console.error('[Student Add] fetchAndUpdateStudents error:', err)
     }
   }
 })

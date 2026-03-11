@@ -12,6 +12,7 @@ Component({
       type: Object,
       value: {
         semester: '',
+        semesterName: '',
         campusId: '',
         campusName: '',
         teacherId: '',
@@ -25,22 +26,24 @@ Component({
     popupType: '',
     popupTitle: '',
     popupOptions: [],
+    hasFilters: false,
   },
 
-  computed: {
-    hasFilters() {
-      const { currentFilters } = this.data
-      return currentFilters.semester || currentFilters.campusId || currentFilters.teacherId
-    },
+  observers: {
+    'currentFilters': function(currentFilters) {
+      // 监听 currentFilters 变化，计算是否有筛选条件
+      const hasFilters = !!(currentFilters.semester || currentFilters.campusId || currentFilters.teacherId)
+      this.setData({ hasFilters })
+    }
   },
 
   methods: {
     onSemesterTap() {
       const { filters, currentFilters } = this.data
       const options = filters.semesters.map((item) => ({
-        id: item,
-        name: item,
-        selected: item === currentFilters.semester,
+        id: item.id,
+        name: item.name,
+        selected: item.id === currentFilters.semester,
       }))
       this.setData({
         showPopup: true,
@@ -87,6 +90,7 @@ Component({
 
       if (popupType === 'semester') {
         newFilters.semester = item.selected ? '' : item.id
+        newFilters.semesterName = item.selected ? '' : item.name
       } else if (popupType === 'campus') {
         newFilters.campusId = item.selected ? '' : item.id
         newFilters.campusName = item.selected ? '' : item.name
@@ -102,6 +106,7 @@ Component({
     onReset() {
       this.triggerEvent('change', {
         semester: '',
+        semesterName: '',
         campusId: '',
         campusName: '',
         teacherId: '',

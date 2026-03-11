@@ -45,7 +45,7 @@
                 <view
                   wx:for="{{genderOptions}}"
                   wx:key="value"
-                  class="gender-btn {{student.gender === item.value ? 'is-active' : ''}}"
+                  class="gender-btn {{student.sex === item.value ? 'is-active' : ''}}"
                   data-value="{{item.value}}"
                   bindtap="onGenderSelect"
                 >
@@ -53,9 +53,21 @@
                 </view>
               </view>
             </view>
+
+            <!-- 生日 -->
+            <view class="form-field">
+              <text class="field-label">出生日期</text>
+              <picker mode="date" value="{{student.birthday}}" start="2010-01-01" end="2026-12-31" bindchange="onBirthdayChange">
+                <view class="field-picker">
+                  <text class="{{student.birthday ? 'picker-value' : 'picker-placeholder'}}">
+                    {{student.birthday || '请选择出生日期'}}
+                  </text>
+                  <image class="picker-arrow" src="/images/icons/arrow-down.svg" mode="aspectFit" />
+                </view>
+              </picker>
+            </view>
           </view>
         </view>
-
         <!-- 其他信息 -->
         <view class="form-section">
           <view class="section-label">其他信息</view>

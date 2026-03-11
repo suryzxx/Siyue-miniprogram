@@ -10,19 +10,6 @@
   <view class="page-container" style="padding-top: {{navBarHeight}}px;">
     <scroll-view class="scrollarea" scroll-y>
       <view class="content">
-        <!-- User Profile Preview -->
-        <view class="profile-preview">
-          <view class="profile-card">
-            <view class="profile-avatar">
-              <image class="avatar-icon" src="/images/pic/avatar.png" mode="aspectFill" />
-            </view>
-            <view class="profile-info">
-              <text class="profile-name">{{userInfo.name}}</text>
-              <text class="profile-id">ID: {{userInfo.id}}</text>
-            </view>
-          </view>
-        </view>
-
         <!-- Account Section -->
         <view class="section">
           <view class="section-title">账号与安全</view>

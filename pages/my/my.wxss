@@ -228,6 +228,14 @@ page {
   font-weight: 600;
 }
 
+.class-card-empty-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 32rpx 0;
+}
+
 .empty-text {
   color: #9ca3af;
   font-size: 28rpx;
