@@ -3,63 +3,6 @@ const { config } = require('../utils/config')
 const { getUserByPhone, hasStudents } = require('../utils/mock-data')
 
 const authService = {
-  // 性别常量
-  SEX_UNKNOWN: 0,
-  SEX_MALE: 1,
-  SEX_FEMALE: 2,
-  
-  SexMap: {
-    0: '未知',
-    1: '男',
-    2: '女'
-  },
-  
-  // 学生状态常量
-  STATUS_UNKNOWN: 0,
-  STATUS_STUDYING: 1,
-  STATUS_POTENTIAL: 2,
-  STATUS_SLEEPING: 3,
-  STATUS_HISTORICAL: 4,
-  STATUS_WAITING_LIST: 5,
-  STATUS_PRESALE: 6,
-  
-  StatusMap: {
-    0: '未知/未分类',
-    1: '在读学生',
-    2: '潜在学生',
-    3: '沉睡学生',
-    4: '历史学生',
-    5: '候补学生',
-    6: '预售学生'
-  },
-  
-  // 注册渠道常量
-  REGIST_CHANNEL_BACKEND: 1,
-  REGIST_CHANNEL_MINIPROGRAM: 2,
-  
-  RegistChannelMap: {
-    1: '后台注册',
-    2: '小程序注册'
-  },
-  
-  // 发现渠道常量
-  DISCOVER_CHANNEL_FRIEND: 1,
-  DISCOVER_CHANNEL_XIAOHONGSHU: 2,
-  DISCOVER_CHANNEL_SIYUE_COMMUNITY: 3,
-  DISCOVER_CHANNEL_SIYUE_OFFICIAL: 4,
-  
-  DiscoverChannelMap: {
-    1: '朋友/熟人推荐',
-    2: '小红书',
-    3: '思悦社群',
-    4: '思悦公众号/视频号'
-  },
-
-const { post, get, setToken, removeToken } = require('../utils/request')
-const { config } = require('../utils/config')
-const { getUserByPhone, hasStudents } = require('../utils/mock-data')
-
-const authService = {
   /**
    * 微信手机号登录
    */

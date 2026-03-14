@@ -24,7 +24,45 @@ const myClassService = {
       })
     }
     // 使用后端真实接口
-    return get('/client/api/class/my/list', params)
+    return get('/client/api/class/my/list', params).then(res => {
+      if (res.code === 200 && res.data) {
+        const list = (res.data.list || res.data || []).map(item => {
+          // 处理日期：只取日期部分 (YYYY-MM-DD HH:mm:ss -> YYYY-MM-DD)
+          const formatDate = (dateStr) => {
+            if (!dateStr) return ''
+            return dateStr.split(' ')[0]
+          }
+          
+          const firstInDate = formatDate(item.first_in_class_time)
+          const lastOutDate = formatDate(item.last_out_class_time)
+          const lessonTime = item.lesson_time || ''
+          const classDays = item.class_days_cn || item.classDaysCn || ''
+          
+          // 拼接时间字符串：2026-03-14 ~ 2026-06-20 11:38 - 13:38 周六
+          let formattedSchedule = ''
+          if (firstInDate && lastOutDate) {
+            formattedSchedule = `${firstInDate} ~ ${lastOutDate}`
+          }
+          if (lessonTime) {
+            formattedSchedule += (formattedSchedule ? ' ' : '') + lessonTime
+          }
+          if (classDays) {
+            formattedSchedule += (formattedSchedule ? ' ' : '') + classDays
+          }
+          
+          return {
+            ...item,
+            formattedSchedule
+          }
+        })
+        return {
+          code: 200,
+          message: '获取成功',
+          data: { list }
+        }
+      }
+      return res
+    })
   },
 
   /**

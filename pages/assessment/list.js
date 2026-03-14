@@ -1,16 +1,12 @@
 const { assessmentService } = require('../../services/assessment')
+const { subscribeService } = require('../../services/subscribe')
 
 Page({
   data: {
     navBarHeight: 0,
     loading: false,
     list: [],
-    tabs: [
-      { label: '全部', value: 'all' },
-      { label: '待评测', value: 'pending' },
-      { label: '已完成', value: 'completed' }
-    ],
-    currentTab: 'all'
+    currentStudentName: ''
   },
 
   onLoad() {
@@ -24,19 +20,20 @@ Page({
   },
 
   onShow() {
+    const app = getApp()
+    const currentStudent = app.globalData.currentStudent
+    this.setData({
+      currentStudentName: currentStudent ? currentStudent.name : ''
+    })
     this.loadList()
   },
 
   async loadList() {
     this.setData({ loading: true })
     try {
-      const params = {}
-      if (this.data.currentTab !== 'all') {
-        params.status = this.data.currentTab
-      }
-      const res = await assessmentService.getList(params)
+      const res = await assessmentService.getList()
       if (res.code === 200 && res.data) {
-        this.setData({ list: res.data.list || res.data || [] })
+        this.setData({ list: res.data.list || [] })
       }
     } catch (e) {
       console.error('加载预约列表失败', e)
@@ -46,28 +43,36 @@ Page({
     }
   },
 
-  onTabChange(e) {
-    const { value } = e.currentTarget.dataset
-    this.setData({ currentTab: value })
-    this.loadList()
+  onGoCalendar() {
+    wx.navigateTo({ url: '/pages/assessment/calendar' })
   },
 
-  onItemTap(e) {
-    const { id } = e.currentTarget.dataset
-    wx.navigateTo({ url: `/pages/assessment/detail?id=${id}` })
-  },
-
-  onBookNew() {
-    wx.navigateTo({ url: '/pages/student/book-test' })
-  },
-
-  getStatusText(status) {
-    const map = {
-      pending: '待评测',
-      completed: '已完成',
-      cancelled: '已取消'
-    }
-    return map[status] || status
+  onCancelTap(e) {
+    const { id, index } = e.currentTarget.dataset
+    wx.showModal({
+      title: '确认取消',
+      content: '确定要取消此次评测预约吗？',
+      success: async (res) => {
+        if (res.confirm) {
+          try {
+            wx.showLoading({ title: '取消中...', mask: true })
+            const result = await subscribeService.cancelReview(id)
+            wx.hideLoading()
+            
+            const isSuccess = result.code === 200 || result.msg === 'ok'
+            if (isSuccess) {
+              wx.showToast({ title: '已取消', icon: 'success' })
+              this.loadList()
+            } else {
+              wx.showToast({ title: result.message || result.msg || '取消失败', icon: 'none' })
+            }
+          } catch (e) {
+            wx.hideLoading()
+            wx.showToast({ title: '操作失败', icon: 'none' })
+          }
+        }
+      }
+    })
   },
 
   onPullDownRefresh() {

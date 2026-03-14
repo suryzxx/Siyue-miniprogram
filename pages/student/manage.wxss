@@ -74,9 +74,7 @@ page {
 .student-avatar {
   width: 192rpx;
   height: 192rpx;
-  border-radius: 16rpx;
-  background: rgba(158, 142, 241, 0.1);
-  border: 4rpx solid rgba(158, 142, 241, 0.2);
+  border-radius: 96rpx;
   background-size: cover;
   background-position: center;
 }

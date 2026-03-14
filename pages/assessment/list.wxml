@@ -8,26 +8,11 @@
   />
 
   <view class="page-container" style="padding-top: {{navBarHeight}}px;">
-    <view class="tabs">
-      <view
-        wx:for="{{tabs}}"
-        wx:key="value"
-        class="tab-item {{currentTab === item.value ? 'is-active' : ''}}"
-        data-value="{{item.value}}"
-        bindtap="onTabChange"
-      >
-        <text>{{item.label}}</text>
-      </view>
-    </view>
-
     <scroll-view class="scrollarea" scroll-y enable-pull-down-refresh bindrefresherrefresh="onPullDownRefresh">
       <view class="content">
         <view class="empty" wx:if="{{!loading && list.length === 0}}">
           <image class="empty-icon" src="/images/pic/empty.png" mode="aspectFit" />
           <text class="empty-text">暂无评测记录</text>
-          <view class="empty-btn" bindtap="onBookNew">
-            <text>预约评测</text>
-          </view>
         </view>
 
         <view class="list" wx:else>
@@ -35,32 +20,27 @@
             class="card"
             wx:for="{{list}}"
             wx:key="id"
-            data-id="{{item.id}}"
-            bindtap="onItemTap"
           >
             <view class="card-header">
-              <text class="student-name">{{item.studentName}}</text>
-              <view class="status status-{{item.status}}">
-                <text>{{item.status === 'pending' ? '待评测' : item.status === 'completed' ? '已完成' : '已取消'}}</text>
+              <view class="card-title-row">
+                <text class="card-title">评测状态：</text>
+                <view class="status-tag status-{{item.statusName === '待到访' ? 'pending' : (item.statusName === '已完成' || item.statusName === '已评测') ? 'completed' : 'cancelled'}}">
+                  <text>{{(item.statusName === '已完成' || item.statusName === '已评测') && item.resultLevel ? '已评测：' + item.resultLevel : item.statusName}}</text>
+                </view>
+              </view>
+              <view class="cancel-btn" wx:if="{{item.statusName === '待到访'}}" catchtap="onCancelTap" data-id="{{item.id}}" data-index="{{index}}">
+                <text>取消预约</text>
               </view>
             </view>
             <view class="card-body">
               <view class="info-item">
                 <image class="info-icon" src="/images/icons/location.svg" mode="aspectFit" />
-                <text class="info-text">{{item.campusName}}</text>
+                <text class="info-text">{{item.campusName}} {{item.addressDetail}}</text>
               </view>
               <view class="info-item">
-                <image class="info-icon" src="/images/icons/calendar.svg" mode="aspectFit" />
-                <text class="info-text">{{item.bookDate}} {{item.bookTime}}</text>
+                <image class="info-icon" src="/images/icons/time.svg" mode="aspectFit" />
+                <text class="info-text">{{item.formattedTime}}</text>
               </view>
-              <view class="info-item" wx:if="{{item.resultLevel}}">
-                <image class="info-icon" src="/images/icons/trophy.svg" mode="aspectFit" />
-                <text class="info-text level-text">评测等级：{{item.resultLevel}}</text>
-              </view>
-            </view>
-            <view class="card-footer">
-              <text class="create-time">预约时间：{{item.createdAt}}</text>
-              <image class="arrow-icon" src="/images/icons/arrow-right.svg" mode="aspectFit" />
             </view>
           </view>
         </view>
@@ -71,8 +51,10 @@
       </view>
     </scroll-view>
 
-    <view class="fab" bindtap="onBookNew">
-      <text class="fab-icon">+</text>
+    <view class="fab-container">
+      <view class="fab-calendar" bindtap="onGoCalendar">
+        <text class="fab-calendar-text">+预约评测</text>
+      </view>
     </view>
   </view>
 </view>

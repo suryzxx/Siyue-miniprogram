@@ -9,10 +9,9 @@ App({
     parent: null,
     students: [],
     currentStudentId: '',
-    currentClassId: '', // 新增：当前班级ID
+    currentClassId: '',
     courses: [],
     userInfo: null,
-    // 新增：我的班级、候补、筛选条件
     myClasses: [],
     myWaitlists: [],
     filters: {
@@ -25,6 +24,7 @@ App({
       campusId: '',
       teacherId: '',
     },
+    pendingPayment: null,
   },
 
   onLaunch() {

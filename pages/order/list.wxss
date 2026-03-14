@@ -230,9 +230,6 @@ page {
   background: linear-gradient(135deg, #9e8ef1 0%, #7e6ef1 100%);
   border-radius: 48rpx;
   box-shadow: 0 4rpx 16rpx rgba(158, 142, 241, 0.3);
-}
-
-.pay-btn text {
   color: #ffffff;
   font-size: 26rpx;
   font-weight: 500;

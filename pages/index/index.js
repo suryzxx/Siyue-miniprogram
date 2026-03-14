@@ -1,3 +1,5 @@
+const { commonService } = require('../../services/common')
+
 Page({
   data: {
     mockData: {
@@ -37,6 +39,8 @@ Page({
     },
     navBarHeight: 0,
     teacherIndex: 0,
+    showConsultantPopup: false,
+    consultantPoster: ''
   },
   onLoad() {
     const app = getApp()
@@ -72,6 +76,35 @@ Page({
     wx.navigateTo({ url: '/pages/assessment/list' })
   },
   onConsultantTap() {
-    wx.showToast({ title: '开发中...', icon: 'none' })
+    // 如果已经有图片URL，直接显示弹窗
+    if (this.data.consultantPoster) {
+      this.setData({ showConsultantPopup: true })
+      return
+    }
+    
+    wx.showLoading({ title: '加载中...' })
+    commonService.getUserInfo().then(res => {
+      wx.hideLoading()
+      if (res.code === 200 && res.data && res.data.guwenPoster) {
+        this.setData({
+          consultantPoster: res.data.guwenPoster,
+          showConsultantPopup: true
+        })
+      } else {
+        wx.showToast({ title: '暂无课程顾问信息', icon: 'none' })
+      }
+    }).catch(() => {
+      wx.hideLoading()
+      wx.showToast({ title: '获取信息失败', icon: 'none' })
+    })
+  },
+  onCloseConsultantPopup() {
+    this.setData({ showConsultantPopup: false })
+  },
+  onConsultantMaskTap() {
+    this.setData({ showConsultantPopup: false })
+  },
+  stopPropagation() {
+    // 阻止事件冒泡
   }
 })

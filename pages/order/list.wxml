@@ -38,9 +38,7 @@
               <view class="header-left">
                 <text class="class-name">{{item.className}}</text>
                 <view class="tag-group">
-                  <text class="tag {{item.productType === 'system' ? 'tag-system' : 'tag-special'}}">
-                    {{item.productType === 'system' ? '体系课' : '专项课'}}
-                  </text>
+                  <text class="tag {{item.productType === 'system' ? 'tag-system' : 'tag-special'}}">{{item.productType === 'system' ? '体系课' : '专项课'}}</text>
                   <text class="tag tag-level" wx:if="{{item.level}}">{{item.level}}</text>
                 </view>
               </view>

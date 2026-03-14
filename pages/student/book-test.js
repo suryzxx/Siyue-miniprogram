@@ -1,56 +1,39 @@
 const { assessmentService } = require('../../services/assessment')
 
 Page({
-  data: {
-    navBarHeight: 0,
-    studentId: '',
-    student: null,
-    step: 1,
-    loading: false,
-    campusData: null,
-    provinces: [],
-    currentCities: [],
-    currentCampuses: [],
-    selectedProvince: '',
-    selectedCity: '',
+data: {
+navBarHeight: 0,
+loading: false,
+campuses: [],
+campusIndex: -1,
     selectedCampus: null,
-    provinceIndex: -1,
-    cityIndex: -1,
-    campusIndex: -1,
-    availableSlots: [],
     selectedDate: '',
-    selectedSlot: null,
-    dateIndex: -1,
-    slotIndex: -1,
-    bookingResult: null
-  },
+    selectedTime: '',
+    minDate: '',
+step: 1,
+bookingResult: null
+},
 
-  onLoad(options) {
-    const app = getApp()
-    if (!app.globalData.navBarHeight) {
-      app.calculateNavBarHeight()
+onLoad(options) {
+const app = getApp()
+if (!app.globalData.navBarHeight) {
+app.calculateNavBarHeight()
     }
-
-    let studentId = options.studentId || app.globalData.currentStudentId
-    let student = app.globalData.students.find(s => s.id === studentId)
-
-    this.setData({
+    // 设置最小日期为今天
+    const today = new Date()
+    const minDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
+this.setData({
       navBarHeight: app.globalData.navBarHeight,
-      studentId,
-      student
-    })
-
-    this.loadCampuses()
-  },
+      minDate
+})
+this.loadCampuses()
+},
 
   async loadCampuses() {
     try {
       const res = await assessmentService.getCampuses()
-      if (res.code === 200 && res.data) {
-        this.setData({
-          campusData: res.data,
-          provinces: res.data.provinces || []
-        })
+      if (res.code === 200 && res.data && res.data.list) {
+        this.setData({ campuses: res.data.list })
       }
     } catch (e) {
       console.error('加载校区数据失败', e)
@@ -58,111 +41,29 @@ Page({
     }
   },
 
-  onProvinceChange(e) {
+  onCampusChange(e) {
     const index = e.detail.value
-    const province = this.data.provinces[index]
-    const cities = this.data.campusData?.cities?.[province] || []
-    this.setData({
-      provinceIndex: index,
-      selectedProvince: province,
-      currentCities: cities,
-      cityIndex: -1,
-      selectedCity: '',
-      currentCampuses: [],
-      campusIndex: -1,
-      selectedCampus: null,
-      availableSlots: [],
-      dateIndex: -1,
-      selectedDate: '',
-      slotIndex: -1,
-      selectedSlot: null
-    })
-  },
-
-  onCityChange(e) {
-    const index = e.detail.value
-    const city = this.data.currentCities[index]
-    const campuses = (this.data.campusData?.campuses || []).filter(
-      c => c.province === this.data.selectedProvince && c.city === city
-    )
-    this.setData({
-      cityIndex: index,
-      selectedCity: city,
-      currentCampuses: campuses,
-      campusIndex: -1,
-      selectedCampus: null,
-      availableSlots: [],
-      dateIndex: -1,
-      selectedDate: '',
-      slotIndex: -1,
-      selectedSlot: null
-    })
-  },
-
-  async onCampusChange(e) {
-    const index = e.detail.value
-    const campus = this.data.currentCampuses[index]
+    const campus = this.data.campuses[index]
     this.setData({
       campusIndex: index,
-      selectedCampus: campus,
-      availableSlots: [],
-      dateIndex: -1,
-      selectedDate: '',
-      slotIndex: -1,
-      selectedSlot: null
+      selectedCampus: campus
     })
-
-    if (campus) {
-      await this.loadSlots(campus.id)
-    }
-  },
-
-  async loadSlots(campusId) {
-    try {
-      const today = new Date()
-      const startDate = this.formatDate(today)
-      const endDate = this.formatDate(new Date(today.getTime() + 14 * 24 * 60 * 60 * 1000))
-
-      const res = await assessmentService.getSlots(campusId, startDate, endDate)
-      if (res.code === 200 && res.data) {
-        this.setData({ availableSlots: res.data })
-      }
-    } catch (e) {
-      console.error('加载时间段失败', e)
-    }
-  },
-
-  formatDate(date) {
-    const y = date.getFullYear()
-    const m = String(date.getMonth() + 1).padStart(2, '0')
-    const d = String(date.getDate()).padStart(2, '0')
-    return `${y}-${m}-${d}`
   },
 
   onDateChange(e) {
-    const index = e.detail.value
-    const dateItem = this.data.availableSlots[index]
     this.setData({
-      dateIndex: index,
-      selectedDate: dateItem?.date || '',
-      slotIndex: -1,
-      selectedSlot: null
+      selectedDate: e.detail.value
     })
   },
 
-  onSlotChange(e) {
-    const index = e.detail.value
-    const dateItem = this.data.availableSlots[this.data.dateIndex]
-    const availableTimeSlots = (dateItem?.slots || []).filter(s => s.available)
-    const slot = availableTimeSlots[index]
+  onTimePickerChange(e) {
     this.setData({
-      slotIndex: index,
-      selectedSlot: slot
+      selectedTime: e.detail.value
     })
   },
 
   async onSubmit() {
-    const { selectedCampus, selectedDate, selectedSlot, studentId, loading } = this.data
+    const { selectedCampus, selectedDate, selectedTime, loading } = this.data
 
     if (loading) return
 
@@ -174,8 +75,8 @@ Page({
       wx.showToast({ title: '请选择日期', icon: 'none' })
       return
     }
-    if (!selectedSlot) {
-      wx.showToast({ title: '请选择时间段', icon: 'none' })
+    if (!selectedTime) {
+      wx.showToast({ title: '请选择时间', icon: 'none' })
       return
     }
 
@@ -184,22 +85,21 @@ Page({
 
     try {
       const res = await assessmentService.create({
-        studentId,
         campusId: selectedCampus.id,
         bookDate: selectedDate,
-        bookTime: selectedSlot.time
+        bookTime: selectedTime
       })
 
       wx.hideLoading()
       this.setData({ loading: false })
 
-      if (res.code === 200 && res.data) {
-        this.setData({
-          step: 2,
-          bookingResult: res.data
-        })
+      if (res.code === 200) {
+        wx.showToast({ title: '预约成功', icon: 'success' })
+        setTimeout(() => {
+          wx.redirectTo({ url: '/pages/assessment/list' })
+        }, 1500)
       } else {
-        wx.showToast({ title: res.message || '预约失败', icon: 'none' })
+        wx.showToast({ title: res.message || res.msg || '预约失败', icon: 'none' })
       }
     } catch (err) {
       wx.hideLoading()

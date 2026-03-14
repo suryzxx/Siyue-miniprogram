@@ -214,13 +214,19 @@ Page({
       
       // 组合时间信息
       const timeParts = []
-      if (item.first_in_class_time && item.first_out_class_time) {
-        // 提取日期和时间部分
-        const dateStr = item.first_in_class_time.substring(0, 10) // 2026-03-04
-        const startTime = item.first_in_class_time.substring(11, 16) // 11:51
-        const endTime = item.first_out_class_time.substring(11, 16) // 13:51
-        timeParts.push(dateStr + ' ' + startTime + '-' + endTime)
+      
+      // 日期部分：first_in_class_time ~ last_out_class_time
+      const firstInDate = item.first_in_class_time ? item.first_in_class_time.substring(0, 10) : '' // 2026-03-04
+      const lastOutDate = item.last_out_class_time ? item.last_out_class_time.substring(0, 10) : '' // 2026-06-20
+      if (firstInDate && lastOutDate) {
+        timeParts.push(firstInDate + ' ~ ' + lastOutDate)
       }
+      
+      // 时间部分：直接使用后端的 lesson_time
+      if (item.lesson_time) {
+        timeParts.push(item.lesson_time) // 11:38 - 13:38
+      }
+      
       // 转换星期为中文
       if (item.class_days) {
         const weekDayMap = {
@@ -269,7 +275,7 @@ Page({
         title: item.name,
         productName: item.course_name || '',
         productType: isSystem ? 'system' : 'special',
-        level: item.course_category_name || '',
+        level: item.course_sub_category_name || '',
         campus: {
           id: item.campus_id,
           name: item.campus_name || '',
@@ -285,7 +291,7 @@ Page({
         totalSessions: item.sum_lesson_num || 0,
         remaining: remaining,
         capacity: item.person_max || 0,
-        price: item.course_fee || 0,
+        price: (item.course_fee || 0) / 100,
         materialPrice: 0,
         time: timeStr,
         location: locationStr,
@@ -298,7 +304,7 @@ Page({
         remainingSeats: remaining,
         statusText: remaining > 0 ? '剩余' + remaining + '名额' : '已满员，可候补',
         statusClass: remaining > 0 ? 'is-remaining' : 'is-full',
-        price: '¥' + (item.course_fee || 0).toFixed(0),
+        priceDisplay: '¥' + ((item.course_fee || 0) / 100),
         unit: '/' + (item.sum_lesson_num || 0) + '课次'
       }
     })

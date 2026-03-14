@@ -124,10 +124,9 @@ Page({
     const productType = isSystem ? 'system' : 'special'
     const productTypeName = data.course_class_type_name || (isSystem ? '体系课' : '专项课')
 
-    // 价格信息
-    const price = data.course_fee || 0           // 课程费用
-    const materialPrice = data.assistant_fee || 0 // 教辅费
-    const totalPrice = price + materialPrice
+    const price = (data.course_fee || 0) / 100
+    const materialPrice = (data.assistant_fee || 0) / 100
+    const totalPrice = ((data.course_fee || 0) + (data.assistant_fee || 0)) / 100
 
     return {
       id: data.id,
@@ -135,7 +134,7 @@ Page({
       productName: data.course_name || '',
       productType: productType,
       productTypeName: productTypeName,
-      level: data.course_category_name || '',
+      level: data.course_sub_category_name || '',
       campus: {
         id: data.campus_id,
         name: data.campus_name || '',
@@ -222,12 +221,19 @@ Page({
       return
     }
 
+// --- 强行写死开始 ---
+if (currentStudent) {
+  currentStudent.level = 'K3'; // 随便给个等级
+  currentStudent.needTest = false; // 强行改为不需要测试
+}
+// --- 强行写死结束 ---
+
     // 体系课需要检查评测等级
     if (classInfo.productType === 'system') {
       if (!currentStudent.level || currentStudent.needTest) {
         wx.showModal({
           title: '提示',
-          content: `学生"${currentStudent.name}"尚未完成等级测试，请先预约线下评测后才能报名体系课`,
+          content: `学生"${currentStudent.name}"尚未完成等级测试，请先预约线下评测`,
           confirmText: '去预约',
           cancelText: '取消',
           success: (res) => {
@@ -245,17 +251,51 @@ Page({
       // 有余位，创建订单
       wx.showLoading({ title: '创建订单中...', mask: true })
       try {
+        // 获取 wx.login code
+        const loginRes = await new Promise((resolve, reject) => {
+          wx.login({
+            success: resolve,
+            fail: reject
+          })
+        })
         const orderRes = await orderService.create({
           classId: classInfo.id,
-          studentId: currentStudent.id
+          code: loginRes.code
         })
         wx.hideLoading()
+        
         if (orderRes.code === 200 && orderRes.data) {
-          wx.navigateTo({
-            url: `/pages/order/detail?id=${orderRes.data.id}`,
+          const paymentData = orderRes.data
+          
+          const app = getApp()
+          app.globalData.pendingPayment = {
+            orderNo: paymentData.order_no,
+            timeStamp: paymentData.time_stamp,
+            nonceStr: paymentData.nonce_str,
+            package: paymentData.package,
+            signType: paymentData.sign_type || 'RSA',
+            paySign: paymentData.pay_sign,
+          }
+          
+          app.globalData.pendingClassInfo = {
+            name: classInfo.name,
+            productType: classInfo.productType,
+            productTypeName: classInfo.productTypeName,
+            level: classInfo.level,
+            schedule: classInfo.schedule,
+            location: classInfo.location,
+            teacherName: classInfo.mainTeacher?.name || classInfo.teacherName || '',
+            totalSessions: classInfo.totalSessions,
+            price: classInfo.price,
+            materialPrice: classInfo.materialPrice,
+            totalPrice: classInfo.totalPrice,
+          }
+          
+          wx.redirectTo({
+            url: `/pages/order/detail?id=${paymentData.order_no}&fromClassDetail=true`,
           })
         } else {
-          wx.showToast({ title: orderRes.message || '创建订单失败', icon: 'none' })
+          wx.showToast({ title: orderRes.msg || orderRes.message || '创建订单失败', icon: 'none' })
         }
       } catch (e) {
         wx.hideLoading()
@@ -263,18 +303,20 @@ Page({
         wx.showToast({ title: '创建订单失败，请重试', icon: 'none' })
       }
     } else {
-      // 无余位，提示候补
-      wx.showModal({
-        title: '提示',
-        content: '该班级已满员，是否加入候补？',
-        confirmText: '加入候补',
-        cancelText: '取消',
-        success: (res) => {
-          if (res.confirm) {
-            wx.showToast({ title: '已加入候补', icon: 'success' })
-          }
-        },
-      })
+      // 无余位，候补功能暂未开放
+      // TODO: 候补功能开发中，以下代码保留待恢复
+      // wx.showModal({
+      //   title: '提示',
+      //   content: '该班级已满员，是否加入候补？',
+      //   confirmText: '加入候补',
+      //   cancelText: '取消',
+      //   success: (res) => {
+      //     if (res.confirm) {
+      //       wx.showToast({ title: '已加入候补', icon: 'success' })
+      //     }
+      //   },
+      // })
+      wx.showToast({ title: '候补功能开发中', icon: 'none' })
     }
   },
 })

@@ -1,14 +1,13 @@
 const { studentService } = require('../../services/student')
+const { commonService } = require('../../services/common')
+
 Page({
   data: {
     navBarHeight: 0,
     currentStudent: null,
     students: [],
     maxStudents: 5,
-    navBarHeight: 0,
-    currentStudent: null,
-    students: [],
-    maxStudents: 5,
+    gradeMap: {}  // 年级映射表
   },
   onLoad() {
     const app = getApp()
@@ -19,8 +18,15 @@ Page({
       navBarHeight: app.globalData.navBarHeight,
     })
   },
-  onShow() {
-    this.loadData()
+  async onShow() {
+    // 先加载年级映射表，再加载学生数据
+    await this.loadGradeMap()
+    await this.loadData()
+  },
+  async loadGradeMap() {
+    const gradeMap = await commonService.getGradeMap()
+    console.log('[Manage] gradeMap loaded:', gradeMap)
+    this.setData({ gradeMap })
   },
   async loadData() {
     await Promise.all([
@@ -33,14 +39,36 @@ Page({
     try {
       const res = await studentService.getList()
       if (res.code === 200 && res.data) {
-        const students = res.data.list || res.data || []
+        let students = res.data.list || res.data || []
+        // 添加 gradeName 字段，保留本地缓存的 grade 值（解决后端返回 others grade 为空的问题）
+        const { gradeMap } = this.data
+        const cachedStudents = app.globalData.students || []
+        students = students.map(s => {
+          // 如果 API 返回的 grade 为空，尝试使用本地缓存的值
+          const cached = cachedStudents.find(c => String(c.id) === String(s.id))
+          const grade = s.grade || (cached && cached.grade) || ''
+          console.log(`[Manage] Student ${s.name}, API grade: ${s.grade}, cached grade: ${cached?.grade}, final grade: ${grade}`)
+          return {
+            ...s,
+            grade,
+            gradeName: gradeMap[grade] || grade || '未设置'
+          }
+        })
         app.globalData.students = students
         app.saveLoginState()
         this.setData({ students })
+      } else {
+        console.error('获取学生列表失败:', res)
+        if (res.code === 600) {
+          wx.showToast({ title: '用户数据不存在，请重新登录', icon: 'none', duration: 2000 })
+        } else {
+          wx.showToast({ title: res.msg || res.message || '获取学生列表失败', icon: 'none' })
+        }
+        this.setData({ students: [] })
       }
     } catch (e) {
       console.error('加载学生列表失败', e)
-      this.setData({ students: app.globalData.students })
+      this.setData({ students: app.globalData.students || [] })
     }
   },
   async loadCurrentStudentDetail() {
@@ -52,14 +80,30 @@ Page({
     }
     try {
       const res = await studentService.getDetail(currentStudentId)
+      const { gradeMap } = this.data
       if (res.code === 200 && res.data) {
-        this.setData({ currentStudent: res.data })
+        const student = {
+          ...res.data,
+          gradeName: gradeMap[res.data.grade] || res.data.grade || '未设置'
+        }
+        this.setData({ currentStudent: student })
       } else {
-        this.setData({ currentStudent: app.globalData.students.find(s => s.id === currentStudentId) || null })
+        const found = app.globalData.students.find(s => s.id === currentStudentId)
+        if (found) {
+          this.setData({ currentStudent: { ...found, gradeName: gradeMap[found.grade] || found.grade || '未设置' } })
+        } else {
+          this.setData({ currentStudent: null })
+        }
       }
     } catch (e) {
       console.error('加载学生详情失败', e)
-      this.setData({ currentStudent: app.globalData.students.find(s => s.id === currentStudentId) || null })
+      const found = app.globalData.students.find(s => s.id === currentStudentId)
+      const { gradeMap } = this.data
+      if (found) {
+        this.setData({ currentStudent: { ...found, gradeName: gradeMap[found.grade] || found.grade || '未设置' } })
+      } else {
+        this.setData({ currentStudent: null })
+      }
     }
   },
 

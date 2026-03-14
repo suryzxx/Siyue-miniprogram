@@ -1,0 +1,186 @@
+<view class="page">
+  <custom-navbar
+    center-text="预约评测场次"
+    show-left="{{true}}"
+    show-right="{{false}}"
+    show-back="{{true}}"
+    left-icon="/images/icons/back.svg"
+  />
+
+  <view class="page-container" style="padding-top: {{navBarHeight}}px;">
+    <!-- 校区选择卡片 -->
+    <view class="campus-card">
+      <view class="campus-row" bindtap="onShowRegionPicker">
+        <view class="campus-label">校区</view>
+        <view class="campus-value">
+          <text>{{selectedCampus.name || '请选择校区'}}</text>
+        </view>
+        <image class="campus-arrow-icon" src="/images/icons/arrow-down.svg" mode="aspectFit"></image>
+      </view>
+    </view>
+
+    <!-- 日历卡片 -->
+    <view class="calendar-card">
+      <!-- 周切换 -->
+      <view class="week-selector">
+        <view class="week-nav" bindtap="onPrevWeek">
+          <text class="nav-arrow">◀</text>
+        </view>
+        <view class="week-text">
+          <text>{{weekRangeText}}</text>
+        </view>
+        <view class="week-nav" bindtap="onNextWeek">
+          <text class="nav-arrow">▶</text>
+        </view>
+      </view>
+
+      <!-- 日历表格 -->
+      <view class="calendar-container">
+        <view class="calendar-container">
+
+
+          <!-- 表格内容 - 每行是一天 -->
+          <view class="calendar-body">
+            <view class="calendar-row" wx:for="{{daysSlotsData}}" wx:key="date" wx:for-item="dayData">
+              <!-- 日期列 -->
+              <view class="day-label-cell">
+                <text class="day-name">{{dayData.dayName}}</text>
+                <text class="day-date">{{dayData.month}}/{{dayData.dateNum}}</text>
+              </view>
+              <!-- 时间段 - 横向滚动 -->
+              <scroll-view class="slots-cell" scroll-x enable-flex enhanced show-scrollbar="{{false}}">
+                <view class="slot-cards">
+                  <view 
+                    class="slot-card" 
+                    wx:for="{{dayData.slots}}" 
+                    wx:for-item="slot" 
+                    wx:key="id"
+                    bindtap="onSlotTap"
+                    data-slot="{{slot}}"
+                  >
+                    <text class="slot-time">{{slot.time}}</text>
+                    <text class="slot-teacher">{{slot.teacher}}</text>
+                  </view>
+                  <view class="no-slot" wx:if="{{dayData.slots.length === 0}}">
+                    <text>暂无可预约时段</text>
+                  </view>
+                </view>
+              </scroll-view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 校区选择弹窗 -->
+  <view class="popup-mask" wx:if="{{showRegionPicker}}" bindtap="onHideRegionPicker"></view>
+  <view class="popup-container {{showRegionPicker ? 'show' : ''}}">
+    <!-- 已选择的路径 - 可点击 -->
+    <view class="popup-path" wx:if="{{selectedProvinceName || regionPickerStep === 'province'}}">
+      <text class="path-item" bindtap="onPathItemTap" data-level="province">{{selectedProvinceName || '请选择省份'}}</text>
+      <text class="path-sep" wx:if="{{selectedCityName || regionPickerStep === 'city'}}">></text>
+      <text class="path-item" wx:if="{{selectedCityName || regionPickerStep === 'city'}}" bindtap="onPathItemTap" data-level="city">{{selectedCityName || '请选择城市'}}</text>
+      <text class="path-sep" wx:if="{{selectedDistrictName || regionPickerStep === 'district'}}">></text>
+      <text class="path-item" wx:if="{{selectedDistrictName || regionPickerStep === 'district'}}" bindtap="onPathItemTap" data-level="district">{{selectedDistrictName || '请选择区域'}}</text>
+      <text class="path-sep" wx:if="{{regionPickerStep === 'campus'}}">></text>
+      <text class="path-item placeholder" wx:if="{{regionPickerStep === 'campus'}}">选择校区</text>
+    </view>
+    
+    <view class="popup-content">
+      <!-- 省份列表 -->
+      <block wx:if="{{regionPickerStep === 'province'}}">
+        <view 
+          class="region-item {{selectedProvince === item.code ? 'active' : ''}}" 
+          wx:for="{{provinces}}" 
+          wx:key="code"
+          bindtap="onSelectProvince"
+          data-code="{{item.code}}"
+          data-name="{{item.name}}"
+        >
+          <text>{{item.name}}</text>
+          <image class="item-arrow-icon" src="/images/icons/arrow-right.svg" mode="aspectFit"></image>
+        </view>
+      </block>
+      
+      <!-- 城市列表 -->
+      <block wx:if="{{regionPickerStep === 'city'}}">
+        <view 
+          class="region-item {{selectedCity === item.code ? 'active' : ''}}" 
+          wx:for="{{cities}}" 
+          wx:key="code"
+          bindtap="onSelectCity"
+          data-code="{{item.code}}"
+          data-name="{{item.name}}"
+        >
+          <text>{{item.name}}</text>
+          <image class="item-arrow-icon" src="/images/icons/arrow-right.svg" mode="aspectFit"></image>
+        </view>
+      </block>
+      
+      <!-- 区域列表 -->
+      <block wx:if="{{regionPickerStep === 'district'}}">
+        <view 
+          class="region-item {{selectedDistrict === item.code ? 'active' : ''}}" 
+          wx:for="{{districts}}" 
+          wx:key="code"
+          bindtap="onSelectDistrict"
+          data-code="{{item.code}}"
+          data-name="{{item.name}}"
+        >
+          <text>{{item.name}}</text>
+          <image class="item-arrow-icon" src="/images/icons/arrow-right.svg" mode="aspectFit"></image>
+        </view>
+      </block>
+      
+      <!-- 校区列表（单选） -->
+      <block wx:if="{{regionPickerStep === 'campus'}}">
+        <view 
+          class="region-item {{selectedCampus.id === item.id ? 'active' : ''}}" 
+          wx:for="{{campusList}}" 
+          wx:key="id"
+          bindtap="onSelectCampus"
+          data-id="{{item.id}}"
+        >
+          <view class="campus-info">
+            <text class="campus-name">{{item.name}}</text>
+            <text class="campus-address" wx:if="{{item.address}}">{{item.address}}</text>
+          </view>
+          <text class="item-check" wx:if="{{selectedCampus && selectedCampus.id === item.id}}">✓</text>
+        </view>
+        
+        <view class="campus-empty" wx:if="{{campusList.length === 0}}">
+          <text>暂无校区数据</text>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <!-- 预约确认弹窗 -->
+  <view class="confirm-mask" wx:if="{{showConfirmModal}}" bindtap="onCancelConfirm"></view>
+  <view class="confirm-modal {{showConfirmModal ? 'show' : ''}}">
+    <view class="confirm-title">预约确认</view>
+    <view class="confirm-content">
+      <view class="confirm-item" wx:if="{{confirmSlot.campusName}}">
+        <text class="confirm-label">校区：</text>
+        <text class="confirm-value">{{confirmSlot.campusName}}</text>
+      </view>
+      <view class="confirm-item" wx:if="{{confirmSlot.campusDetail}}">
+        <text class="confirm-label">地址：</text>
+        <text class="confirm-value">{{confirmSlot.campusDetail}}</text>
+      </view>
+      <view class="confirm-item">
+        <text class="confirm-label">时间：</text>
+        <text class="confirm-value">{{confirmSlot.date}} {{confirmSlot.time}}</text>
+      </view>
+      <view class="confirm-item" wx:if="{{confirmSlot.teacher}}">
+        <text class="confirm-label">老师：</text>
+        <text class="confirm-value">{{confirmSlot.teacher}}</text>
+      </view>
+    </view>
+    <view class="confirm-buttons">
+      <view class="confirm-btn cancel" bindtap="onCancelConfirm">取消</view>
+      <view class="confirm-btn confirm" bindtap="onConfirmBook">确定</view>
+    </view>
+  </view>
+</view>

@@ -8,25 +8,14 @@ Page({
     studentId: '',
     student: {
       name: '',
-      englishName: '',
+      en_name: '',
       grade: '',
-      gender: '',
+      sex: 0,  // 0=未知, 1=男, 2=女
       school: '',
-      cityCode: '',
-      avatar: '',
-      assessmentLevel: ''
+      city: '',
+      birthday: ''
     },
-    grades: [
-      { code: 'grade1', name: '小学一年级' },
-      { code: 'grade2', name: '小学二年级' },
-      { code: 'grade3', name: '小学三年级' },
-      { code: 'grade4', name: '小学四年级' },
-      { code: 'grade5', name: '小学五年级' },
-      { code: 'grade6', name: '小学六年级' },
-      { code: 'junior1', name: '初中一年级' },
-      { code: 'junior2', name: '初中二年级' },
-      { code: 'junior3', name: '初中三年级' }
-    ],
+    grades: [],
     gradeIndex: -1,
     cities: [],
     cityIndex: -1
@@ -37,12 +26,27 @@ Page({
     if (!app.globalData.navBarHeight) {
       app.calculateNavBarHeight()
     }
+    // 将 id 转为整数
+    const studentId = options.id ? parseInt(options.id, 10) : 0
     this.setData({
       navBarHeight: app.globalData.navBarHeight,
-      studentId: options.id
+      studentId: studentId
     })
+    this.loadGrades()
     this.loadCities()
-    this.loadStudent(options.id)
+    this.loadStudent(studentId)
+  },
+
+  async loadGrades() {
+    try {
+      const res = await commonService.getGrades()
+      if (res.code === 200 && res.data) {
+        this.setData({ grades: res.data })
+        this.updateGradeIndex()
+      }
+    } catch (e) {
+      console.error('加载年级列表失败', e)
+    }
   },
 
   async loadCities() {
@@ -59,18 +63,19 @@ Page({
 
   loadStudent(id) {
     const app = getApp()
-    const current = app.globalData.students.find(s => s.id === id)
+    const students = app.globalData.students || []
+    const current = students.find(s => String(s.id) === String(id))
     if (current) {
+      console.log('[Edit] Loading student data:', current)
       this.setData({
         student: {
           name: current.name || '',
-          englishName: current.englishName || '',
+          en_name: current.en_name || '',
           grade: current.grade || '',
-          gender: current.gender || '',
+          sex: current.sex || 0,
           school: current.school || '',
-          cityCode: current.cityCode || '',
-          avatar: current.avatar || '',
-          assessmentLevel: current.assessmentLevel || ''
+          city: current.city || '',
+          birthday: current.birthday || ''
         }
       })
       this.updateGradeIndex()
@@ -88,8 +93,8 @@ Page({
 
   updateCityIndex() {
     const { cities, student } = this.data
-    if (cities.length && student.cityCode) {
-      const idx = cities.findIndex(c => c.code === student.cityCode)
+    if (cities.length && student.city) {
+      const idx = cities.findIndex(c => c.code === student.city || c.name === student.city)
       if (idx >= 0) this.setData({ cityIndex: idx })
     }
   },
@@ -99,7 +104,7 @@ Page({
   },
 
   onEnglishNameInput(e) {
-    this.setData({ 'student.englishName': e.detail.value })
+    this.setData({ 'student.en_name': e.detail.value })
   },
 
   onSchoolInput(e) {
@@ -120,60 +125,18 @@ Page({
     const city = this.data.cities[index]
     this.setData({
       cityIndex: index,
-      'student.cityCode': city?.code || ''
+      'student.city': city?.code || city?.name || ''
     })
   },
 
   onGenderSelect(e) {
     const { value } = e.currentTarget.dataset
-    this.setData({ 'student.gender': value })
+    // value 是 1 或 2 (数字)
+    this.setData({ 'student.sex': Number(value) })
   },
 
-  onChooseAvatar() {
-    const that = this
-    wx.chooseMedia({
-      count: 1,
-      mediaType: ['image'],
-      sourceType: ['album', 'camera'],
-      sizeType: ['compressed'],
-      success(res) {
-        const tempFilePath = res.tempFiles[0].tempFilePath
-        // 上传头像
-        that.uploadAvatar(tempFilePath)
-      }
-    })
-  },
-
-  uploadAvatar(filePath) {
-    const that = this
-    wx.showLoading({ title: '上传中...' })
-    
-    wx.uploadFile({
-      url: getApp().globalData.baseUrl + '/api/file/upload',
-      filePath: filePath,
-      name: 'file',
-      header: {
-        'Authorization': 'Bearer ' + wx.getStorageSync('token')
-      },
-      success(res) {
-        wx.hideLoading()
-        try {
-          const data = JSON.parse(res.data)
-          if (data.code === 200 && data.data?.url) {
-            that.setData({ 'student.avatar': data.data.url })
-            wx.showToast({ title: '上传成功', icon: 'success' })
-          } else {
-            wx.showToast({ title: data.message || '上传失败', icon: 'none' })
-          }
-        } catch (e) {
-          wx.showToast({ title: '上传失败', icon: 'none' })
-        }
-      },
-      fail(err) {
-        wx.hideLoading()
-        wx.showToast({ title: '上传失败', icon: 'none' })
-      }
-    })
+  onBirthdayChange(e) {
+    this.setData({ 'student.birthday': e.detail.value })
   },
 
   async onSave() {
@@ -195,24 +158,35 @@ Page({
     wx.showLoading({ title: '保存中...' })
 
     try {
+      // 转换为 API 期望的格式
       const res = await studentService.update(studentId, {
         name: student.name.trim(),
+        en_name: student.en_name || '',
+        sex: student.sex || 0,
+        birthday: student.birthday || '',
         grade: student.grade,
-        gender: student.gender || undefined,
-        englishName: student.englishName || undefined,
-        school: student.school || undefined,
-        cityCode: student.cityCode || undefined,
-        avatar: student.avatar || undefined
+        school: student.school || '',
+        city: student.city || ''
       })
 
       wx.hideLoading()
       this.setData({ loading: false })
 
       if (res.code === 200) {
+        // 更新全局数据
         const app = getApp()
-        const idx = app.globalData.students.findIndex(s => s.id === studentId)
+        const idx = app.globalData.students.findIndex(s => String(s.id) === String(studentId))
         if (idx >= 0) {
-          app.globalData.students[idx] = { ...app.globalData.students[idx], ...student }
+          app.globalData.students[idx] = {
+            ...app.globalData.students[idx],
+            name: student.name.trim(),
+            en_name: student.en_name,
+            sex: student.sex,
+            birthday: student.birthday,
+            grade: student.grade,
+            school: student.school,
+            city: student.city
+          }
           app.saveLoginState()
         }
 

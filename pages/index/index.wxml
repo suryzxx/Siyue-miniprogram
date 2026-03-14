@@ -90,3 +90,16 @@
     </scroll-view>
   </view>
 </view>
+
+<!-- 课程顾问弹窗 -->
+<view class="consultant-popup {{showConsultantPopup ? 'is-visible' : ''}}" catchtap="onConsultantMaskTap">
+  <view class="consultant-popup-content" catchtap="stopPropagation">
+    <view class="consultant-popup-header">
+      <text class="consultant-popup-title">课程顾问</text>
+      <view class="consultant-popup-close" bindtap="onCloseConsultantPopup">×</view>
+    </view>
+    <view class="consultant-popup-body">
+      <image class="consultant-poster" src="{{consultantPoster}}" mode="widthFix" />
+    </view>
+  </view>
+</view>

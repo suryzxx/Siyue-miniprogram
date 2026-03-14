@@ -1,6 +1,6 @@
 // 学生服务 - 使用真实 API
 const { authService } = require('./auth')
-const { get } = require('../utils/request')
+const { get, post } = require('../utils/request')
 
 const studentService = {
   /**
@@ -21,6 +21,7 @@ const studentService = {
           sex_name: data.sex_name,
           en_name: data.en_name,
           birthday: data.birthday,
+          grade: data.grade,
           school: data.school,
           city: data.city
         }
@@ -34,6 +35,7 @@ const studentService = {
           sex_name: s.sex_name,
           en_name: s.en_name,
           birthday: s.birthday,
+          grade: s.grade,
           school: s.school,
           city: s.city
         }))
@@ -137,22 +139,21 @@ const studentService = {
    * 更新学生
    */
   update(id, data) {
-    // TODO: 实现更新学生的 API 调用
-    return Promise.resolve({
-      code: 500,
-      message: '暂不支持更新学生'
-    })
+    // 后端接口: POST /client/api/user/update
+    // id: 0或不传更改当前学生信息，否则更改对应学生的信息
+    const requestData = {
+      id: parseInt(id, 10) || 0,  // 确保 id 是整数
+      ...data
+    }
+    return post('/client/api/user/update', requestData)
   },
 
   /**
    * 删除学生
    */
   remove(id) {
-    // TODO: 实现删除学生的 API 调用
-    return Promise.resolve({
-      code: 500,
-      message: '暂不支持删除学生'
-    })
+    // 后端接口: POST /client/api/user/delete
+    return post('/client/api/user/delete', { id: parseInt(id, 10) })  // 确保 id 是整数
   }
 }
 

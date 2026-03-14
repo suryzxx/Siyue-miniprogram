@@ -95,8 +95,8 @@
         <text class="total-price">¥{{classInfo.totalPrice}}</text>
         <text class="total-sessions">/{{classInfo.totalSessions}}课次</text>
       </view>
-      <view class="action-btn gradient" bindtap="onEnrollTap">
-        {{classInfo.remaining > 0 ? '立即报名' : '候补报名'}}
+      <view class="action-btn {{classInfo.remaining > 0 ? 'gradient' : 'disabled'}}" bindtap="onEnrollTap">
+        {{classInfo.remaining > 0 ? '立即报名' : '已满员'}}
       </view>
     </view>
   </view>

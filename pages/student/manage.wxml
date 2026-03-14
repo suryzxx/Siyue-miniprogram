@@ -33,7 +33,8 @@
                 </view>
                 
                 <view class="student-meta">
-                  <text class="meta-text">{{currentStudent.gender === 'male' ? '男' : currentStudent.gender === 'female' ? '女' : '未设置'}} • {{currentStudent.grade}}</text>
+                  <!-- <text class="meta-text">{{currentStudent.sex_name || '未设置'}} • {{currentStudent.gradeName || '未设置'}}</text> -->
+                  <text class="meta-text">{{currentStudent.sex_name || '未设置'}} • 学号: {{currentStudent.id}}</text>
                 </view>
                 
                 <view class="student-info">
@@ -106,7 +107,8 @@
                   </view>
                 </view>
                 <view class="item-meta-row">
-                  <text class="item-meta">{{item.gender === 'male' ? '男生' : item.gender === 'female' ? '女生' : '未设置'}} • {{item.grade}}</text>
+                  <!-- <text class="item-meta">{{item.sex_name || '未设置'}} • {{item.gradeName || '未设置'}}</text> -->
+                  <text class="item-meta">{{item.sex_name || '未设置'}} • 学号: {{item.id}}</text>
                 </view>
               </view>
               

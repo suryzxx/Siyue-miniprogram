@@ -27,20 +27,19 @@
           </view>
 
           <!-- 已登录状态 -->
-          <view wx:else class="profile-card" bindtap="onUserCardTap" hover-class="is-pressed" hover-stay-time="120">
+          <view wx:else class="profile-card">
             <view class="profile-avatar-wrapper">
               <image 
                 class="profile-avatar" 
                 src="/images/pic/avatar.png"
                 mode="aspectFill" 
               />
-              <view wx:if="{{currentStudent}}" class="profile-badge">{{currentStudent.grade}}</view>
+              <view wx:if="{{currentStudent}}" class="profile-badge">{{currentStudent.level || '未评测'}}</view>
             </view>
             <view class="profile-info">
               <view class="profile-logged">
                 <view class="profile-name-row">
                   <text class="profile-name">{{currentStudent.name}}</text>
-                  <text class="profile-level-tag">{{currentStudent.level || '未评测'}}</text>
                 </view>
                 <text class="profile-id">ID: {{currentStudent.id}}</text>
               </view>

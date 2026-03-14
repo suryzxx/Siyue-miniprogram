@@ -12,53 +12,18 @@
       <view class="content">
         <block wx:if="{{step === 1}}">
           <view class="card">
-            <view class="section-title">评测学生</view>
-            <view class="student-row" wx:if="{{student}}">
-              <image class="avatar" src="{{student.avatar || '/images/pic/avatar.png'}}" mode="aspectFill" />
-              <view class="student-info">
-                <text class="student-name">{{student.name}}</text>
-                <text class="student-meta">{{student.grade ? '年级：' + student.grade : ''}}</text>
-              </view>
-            </view>
-          </view>
-
-          <view class="card">
             <view class="section-title">选择校区</view>
             
             <view class="field">
-              <text class="label">省份</text>
-              <picker mode="selector" range="{{provinces}}" value="{{provinceIndex}}" bindchange="onProvinceChange">
-                <view class="picker-box">
-                  <text class="{{selectedProvince ? '' : 'placeholder'}}">{{selectedProvince || '请选择省份'}}</text>
-                  <image class="picker-arrow" src="/images/icons/arrow-down.svg" mode="aspectFit" />
-                </view>
-              </picker>
-            </view>
-
-            <view class="field">
-              <text class="label">城市</text>
-              <picker mode="selector" range="{{currentCities}}" value="{{cityIndex}}" bindchange="onCityChange" disabled="{{!selectedProvince}}">
-                <view class="picker-box {{!selectedProvince ? 'is-disabled' : ''}}">
-                  <text class="{{selectedCity ? '' : 'placeholder'}}">{{selectedCity || '请选择城市'}}</text>
-                  <image class="picker-arrow" src="/images/icons/arrow-down.svg" mode="aspectFit" />
-                </view>
-              </picker>
-            </view>
-
-            <view class="field">
               <text class="label">校区</text>
-              <picker mode="selector" range="{{currentCampuses}}" range-key="name" value="{{campusIndex}}" bindchange="onCampusChange" disabled="{{!selectedCity}}">
-                <view class="picker-box {{!selectedCity ? 'is-disabled' : ''}}">
+              <picker mode="selector" range="{{campuses}}" range-key="name" value="{{campusIndex}}" bindchange="onCampusChange">
+                <view class="picker-box">
                   <text class="{{selectedCampus ? '' : 'placeholder'}}">{{selectedCampus.name || '请选择校区'}}</text>
                   <image class="picker-arrow" src="/images/icons/arrow-down.svg" mode="aspectFit" />
                 </view>
               </picker>
             </view>
 
-            <view class="campus-address" wx:if="{{selectedCampus}}">
-              <image class="address-icon" src="/images/icons/location.svg" mode="aspectFit" />
-              <text class="address-text">{{selectedCampus.address}}</text>
-            </view>
           </view>
 
           <view class="card" wx:if="{{selectedCampus}}">
@@ -66,7 +31,7 @@
             
             <view class="field">
               <text class="label">日期</text>
-              <picker mode="selector" range="{{availableSlots}}" range-key="date" value="{{dateIndex}}" bindchange="onDateChange">
+              <picker mode="date" value="{{selectedDate}}" start="{{minDate}}" bindchange="onDateChange">
                 <view class="picker-box">
                   <text class="{{selectedDate ? '' : 'placeholder'}}">{{selectedDate || '请选择日期'}}</text>
                   <image class="picker-arrow" src="/images/icons/arrow-down.svg" mode="aspectFit" />
@@ -75,17 +40,17 @@
             </view>
 
             <view class="field" wx:if="{{selectedDate}}">
-              <text class="label">时间段</text>
-              <picker mode="selector" range="{{availableSlots[dateIndex].slots}}" range-key="time" value="{{slotIndex}}" bindchange="onSlotChange">
+              <text class="label">时间</text>
+              <picker mode="time" value="{{selectedTime}}" bindchange="onTimePickerChange">
                 <view class="picker-box">
-                  <text class="{{selectedSlot ? '' : 'placeholder'}}">{{selectedSlot.time || '请选择时间段'}}</text>
+                  <text class="{{selectedTime ? '' : 'placeholder'}}">{{selectedTime || '请选择时间'}}</text>
                   <image class="picker-arrow" src="/images/icons/arrow-down.svg" mode="aspectFit" />
                 </view>
               </picker>
             </view>
           </view>
 
-          <view class="primary-btn {{loading ? 'is-disabled' : ''}}" bindtap="onSubmit">
+          <view class="primary-btn {{loading || !selectedCampus || !selectedDate || !selectedTime ? 'is-disabled' : ''}}" bindtap="onSubmit">
             <text>{{loading ? '提交中...' : '提交预约'}}</text>
           </view>
         </block>
@@ -101,10 +66,6 @@
 
           <view class="card">
             <view class="section-title">预约信息</view>
-            <view class="info-row">
-              <text class="info-label">评测学生</text>
-              <text class="info-value">{{student.name}}</text>
-            </view>
             <view class="info-row">
               <text class="info-label">校区</text>
               <text class="info-value">{{bookingResult.campusName}}</text>

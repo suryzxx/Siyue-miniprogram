@@ -153,9 +153,18 @@ Page({
         app.globalData.parent = { phone: '' }
         
         app.saveLoginState()
+      } else {
+        // API 返回错误，提示用户重新登录
+        console.error('[Login] getUserInfo failed:', res)
+        wx.showToast({ 
+          title: res.msg || res.message || '获取用户信息失败', 
+          icon: 'none',
+          duration: 2000
+        })
       }
     } catch (err) {
       console.error('[Login] fetchUserInfo error:', err)
+      wx.showToast({ title: '网络错误，请重试', icon: 'none' })
     }
   }
 })

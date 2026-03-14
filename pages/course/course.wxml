@@ -79,7 +79,7 @@
                 <text class="class-status {{item.statusClass}}">{{item.statusText}}</text>
               </view>
               <view class="price-wrap">
-                <text class="class-price">{{item.price}}</text>
+                <text class="class-price">{{item.priceDisplay}}</text>
                 <text class="class-unit">{{item.unit}}</text>
               </view>
             </view>

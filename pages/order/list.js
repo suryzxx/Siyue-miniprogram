@@ -1,4 +1,6 @@
 const { ORDER_STATUS, ORDER_STATUS_CONFIG } = require('../../utils/status')
+const { orderService } = require('../../services/order')
+const { config } = require('../../utils/config')
 
 // 20条模拟订单数据，覆盖所有状态
 const MOCK_ORDERS = [
@@ -444,11 +446,130 @@ Page({
   },
 
   loadOrders() {
-    // 使用模拟数据
-    const orders = this.formatOrders(MOCK_ORDERS)
-    this.setData({ orders }, () => {
-      this.updateFiltered()
-    })
+    if (config.useLocalMock) {
+      // 使用本地模拟数据
+      const orders = this.formatOrders(MOCK_ORDERS)
+      this.setData({ orders }, () => {
+        this.updateFiltered()
+      })
+      return
+    }
+
+    // 使用真实接口
+    wx.showLoading({ title: '加载中...' })
+    orderService.getList({ page: 1, pageSize: 50 })
+      .then(res => {
+        wx.hideLoading()
+        if (res.code === 200 && res.data && res.data.list) {
+          const apiOrders = res.data.list.map(item => this.mapApiToOrder(item))
+          const orders = this.formatOrders(apiOrders)
+          this.setData({ orders }, () => {
+            this.updateFiltered()
+          })
+        } else {
+          wx.showToast({ title: res.message || '获取订单失败', icon: 'none' })
+        }
+      })
+      .catch(err => {
+        wx.hideLoading()
+        console.error('获取订单列表失败:', err)
+        wx.showToast({ title: err.message || '网络错误', icon: 'none' })
+      })
+  },
+
+  // 格式化时间：2026-03-15T02:24:44+08:00 -> 2026-03-15 02:24:44
+  parseFee(feeStr) {
+    if (!feeStr) return 0
+    if (typeof feeStr === 'number') return feeStr
+    const numStr = String(feeStr).replace(/[^\d.]/g, '')
+    return Number(numStr) || 0
+  },
+
+  formatDateTime(dateStr) {
+    if (!dateStr) return ''
+    return dateStr.replace(/T/, ' ').replace(/\+.*/, '').replace(/\..*/, '')
+  },
+
+  // 将API返回的订单数据映射为UI需要的格式
+  // 用户指定的字段映射:
+  // - user_name → studentName
+  // - status_name → statusLabel (显示用，不用status)
+  // - fee_yuan → totalPrice
+  // - sum_lesson_ids.length → sessions
+  // - order_no → id
+  mapApiToOrder(item) {
+    const classInfo = item.class || {}
+    
+    const sessions = Array.isArray(item.sum_lesson_ids) ? item.sum_lesson_ids.length : 0
+    
+    const mappedStatus = this.mapApiStatus(item.status, item.status_name)
+    
+    return {
+      id: item.order_no || '',
+      order_no: item.order_no || '',
+      classId: classInfo.id || item.class_id || '',
+      className: classInfo.name || '',
+      productType: classInfo.product_type || 'system',
+      level: classInfo.level || '',
+      studentName: item.user_name || '',
+      schedule: classInfo.schedule || '',
+      location: classInfo.location || '',
+      teacherName: classInfo.teacher_name || '',
+      sessions: sessions,
+      totalPrice: this.parseFee(item.total_fee_yuan) || this.parseFee(item.fee_yuan) || 0,
+      price: this.parseFee(item.real_fee_yuan) || 0,
+      materialPrice: this.parseFee(item.assistant_fee_yuan) || 0,
+      paidAmount: Number(item.paid_amount) || 0,
+      refundAmount: Number(item.refund_amount) || 0,
+      status: mappedStatus,
+      statusNameFromApi: item.status_name || '',
+      createTime: this.formatDateTime(item.created_at) || '',
+      payTime: this.formatDateTime(item.paid_at) || '',
+      cancelTime: this.formatDateTime(item.cancelled_at) || '',
+      cancelReason: item.cancel_reason || '',
+      refundTime: this.formatDateTime(item.refund_at) || '',
+      refundReason: item.refund_reason || '',
+    }
+  },
+
+  mapApiStatus(apiStatus, statusName) {
+    const statusMap = {
+      'pending': ORDER_STATUS.PENDING,
+      'unpaid': ORDER_STATUS.PENDING,
+      'paid': ORDER_STATUS.PAID,
+      'cancelled': ORDER_STATUS.CANCELLED,
+      'refunded': ORDER_STATUS.REFUNDED,
+      'deposit_pending': ORDER_STATUS.DEPOSIT_PENDING,
+      'deposit_paid': ORDER_STATUS.DEPOSIT_PAID,
+      'balance_pending': ORDER_STATUS.BALANCE_PENDING,
+      'presale_failed': ORDER_STATUS.PRESALE_FAILED,
+      'renew_pending': ORDER_STATUS.RENEW_PENDING,
+      'partial_paid': ORDER_STATUS.PARTIAL_PAID,
+    }
+    
+    if (apiStatus && statusMap[apiStatus]) {
+      return statusMap[apiStatus]
+    }
+    
+    const nameMap = {
+      '未支付': ORDER_STATUS.PENDING,
+      '待支付': ORDER_STATUS.PENDING,
+      '已支付': ORDER_STATUS.PAID,
+      '已取消': ORDER_STATUS.CANCELLED,
+      '已退款': ORDER_STATUS.REFUNDED,
+      '待付定金': ORDER_STATUS.DEPOSIT_PENDING,
+      '已付定金': ORDER_STATUS.DEPOSIT_PAID,
+      '待付尾款': ORDER_STATUS.BALANCE_PENDING,
+      '预售失败': ORDER_STATUS.PRESALE_FAILED,
+      '待续费': ORDER_STATUS.RENEW_PENDING,
+      '部分支付': ORDER_STATUS.PARTIAL_PAID,
+    }
+    
+    if (statusName && nameMap[statusName]) {
+      return nameMap[statusName]
+    }
+    
+    return ORDER_STATUS.PENDING
   },
 
   formatOrders(orders) {
@@ -456,7 +577,7 @@ Page({
       const config = ORDER_STATUS_CONFIG[order.status] || {}
       return {
         ...order,
-        statusLabel: config.label || order.status,
+        statusLabel: order.statusNameFromApi || config.label || order.status,
         statusTip: config.tip || '',
         statusColor: config.color || '#999999',
         statusGroup: config.group || 'all',
@@ -510,11 +631,51 @@ Page({
 
   onOrderTap(e) {
     const { id } = e.currentTarget.dataset
-    wx.navigateTo({ url: `/pages/order/detail?id=${id}` })
+    const order = this.data.orders.find(o => o.id === id)
+    
+    if (order) {
+      const app = getApp()
+      app.globalData.pendingClassInfo = {
+        classId: order.classId,
+        name: order.className,
+        productType: order.productType,
+        productTypeName: order.productType === 'system' ? '体系课' : '专项课',
+        level: order.level,
+        schedule: order.schedule,
+        location: order.location,
+        teacherName: order.teacherName,
+        totalSessions: order.sessions,
+        price: order.price,
+        materialPrice: order.materialPrice,
+        totalPrice: order.totalPrice
+      }
+    }
+    
+    wx.navigateTo({ url: `/pages/order/detail?id=${id}&fromList=true` })
   },
 
   onPayTap(e) {
     const { id } = e.currentTarget.dataset
-    wx.navigateTo({ url: `/pages/order/detail?id=${id}&action=pay` })
+    const order = this.data.orders.find(o => o.id === id)
+
+    if (order) {
+      const app = getApp()
+      app.globalData.pendingClassInfo = {
+        classId: order.classId,
+        name: order.className,
+        productType: order.productType,
+        productTypeName: order.productType === 'system' ? '体系课' : '专项课',
+        level: order.level,
+        schedule: order.schedule,
+        location: order.location,
+        teacherName: order.teacherName,
+        totalSessions: order.sessions,
+        price: order.price,
+        materialPrice: order.materialPrice,
+        totalPrice: order.totalPrice,
+      }
+    }
+
+    wx.navigateTo({ url: `/pages/order/detail?id=${id}&fromList=true&action=pay` })
   },
 })

@@ -57,58 +57,21 @@
         <view class="card">
           <view class="card-title">费用信息</view>
           <view class="info-list">
-            <!-- 普通订单 -->
-            <block wx:if="{{!order.depositAmount && !order.firstTermAmount}}">
-              <view class="info-row">
-                <text class="info-label">订单金额</text>
-                <text class="info-value price">{{order.totalPriceText}}</text>
-              </view>
-              <view class="info-row" wx:if="{{order.paidAmount > 0}}">
-                <text class="info-label">已付金额</text>
-                <text class="info-value">{{order.paidAmountText}}</text>
-              </view>
-            </block>
-            
-            <!-- 预售订单 -->
-            <block wx:if="{{order.depositAmount}}">
-              <view class="info-row">
-                <text class="info-label">订单金额</text>
-                <text class="info-value price">{{order.totalPriceText}}</text>
-              </view>
-              <view class="info-row">
-                <text class="info-label">定金</text>
-                <text class="info-value">{{order.depositAmountText}}</text>
-              </view>
-              <view class="info-row" wx:if="{{order.balanceAmount}}">
-                <text class="info-label">尾款</text>
-                <text class="info-value">{{order.balanceAmountText}}</text>
-              </view>
-            </block>
-            
-            <!-- 分期订单 -->
-            <block wx:if="{{order.firstTermAmount}}">
-              <view class="info-row">
-                <text class="info-label">订单金额</text>
-                <text class="info-value price">{{order.totalPriceText}}</text>
-              </view>
-              <view class="info-row">
-                <text class="info-label">秋上（前3讲）</text>
-                <text class="info-value">{{order.firstTermAmountText}}</text>
-              </view>
-              <view class="info-row">
-                <text class="info-label">秋下（后续）</text>
-                <text class="info-value">{{order.secondTermAmountText}}</text>
-              </view>
-              <view class="info-row">
-                <text class="info-label">已付金额</text>
-                <text class="info-value">{{order.paidAmountText}}</text>
-              </view>
-            </block>
-            
-            <!-- 已上课次 -->
-            <view class="info-row" wx:if="{{order.usedSessions > 0}}">
-              <text class="info-label">已上课次</text>
-              <text class="info-value">{{order.usedSessions}}课次</text>
+            <view class="info-row">
+              <text class="info-label">课程费用</text>
+              <text class="info-value">¥{{order.price || 0}}</text>
+            </view>
+            <view class="info-row">
+              <text class="info-label">教辅费</text>
+              <text class="info-value price-highlight">¥{{order.materialPrice || 0}}</text>
+            </view>
+            <view class="info-row">
+              <text class="info-label">合计</text>
+              <text class="info-value price">{{order.totalPriceText}}</text>
+            </view>
+            <view class="info-row" wx:if="{{order.paidAmount > 0}}">
+              <text class="info-label">已付金额</text>
+              <text class="info-value">{{order.paidAmountText}}</text>
             </view>
           </view>
         </view>
@@ -183,9 +146,9 @@
   </view>
 
   <!-- 底部操作栏 -->
-  <view class="bottom-bar" wx:if="{{!loading && order.showPayBtn && !order.isLocked}}">
+  <view class="bottom-bar" wx:if="{{!loading && (order.showPayBtn || pendingPayment) && !order.isLocked}}">
     <view class="pay-btn-full" bindtap="onPay">
-      <text>立即支付 {{order.pendingAmountText}}</text>
+      <text>立即支付 {{order.pendingAmountText || ''}}</text>
     </view>
   </view>
 </view>

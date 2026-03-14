@@ -2,5 +2,5 @@
   "usingComponents": {
     "custom-navbar": "/components/custom-navbar/custom-navbar"
   },
-  "navigationBarTitleText": "评测详情"
+  "navigationStyle": "custom"
 }

@@ -263,3 +263,8 @@ page {
   font-size: 30rpx;
   font-weight: 500;
 }
+
+.action-btn.disabled {
+  background: #d1d5db;
+  color: #9ca3af;
+}

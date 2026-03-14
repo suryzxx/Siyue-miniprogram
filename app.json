@@ -19,7 +19,7 @@
 "pages/waitlist/confirm",
 "pages/waitlist/status",
 "pages/assessment/list",
-"pages/assessment/detail",
+    "pages/assessment/calendar",
 "pages/my/classes/classes",
 "pages/my/classes/detail",
 "pages/my/classes/transfer",

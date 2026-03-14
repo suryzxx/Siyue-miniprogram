@@ -17,34 +17,6 @@ page {
   min-height: 100vh;
 }
 
-/* Tab栏 */
-.tabs {
-  display: flex;
-  background: #ffffff;
-  border-bottom: 1rpx solid #f1f5f9;
-}
-
-.tab-item {
-  flex: 1;
-  text-align: center;
-  padding: 32rpx 0;
-  border-bottom: 4rpx solid transparent;
-}
-
-.tab-item text {
-  font-size: 28rpx;
-  color: #64748b;
-}
-
-.tab-item.is-active {
-  border-bottom-color: #9e8ef1;
-}
-
-.tab-item.is-active text {
-  color: #9e8ef1;
-  font-weight: 500;
-}
-
 /* 滚动区域 */
 .scrollarea {
   flex: 1;
@@ -114,44 +86,71 @@ page {
   border-bottom: 1rpx solid #f6f6f8;
 }
 
-.student-name {
-  font-size: 32rpx;
+.card-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.card-title {
+  font-size: 30rpx;
   font-weight: 500;
   color: #1f2d3d;
 }
 
-.status {
-  padding: 6rpx 16rpx;
-  border-radius: 16rpx;
+/* 状态标签样式 */
+.status-tag {
+  padding: 8rpx 20rpx;
+  border-radius: 8rpx;
 }
 
-.status text {
-  font-size: 22rpx;
+.status-tag text {
+  font-size: 24rpx;
   font-weight: 500;
 }
 
+/* 待评测 - 黄色 */
 .status-pending {
-  background: rgba(251, 191, 36, 0.1);
+  background: rgba(251, 191, 36, 0.15);
 }
 
 .status-pending text {
   color: #f59e0b;
 }
 
+/* 已完成 - 紫色 */
 .status-completed {
-  background: rgba(158, 142, 241, 0.1);
+  background: rgba(158, 142, 241, 0.15);
 }
 
 .status-completed text {
   color: #9e8ef1;
 }
 
+/* 已取消 - 灰色 */
 .status-cancelled {
   background: #f1f5f9;
 }
 
 .status-cancelled text {
+  color: #94a3b8;
+}
+
+/* 取消预约按钮 */
+.cancel-btn {
+  padding: 12rpx 24rpx;
+  background: #f1f5f9;
+  border-radius: 8rpx;
+  border: 1rpx solid #e2e8f0;
+}
+
+.cancel-btn text {
+  font-size: 24rpx;
   color: #64748b;
+}
+
+.cancel-btn:active {
+  background: #e2e8f0;
 }
 
 .card-body {
@@ -166,6 +165,10 @@ page {
   gap: 8rpx;
 }
 
+.info-item .info-text {
+  flex: 1;
+}
+
 .info-icon {
   width: 28rpx;
   height: 28rpx;
@@ -174,31 +177,7 @@ page {
 
 .info-text {
   font-size: 26rpx;
-  color: #64748b;
-}
-
-.level-text {
-  color: #9e8ef1;
-  font-weight: 500;
-}
-
-.card-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 20rpx;
-  padding-top: 16rpx;
-  border-top: 1rpx solid #f6f6f8;
-}
-
-.create-time {
-  font-size: 22rpx;
-  color: #94a3b8;
-}
-
-.arrow-icon {
-  width: 24rpx;
-  height: 24rpx;
+  color: #1f2d3d;
 }
 
 .loading {
@@ -208,11 +187,33 @@ page {
   font-size: 26rpx;
 }
 
-/* 浮动按钮 */
-.fab {
+/* 浮动按钮容器 */
+.fab-container {
   position: fixed;
   right: 32rpx;
   bottom: 120rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 20rpx;
+}
+
+/* 日历按钮 */
+.fab-calendar {
+  padding: 20rpx 32rpx;
+  background: linear-gradient(135deg, #9e8ef1 0%, #7e6ef1 100%);
+  border-radius: 50rpx;
+  box-shadow: 0 8rpx 24rpx rgba(158, 142, 241, 0.3);
+}
+
+.fab-calendar-text {
+  font-size: 28rpx;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+/* 浮动按钮 */
+.fab {
   width: 100rpx;
   height: 100rpx;
   background: linear-gradient(135deg, #9e8ef1 0%, #7e6ef1 100%);

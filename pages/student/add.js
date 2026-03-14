@@ -138,13 +138,23 @@ Page({
       return
     }
 
+    if (!student.en_name || !student.en_name.trim()) {
+      wx.showToast({ title: '请输入学生英文名', icon: 'none' })
+      return
+    }
+
     if (!student.school || !student.school.trim()) {
-      wx.showToast({ title: '请输入在读学校', icon: 'none' })
+      wx.showToast({ title: '请输入学生在读学校', icon: 'none' })
+      return
+    }
+
+    if (!student.city) {
+      wx.showToast({ title: '请选择学生就读城市', icon: 'none' })
       return
     }
 
     if (!student.discover_channel) {
-      wx.showToast({ title: '请选择了解渠道', icon: 'none' })
+      wx.showToast({ title: '请选择您了解我们的渠道', icon: 'none' })
       return
     }
 

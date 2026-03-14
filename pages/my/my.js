@@ -1,4 +1,4 @@
-const { myClassService } = require('../../services/my-class')
+const { classService } = require('../../services/class')
 
 Page({
   data: {
@@ -58,7 +58,6 @@ Page({
       return
     }
 
-    // 已登录：获取当前学生信息
     const currentStudentId = app.globalData.currentStudentId
     const students = app.globalData.students || []
     const currentStudent = students.find(s => s.id === currentStudentId) || students[0] || null
@@ -68,27 +67,58 @@ Page({
       currentStudent
     })
 
-    // 加载班级信息
     if (currentStudent) {
-      this.loadCurrentClasses(currentStudent.id)
+      this.loadCurrentClasses()
     }
   },
 
-  async loadCurrentClasses(studentId) {
+  async loadCurrentClasses() {
     this.setData({ loadingClasses: true })
     try {
-      const res = await myClassService.getCurrentClasses({ studentId })
+      // TODO: 之后改回我的班级接口 /client/api/class/my/list
+      // 临时用班级列表接口测试
+      const res = await classService.getOpenList({ page: 1, page_size: 5 })
       if (res.code === 200 && res.data) {
-        const classes = res.data.list || []
-        // 格式化班级数据用于显示
-        const formattedClasses = classes.map(c => ({
-          ...c,
-          displayName: c.name,
-          displayCampus: c.campus?.name || '',
-          displayTeacher: c.mainTeacher?.name || '',
-          displaySchedule: c.schedule || '',
-          progressText: `第${c.currentSession || 0}讲`
-        }))
+        const list = res.data.list || res.data || []
+        const formattedClasses = list.map(c => {
+          const timeParts = []
+          
+          if (c.lesson_time) {
+            timeParts.push(c.lesson_time)
+          }
+          
+          if (c.class_days) {
+            const weekDayMap = {
+              'Mon': '周一', 'Tue': '周二', 'Wed': '周三',
+              'Thu': '周四', 'Fri': '周五', 'Sat': '周六', 'Sun': '周日'
+            }
+            let daysArray = c.class_days
+            if (typeof daysArray === 'string') {
+              try {
+                const parsed = JSON.parse(daysArray)
+                if (Array.isArray(parsed)) daysArray = parsed
+              } catch (e) {
+                daysArray = daysArray.split(',')
+              }
+            }
+            if (Array.isArray(daysArray)) {
+              const daysStr = daysArray
+                .filter(d => d)
+                .map(d => weekDayMap[d.trim ? d.trim() : d] || d)
+                .join('、')
+              if (daysStr) timeParts.push(daysStr)
+            }
+          }
+          
+          return {
+            ...c,
+            displayName: c.name,
+            displayCampus: c.campus_name || '',
+            displayTeacher: c.teacher_name || '',
+            displaySchedule: timeParts.join(' '),
+            progressText: `第${c.current_lesson_num || 1}讲`,
+          }
+        })
         this.setData({
           currentClasses: formattedClasses,
           loadingClasses: false
@@ -112,12 +142,7 @@ Page({
   },
 
   onClassScheduleTap() {
-    const { isLoggedIn } = this.data
-    if (!isLoggedIn) {
-      wx.navigateTo({ url: '/pages/auth/login' })
-      return
-    }
-    wx.navigateTo({ url: '/pages/my/classes/attendance' })
+    wx.showToast({ title: '开发中', icon: 'none' })
   },
 
   onUserCardTap() {
@@ -145,7 +170,7 @@ Page({
     } else if (id === 'myClasses') {
       wx.navigateTo({ url: '/pages/my/classes/classes' })
     } else if (id === 'myWaitlists') {
-      wx.navigateTo({ url: '/pages/my/waitlists/waitlists' })
+      wx.showToast({ title: '开发中', icon: 'none' })
     } else if (id === 'assessment') {
       wx.navigateTo({ url: '/pages/assessment/list' })
     }

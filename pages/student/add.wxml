@@ -77,7 +77,7 @@
               <text class="field-label">英文名</text>
               <input
                 class="field-input"
-                placeholder="选填"
+                placeholder="请输入学生英文名"
                 value="{{student.englishName}}"
                 bindinput="onEnglishNameInput"
               />
@@ -88,7 +88,7 @@
               <text class="field-label">在读学校</text>
               <input
                 class="field-input"
-                placeholder="选填"
+                placeholder="请输入学生在读学校"
                 value="{{student.school}}"
                 bindinput="onSchoolInput"
               />
@@ -100,7 +100,7 @@
               <picker mode="selector" range="{{cities}}" range-key="name" value="{{cityIndex}}" bindchange="onCityChange">
                 <view class="field-picker">
                   <text class="{{cityIndex >= 0 ? 'picker-value' : 'picker-placeholder'}}">
-                    {{cityIndex >= 0 ? cities[cityIndex].name : '选填'}}
+                    {{cityIndex >= 0 ? cities[cityIndex].name : '请选择学生就读城市'}}
                   </text>
                   <image class="picker-arrow" src="/images/icons/arrow-down.svg" mode="aspectFit" />
                 </view>
@@ -113,7 +113,7 @@
               <picker mode="selector" range="{{sourceOptions}}" range-key="label" value="{{sourceIndex}}" bindchange="onSourceChange">
                 <view class="field-picker">
                   <text class="{{sourceIndex >= 0 ? 'picker-value' : 'picker-placeholder'}}">
-                    {{sourceIndex >= 0 ? sourceOptions[sourceIndex].label : '选填'}}
+                    {{sourceIndex >= 0 ? sourceOptions[sourceIndex].label : '请选择您了解我们的渠道'}}
                   </text>
                   <image class="picker-arrow" src="/images/icons/arrow-down.svg" mode="aspectFit" />
                 </view>

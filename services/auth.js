@@ -243,15 +243,26 @@ const authService = {
   },
 
   /**
-   * 老用户新增学生
-   * 后端未提供 /client/api/student/add，强制使用模拟数据
+   * 老用户新增学生（登录态创建学生）
+   * 后端接口: POST /client/api/user/create
    */
   addStudent(studentData) {
-    // 后端未提供此接口，强制使用模拟数据
-    return Promise.resolve({
-      code: 200,
-      message: '学生创建成功',
-      data: {}
+    if (config.useLocalMock) {
+      // Mock response for student creation
+      return Promise.resolve({
+        code: 200,
+        message: '学生创建成功',
+        data: {
+          token: 'mock_normal_token_' + Date.now(),
+          is_temp_token: false
+        }
+      })
+    }
+    return post('/client/api/user/create', studentData).then(res => {
+      if (res.data && res.data.token) {
+        setToken(res.data.token)
+      }
+      return res
     })
   },
 
@@ -292,6 +303,92 @@ const authService = {
       })
     }
     return get('/client/api/user/info')
+  },
+
+  /**
+   * 获取学生列表（用于 600 错误修复）
+   * 后端接口: GET /client/api/user/student/list
+   */
+  getStudentList() {
+    if (config.useLocalMock) {
+      return Promise.resolve({
+        code: 200,
+        message: '获取成功',
+        data: {
+          list: [
+            { uid: 5023, name: '测试学生1' },
+            { uid: 5024, name: '测试学生2' }
+          ]
+        }
+      })
+    }
+    return get('/client/api/user/student/list')
+  },
+
+  /**
+   * 获取用户信息（带 600 错误自动修复）
+   * 修复逻辑：
+   * 1. 如果 getUserInfo 返回 600 错误
+   * 2. 调用 getStudentList 获取学生列表
+   * 3. 取第一个学生的 uid，调用 switchStudent 切换
+   * 4. 用新 token 重新调用 getUserInfo
+   */
+  async getUserInfoWithFix() {
+    // 第一次尝试获取用户信息
+    let res = await this.getUserInfoWithToken()
+    
+    // 如果成功，直接返回
+    if (res.code === 200) {
+      return res
+    }
+    
+    // 如果是 600 错误，尝试修复
+    if (res.code === 600) {
+      console.log('[Auth] getUserInfo 返回 600，尝试修复...')
+      
+      try {
+        // 1. 获取学生列表
+        const listRes = await this.getStudentList()
+        console.log('[Auth] getStudentList response:', listRes)
+        
+        if (listRes.code === 200 && listRes.data && listRes.data.list && listRes.data.list.length > 0) {
+          // 2. 取第一个学生的 uid
+          const firstStudent = listRes.data.list[0]
+          const uid = firstStudent.uid || firstStudent.id
+          
+          if (!uid) {
+            console.error('[Auth] 学生列表中没有有效的 uid')
+            return res // 返回原始错误
+          }
+          
+          console.log('[Auth] 找到学生，uid:', uid, '，尝试切换...')
+          
+          // 3. 切换到这个学生
+          const switchRes = await this.switchStudent(uid)
+          console.log('[Auth] switchStudent response:', switchRes)
+          
+          if (switchRes.code === 200 && switchRes.data && switchRes.data.token) {
+            // 4. 新 token 已在 switchStudent 中自动保存
+            console.log('[Auth] 切换成功，使用新 token 重新获取用户信息...')
+            
+            // 5. 用新 token 重新获取用户信息
+            res = await this.getUserInfoWithToken()
+            console.log('[Auth] 修复后 getUserInfo response:', res)
+            
+            return res
+          } else {
+            console.error('[Auth] 切换学生失败:', switchRes)
+          }
+        } else {
+          console.error('[Auth] 学生列表为空或获取失败')
+        }
+      } catch (err) {
+        console.error('[Auth] 修复过程中出错:', err)
+      }
+    }
+    
+    // 修复失败，返回原始错误
+    return res
   },
 
   /**
