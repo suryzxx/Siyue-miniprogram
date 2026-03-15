@@ -70,18 +70,18 @@ Page({
         name: item.name
       }))
 
-      self.setData({
-        filters: {
-          semesters: [
-            { id: 'spring', name: '春季' },
-            { id: 'summer', name: '暑假' },
-            { id: 'autumn', name: '秋季' },
-            { id: 'winter', name: '寒假' }
-          ],
-          campuses: campuses,
-          teachers: teachers
-        }
-      })
+        self.setData({
+          filters: {
+            semesters: [
+              { id: 'chun', name: '春季' },
+              { id: 'shu', name: '暑假' },
+              { id: 'qiu', name: '秋季' },
+              { id: 'han', name: '寒假' }
+            ],
+            campuses: campuses,
+            teachers: teachers
+          }
+        })
     }).catch(err => {
       console.error('[course] loadFilters error:', err)
     })
@@ -101,22 +101,26 @@ Page({
       const pageSize = self.data.pageSize
       const params = {
         page: 1,
-        page_size: pageSize
+        page_size: pageSize,
+        'search[sale_status]': 1
       }
 
       if (currentFilters.semester) {
-        params.semester = currentFilters.semester
+        params['search[course_semester]'] = currentFilters.semester
       }
       if (currentFilters.campusId) {
-        params.campus_id = currentFilters.campusId
+        params['search[campus_ids]'] = currentFilters.campusId
       }
       if (currentFilters.teacherId) {
-        params.teacher_id = currentFilters.teacherId
+        params['search[teacher_ids]'] = currentFilters.teacherId
       }
 
       classService.getOpenList(params).then(res => {
         if (res.code === 200 && res.data) {
-          const list = res.data.list || res.data || []
+          let list = res.data.list || res.data || []
+          if (!Array.isArray(list)) {
+            list = []
+          }
           const classes = self.formatClasses(list)
           const hasMore = list.length >= pageSize
 
@@ -166,22 +170,26 @@ Page({
     const nextPage = page + 1
     const params = {
       page: nextPage,
-      page_size: pageSize
+      page_size: pageSize,
+      'search[sale_status]': 1
     }
 
     if (currentFilters.semester) {
-      params.semester = currentFilters.semester
+      params['search[course_semester]'] = currentFilters.semester
     }
     if (currentFilters.campusId) {
-      params.campus_id = currentFilters.campusId
+      params['search[campus_ids]'] = currentFilters.campusId
     }
     if (currentFilters.teacherId) {
-      params.teacher_id = currentFilters.teacherId
+      params['search[teacher_ids]'] = currentFilters.teacherId
     }
 
     classService.getOpenList(params).then(res => {
       if (res.code === 200 && res.data) {
-        const list = res.data.list || res.data || []
+        let list = res.data.list || res.data || []
+        if (!Array.isArray(list)) {
+          list = []
+        }
         const newClasses = self.formatClasses(list)
         const hasMore = list.length >= pageSize
 

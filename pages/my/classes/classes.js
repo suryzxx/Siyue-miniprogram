@@ -1,4 +1,4 @@
-const { classService } = require('../../../services/class')
+const { myClassService } = require('../../../services/my-class')
 
 Page({
   data: {
@@ -31,13 +31,15 @@ Page({
   },
 
   loadData: function() {
+    var self = this
     this.setData({ loading: true })
-    
-    // TODO: 之后改回我的班级接口 /client/api/class/my/list
-    // 临时用班级列表接口测试
-    classService.getOpenList({ page: 1, page_size: 20 }).then(res => {
+
+    myClassService.getMyClasses({ page: 1, page_size: 20 }).then(res => {
       if (res.code === 200 && res.data) {
-        const list = res.data.list || res.data || []
+        let list = res.data.list || res.data || []
+        if (!Array.isArray(list)) {
+          list = []
+        }
         const classList = list.map(item => this.formatClassItem(item))
         const currentClass = classList.find(c => c.status === 'active') || classList[0] || null
         
@@ -48,10 +50,18 @@ Page({
         })
       } else {
         this.setData({ loading: false })
+        wx.showToast({
+          title: res.message || '暂无班级数据',
+          icon: 'none'
+        })
       }
     }).catch(err => {
       console.error('加载班级列表失败:', err)
       this.setData({ loading: false })
+      wx.showToast({
+        title: '加载失败，请稍后重试',
+        icon: 'none'
+      })
     })
   },
 

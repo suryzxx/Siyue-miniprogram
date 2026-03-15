@@ -26,7 +26,7 @@ const myClassService = {
     // 使用后端真实接口
     return get('/client/api/class/my/list', params).then(res => {
       if (res.code === 200 && res.data) {
-        const list = (res.data.list || res.data || []).map(item => {
+        const list = (res.data?.list ?? []).map(item => {
           // 处理日期：只取日期部分 (YYYY-MM-DD HH:mm:ss -> YYYY-MM-DD)
           const formatDate = (dateStr) => {
             if (!dateStr) return ''

@@ -1,4 +1,4 @@
-const { classService } = require('../../services/class')
+const { myClassService } = require('../../services/my-class')
 
 Page({
   data: {
@@ -75,11 +75,13 @@ Page({
   async loadCurrentClasses() {
     this.setData({ loadingClasses: true })
     try {
-      // TODO: 之后改回我的班级接口 /client/api/class/my/list
-      // 临时用班级列表接口测试
-      const res = await classService.getOpenList({ page: 1, page_size: 5 })
+      const res = await myClassService.getMyClasses({ page: 1, page_size: 5 })
       if (res.code === 200 && res.data) {
         const list = res.data.list || res.data || []
+        if (!Array.isArray(list)) {
+          this.setData({ loadingClasses: false })
+          return
+        }
         const formattedClasses = list.map(c => {
           const timeParts = []
           
