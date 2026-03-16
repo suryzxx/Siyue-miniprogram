@@ -10,11 +10,11 @@
       <view class="content">
       <view class="quick-actions">
         <view class="action-item" bindtap="onAssessmentTap" hover-class="is-pressed" hover-stay-time="120">
-          <image class="action-icon" src="/images/icons/收藏.png" mode="aspectFit" />
+          <image class="action-icon" src="/images/icons/assessment.svg" mode="aspectFit" />
           <text class="action-text">预约评测</text>
         </view>
         <view class="action-item" bindtap="onConsultantTap" hover-class="is-pressed" hover-stay-time="120">
-          <image class="action-icon" src="/images/icons/收藏.png" mode="aspectFit" />
+          <image class="action-icon" src="/images/icons/chat.svg" mode="aspectFit" />
           <text class="action-text">课程顾问</text>
         </view>
       </view>

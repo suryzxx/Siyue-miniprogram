@@ -1,6 +1,6 @@
 <view class="page">
   <custom-navbar
-    center-text="设置"
+    center-text="帐号与安全"
     show-left="{{true}}"
     show-right="{{false}}"
     show-back="{{true}}"
@@ -10,23 +10,21 @@
   <view class="page-container" style="padding-top: {{navBarHeight}}px;">
     <scroll-view class="scrollarea" scroll-y>
       <view class="content">
-        <!-- Account Section -->
+        <!-- 切换学生 -->
         <view class="section">
-          <view class="section-title">账号与安全</view>
           <view class="menu-card">
             <view class="menu-item" bindtap="onSwitchAccount" hover-class="menu-item-active">
               <view class="menu-icon-wrapper">
-              <image class="menu-icon" src="/images/icons/switch.svg" mode="aspectFit" />
+                <image class="menu-icon" src="/images/icons/switch.svg" mode="aspectFit" />
               </view>
-              <text class="menu-text">切换账号</text>
+              <text class="menu-text">切换学生</text>
               <image class="menu-arrow" src="/images/icons/arrow-right.svg" mode="aspectFit" />
             </view>
           </view>
         </view>
 
-        <!-- Privacy Section -->
+        <!-- 隐私协议和用户协议 -->
         <view class="section">
-          <view class="section-title">法律与隐私</view>
           <view class="menu-card">
             <view class="menu-item" bindtap="onPrivacyTap" hover-class="menu-item-active">
               <view class="menu-icon-wrapper">
@@ -35,10 +33,30 @@
               <text class="menu-text">隐私协议</text>
               <image class="menu-arrow" src="/images/icons/arrow-right.svg" mode="aspectFit" />
             </view>
+            <view class="menu-item" bindtap="onUserAgreementTap" hover-class="menu-item-active">
+              <view class="menu-icon-wrapper">
+                <image class="menu-icon" src="/images/icons/file-text.svg" mode="aspectFit" />
+              </view>
+              <text class="menu-text">用户协议</text>
+              <image class="menu-arrow" src="/images/icons/arrow-right.svg" mode="aspectFit" />
+            </view>
           </view>
         </view>
 
-        <!-- Logout Button -->
+        <!-- 注销帐号 -->
+        <view class="section">
+          <view class="menu-card">
+            <view class="menu-item" bindtap="onDeleteAccountTap" hover-class="menu-item-active">
+              <view class="menu-icon-wrapper">
+                <image class="menu-icon" src="/images/icons/delete.svg" mode="aspectFit" />
+              </view>
+              <text class="menu-text">注销帐号</text>
+              <image class="menu-arrow" src="/images/icons/arrow-right.svg" mode="aspectFit" />
+            </view>
+          </view>
+        </view>
+
+        <!-- 退出登录 -->
         <view class="logout-section">
           <view class="logout-btn" bindtap="onLogout" hover-class="logout-btn-active">
             <text class="logout-text">退出登录</text>

@@ -52,6 +52,30 @@ Page({
     })
   },
 
+  // User Agreement -> Navigate to User Agreement
+  onUserAgreementTap() {
+    wx.navigateTo({
+      url: '/pages/my/user-agreement'
+    })
+  },
+
+  // Delete Account
+  onDeleteAccountTap() {
+    wx.showModal({
+      title: '注销帐号',
+      content: '确定要注销帐号吗？注销后数据将无法恢复。',
+      confirmText: '确定注销',
+      cancelText: '取消',
+      confirmColor: '#ff4d4f',
+      success: (res) => {
+        if (res.confirm) {
+          // TODO: 调用注销帐号接口
+          console.log('用户确认注销帐号')
+        }
+      }
+    })
+  },
+
   // Logout
   onLogout() {
     wx.showModal({
