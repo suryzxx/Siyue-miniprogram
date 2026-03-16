@@ -23,15 +23,35 @@ Page({
       campusImages: [
         {
           id: 'campus-1',
-          url: 'https://web-anli01.oss-cn-hangzhou.aliyuncs.com/miniprogram/images/pic1.jpg',
+          url: 'https://sy-student.oss-cn-shanghai.aliyuncs.com/%E6%A0%A1%E5%8C%BA%E7%8E%AF%E5%A2%83/2b1c592fe4d44ccb52768a10dc570d30.png',
         },
         {
           id: 'campus-2',
-          url: 'https://web-anli01.oss-cn-hangzhou.aliyuncs.com/miniprogram/images/pic2.jpg',
+          url: 'https://sy-student.oss-cn-shanghai.aliyuncs.com/%E6%A0%A1%E5%8C%BA%E7%8E%AF%E5%A2%83/05c7a4ac598061b6ff367565a41f1cf9.png',
         },
         {
           id: 'campus-3',
-          url: 'https://web-anli01.oss-cn-hangzhou.aliyuncs.com/miniprogram/images/pic3.jpg',
+          url: 'https://sy-student.oss-cn-shanghai.aliyuncs.com/%E6%A0%A1%E5%8C%BA%E7%8E%AF%E5%A2%83/7a94dd4944b62109b1541e864436923a.png',
+        },
+        {
+          id: 'campus-4',
+          url: 'https://sy-student.oss-cn-shanghai.aliyuncs.com/%E6%A0%A1%E5%8C%BA%E7%8E%AF%E5%A2%83/29292672eae3bf9340135e53cbfa7fbe.png',
+        },
+        {
+          id: 'campus-5',
+          url: 'https://sy-student.oss-cn-shanghai.aliyuncs.com/%E6%A0%A1%E5%8C%BA%E7%8E%AF%E5%A2%83/42323467d8917cbe9d36f3b07ec763fb.png',
+        },
+        {
+          id: 'campus-6',
+          url: 'https://sy-student.oss-cn-shanghai.aliyuncs.com/%E6%A0%A1%E5%8C%BA%E7%8E%AF%E5%A2%83/a6ac2c55f05710b256086681a0983737.png',
+        },
+        {
+          id: 'campus-7',
+          url: 'https://sy-student.oss-cn-shanghai.aliyuncs.com/%E6%A0%A1%E5%8C%BA%E7%8E%AF%E5%A2%83/b9cbfaff3c3b529081e95dc7a7a38b00.png',
+        },
+        {
+          id: 'campus-8',
+          url: 'https://sy-student.oss-cn-shanghai.aliyuncs.com/%E6%A0%A1%E5%8C%BA%E7%8E%AF%E5%A2%83/ed2619e77f566b4e203156c2076f12b0.png',
         },
       ],
       brandIntro:
