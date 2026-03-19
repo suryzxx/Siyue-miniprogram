@@ -128,7 +128,8 @@ Page({
           en_name: data.en_name,
           birthday: data.birthday,
           school: data.school,
-          city: data.city
+          city: data.city,
+          campus_id: data.campus_id
         }
         
         // 其他学生
@@ -141,7 +142,8 @@ Page({
           en_name: s.en_name,
           birthday: s.birthday,
           school: s.school,
-          city: s.city
+          city: s.city,
+          campus_id: s.campus_id
         }))
         
         // 所有学生

@@ -1,6 +1,8 @@
 const { studentService } = require('../../services/student')
 const { commonService } = require('../../services/common')
 
+const app = getApp()
+
 Page({
   data: {
     navBarHeight: 0,
@@ -10,30 +12,43 @@ Page({
       name: '',
       en_name: '',
       grade: '',
-      sex: 0,  // 0=未知, 1=男, 2=女
+      sex: 0,
       school: '',
-      city: '',
+      campus_id: '',
       birthday: ''
     },
     grades: [],
     gradeIndex: -1,
-    cities: [],
-    cityIndex: -1
+    campuses: [],
+    campusIndex: -1,
+    gradePickerVisible: false,
+    gradePickerValue: [],
+    gradePickerOptions: [],
+    genderPickerVisible: false,
+    genderPickerValue: [],
+    genderPickerOptions: [
+      { label: '男', value: '1' },
+      { label: '女', value: '2' }
+    ],
+    campusPickerVisible: false,
+    campusPickerValue: [],
+    campusPickerOptions: [],
+    birthdayPickerVisible: false
   },
 
-  onLoad(options) {
-    const app = getApp()
+  async onLoad(options) {
     if (!app.globalData.navBarHeight) {
       app.calculateNavBarHeight()
     }
-    // 将 id 转为整数
     const studentId = options.id ? parseInt(options.id, 10) : 0
     this.setData({
       navBarHeight: app.globalData.navBarHeight,
       studentId: studentId
     })
-    this.loadGrades()
-    this.loadCities()
+    await Promise.all([
+      this.loadGrades(),
+      this.loadCampuses()
+    ])
     this.loadStudent(studentId)
   },
 
@@ -41,32 +56,45 @@ Page({
     try {
       const res = await commonService.getGrades()
       if (res.code === 200 && res.data) {
-        this.setData({ grades: res.data })
-        this.updateGradeIndex()
+        const gradePickerOptions = res.data.map(item => ({
+          label: item.name,
+          value: item.code
+        }))
+        this.setData({ 
+          grades: res.data,
+          gradePickerOptions 
+        })
       }
     } catch (e) {
       console.error('加载年级列表失败', e)
     }
   },
 
-  async loadCities() {
+  async loadCampuses() {
     try {
-      const res = await commonService.getCities()
+      const res = await commonService.getCampusList()
       if (res.code === 200 && res.data) {
-        this.setData({ cities: res.data })
-        this.updateCityIndex()
+        const campusPickerOptions = res.data.map(item => ({
+          label: item.name,
+          value: item.id
+        }))
+        this.setData({ 
+          campuses: res.data,
+          campusPickerOptions 
+        })
       }
     } catch (e) {
-      console.error('加载城市列表失败', e)
+      console.error('加载校区列表失败', e)
     }
   },
 
   loadStudent(id) {
-    const app = getApp()
     const students = app.globalData.students || []
     const current = students.find(s => String(s.id) === String(id))
     if (current) {
-      console.log('[Edit] Loading student data:', current)
+      const gradeIndex = this.data.grades.findIndex(g => g.code === current.grade)
+      const campusIndex = this.data.campuses.findIndex(c => String(c.id) === String(current.campus_id))
+      
       this.setData({
         student: {
           name: current.name || '',
@@ -74,28 +102,12 @@ Page({
           grade: current.grade || '',
           sex: current.sex || 0,
           school: current.school || '',
-          city: current.city || '',
+          campus_id: current.campus_id || '',
           birthday: current.birthday || ''
-        }
+        },
+        gradeIndex,
+        campusIndex
       })
-      this.updateGradeIndex()
-      this.updateCityIndex()
-    }
-  },
-
-  updateGradeIndex() {
-    const { grades, student } = this.data
-    if (grades.length && student.grade) {
-      const idx = grades.findIndex(g => g.code === student.grade)
-      if (idx >= 0) this.setData({ gradeIndex: idx })
-    }
-  },
-
-  updateCityIndex() {
-    const { cities, student } = this.data
-    if (cities.length && student.city) {
-      const idx = cities.findIndex(c => c.code === student.city || c.name === student.city)
-      if (idx >= 0) this.setData({ cityIndex: idx })
     }
   },
 
@@ -111,35 +123,78 @@ Page({
     this.setData({ 'student.school': e.detail.value })
   },
 
-  onGradeChange(e) {
-    const index = e.detail.value
-    const grade = this.data.grades[index]
+  onGradeCellTap() {
+    this.setData({ gradePickerVisible: true })
+  },
+
+  onGenderCellTap() {
+    this.setData({ genderPickerVisible: true })
+  },
+
+  onCampusCellTap() {
+    this.setData({ campusPickerVisible: true })
+  },
+
+  onBirthdayCellTap() {
+    this.setData({ birthdayPickerVisible: true })
+  },
+
+  onPickerConfirm(e) {
+    const { value } = e.detail
+    const key = e.currentTarget.dataset.key
+    
+    if (key === 'grade') {
+      const gradeCode = value[0]
+      const gradeIndex = this.data.grades.findIndex(g => g.code === gradeCode)
+      this.setData({
+        gradePickerVisible: false,
+        gradePickerValue: value,
+        gradeIndex,
+ 'student.grade': gradeCode
+      })
+    } else if (key === 'gender') {
+      const genderValue = parseInt(value[0], 10)
+      this.setData({
+        genderPickerVisible: false,
+        genderPickerValue: value,
+        'student.sex': genderValue
+      })
+    } else if (key === 'campus') {
+      const campusId = value[0]
+      const campusIndex = this.data.campuses.findIndex(c => c.id === campusId)
+      this.setData({
+        campusPickerVisible: false,
+        campusPickerValue: value,
+        campusIndex,
+        'student.campus_id': campusId
+      })
+    }
+  },
+
+  onPickerCancel(e) {
+    const key = e.currentTarget.dataset.key
+    if (key === 'grade') {
+      this.setData({ gradePickerVisible: false })
+    } else if (key === 'gender') {
+      this.setData({ genderPickerVisible: false })
+    } else if (key === 'campus') {
+      this.setData({ campusPickerVisible: false })
+    }
+  },
+
+  onBirthdayConfirm(e) {
+    const { value } = e.detail
     this.setData({
-      gradeIndex: index,
-      'student.grade': grade?.code || ''
+      birthdayPickerVisible: false,
+      'student.birthday': value
     })
   },
 
-  onCityChange(e) {
-    const index = e.detail.value
-    const city = this.data.cities[index]
-    this.setData({
-      cityIndex: index,
-      'student.city': city?.code || city?.name || ''
-    })
+  onBirthdayCancel() {
+    this.setData({ birthdayPickerVisible: false })
   },
 
-  onGenderSelect(e) {
-    const { value } = e.currentTarget.dataset
-    // value 是 1 或 2 (数字)
-    this.setData({ 'student.sex': Number(value) })
-  },
-
-  onBirthdayChange(e) {
-    this.setData({ 'student.birthday': e.detail.value })
-  },
-
-  async onSave() {
+  async onSubmit() {
     const { student, studentId, loading } = this.data
 
     if (loading) return
@@ -149,16 +204,10 @@ Page({
       return
     }
 
-    if (!student.grade) {
-      wx.showToast({ title: '请选择在读年级', icon: 'none' })
-      return
-    }
-
     this.setData({ loading: true })
     wx.showLoading({ title: '保存中...' })
 
     try {
-      // 转换为 API 期望的格式
       const res = await studentService.update(studentId, {
         name: student.name.trim(),
         en_name: student.en_name || '',
@@ -166,15 +215,13 @@ Page({
         birthday: student.birthday || '',
         grade: student.grade,
         school: student.school || '',
-        city: student.city || ''
+        campus_id: student.campus_id || ''
       })
 
       wx.hideLoading()
       this.setData({ loading: false })
 
       if (res.code === 200) {
-        // 更新全局数据
-        const app = getApp()
         const idx = app.globalData.students.findIndex(s => String(s.id) === String(studentId))
         if (idx >= 0) {
           app.globalData.students[idx] = {
@@ -185,7 +232,7 @@ Page({
             birthday: student.birthday,
             grade: student.grade,
             school: student.school,
-            city: student.city
+            campus_id: student.campus_id
           }
           app.saveLoginState()
         }

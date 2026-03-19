@@ -27,6 +27,10 @@
   margin-right: 10rpx;
 }
 
+.left-icon.black {
+  filter: brightness(0);
+}
+
 .left-text {
   font-size: 32rpx;
   font-weight: bold;

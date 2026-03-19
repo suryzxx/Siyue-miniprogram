@@ -1,4 +1,6 @@
 // pages/my/settings.js
+const { post, removeToken } = require('../../utils/request')
+
 Page({
   data: {
     navBarHeight: 0,
@@ -55,7 +57,7 @@ Page({
   // User Agreement -> Navigate to User Agreement
   onUserAgreementTap() {
     wx.navigateTo({
-      url: '/pages/my/user-agreement'
+      url: '/pages/my/agreement'
     })
   },
 
@@ -69,11 +71,41 @@ Page({
       confirmColor: '#ff4d4f',
       success: (res) => {
         if (res.confirm) {
-          // TODO: 调用注销帐号接口
-          console.log('用户确认注销帐号')
+          this.deleteAccount()
         }
       }
     })
+  },
+
+  deleteAccount() {
+    wx.showLoading({ title: '处理中...', mask: true })
+    
+    post('/client/api/user/account/delete')
+      .then(() => {
+        wx.hideLoading()
+        wx.showToast({
+          title: '帐号已注销',
+          icon: 'success',
+          duration: 1500
+        })
+        
+        wx.clearStorageSync()
+        removeToken()
+        
+        setTimeout(() => {
+          wx.reLaunch({
+            url: '/pages/auth/login'
+          })
+        }, 1500)
+      })
+      .catch((err) => {
+        wx.hideLoading()
+        wx.showToast({
+          title: err.message || '注销失败',
+          icon: 'none',
+          duration: 2000
+        })
+      })
   },
 
   // Logout

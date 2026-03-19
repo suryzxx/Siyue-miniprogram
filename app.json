@@ -1,73 +1,102 @@
 {
-"pages": [
-"pages/index/index",
-"pages/course/course",
-"pages/my/my",
-"pages/auth/login",
-"pages/auth/register",
-"pages/student/manage",
-"pages/student/edit",
-"pages/student/book-test",
-"pages/student/add",
-"pages/course/detail",
-"pages/enroll/select-student",
-"pages/order/confirm",
-"pages/order/pay-success",
-"pages/order/list",
-"pages/order/detail",
-"pages/order/refund",
-"pages/waitlist/confirm",
-"pages/waitlist/status",
-"pages/assessment/list",
-    "pages/assessment/calendar",
-"pages/my/classes/classes",
-"pages/my/classes/detail",
-"pages/my/classes/transfer",
-"pages/my/classes/adjust",
-"pages/my/classes/refund",
-"pages/my/classes/attendance",
-"pages/my/classes/schedule",
-"pages/my/waitlists/waitlists",
-    "pages/coupon/coupon",
+  "pages": [
+    "pages/index/index",
+    "pages/course/course",
+    "pages/course/detail",
+    "pages/my/my",
     "pages/my/privacy",
     "pages/my/agreement",
-    "pages/my/settings"
+    "pages/my/settings",
+    "pages/auth/login"
+  ],
+  "subpackages": [
+    {
+      "root": "pages/student",
+      "name": "student",
+      "pages": [
+        "manage",
+        "edit",
+        "add",
+        "book-test"
+      ]
+    },
+    {
+      "root": "pages/order",
+      "name": "order",
+      "pages": [
+        "confirm",
+        "pay-success",
+        "list",
+        "detail",
+        "refund"
+      ]
+    },
+    {
+      "root": "pages/waitlist",
+      "name": "waitlist",
+      "pages": [
+        "confirm",
+        "status"
+      ]
+    },
+    {
+      "root": "pages/assessment",
+      "name": "assessment",
+      "pages": [
+        "list",
+        "calendar"
+      ]
+    },
+    {
+      "root": "pages/enroll",
+      "name": "enroll",
+      "pages": [
+        "select-student"
+      ]
+    },
+    {
+      "root": "pages/coupon",
+      "name": "coupon",
+      "pages": [
+        "coupon"
+      ]
+    }
   ],
   "window": {
-"navigationStyle": "custom",
-"backgroundColor": "#f7f8fa",
-"backgroundTextStyle": "dark",
-"enablePullDownRefresh": true,
-"pageOrientation": "portrait"
-},
-"tabBar": {
-"color": "#86909c",
-"selectedColor": "#6b4ce6",
-"backgroundColor": "#ffffff",
-"borderStyle": "white",
-"list": [
-{
-"pagePath": "pages/index/index",
-"text": "首页",
-"iconPath": "images/tabbar/home.png",
-"selectedIconPath": "images/tabbar/home-active.png"
-},
-    {
-      "pagePath": "pages/course/course",
-      "text": "报班",
-      "iconPath": "images/tabbar/course.png",
-      "selectedIconPath": "images/tabbar/course-active.png"
-    },
-{
-"pagePath": "pages/my/my",
-"text": "我的",
-"iconPath": "images/tabbar/my.png",
-"selectedIconPath": "images/tabbar/my-active.png"
-}
-]
-},
-"style": "v2",
-"componentFramework": "glass-easel",
-"sitemapLocation": "sitemap.json",
-"lazyCodeLoading": "requiredComponents"
+    "navigationStyle": "custom",
+    "backgroundColor": "#f7f8fa",
+    "backgroundTextStyle": "dark",
+    "enablePullDownRefresh": true,
+    "pageOrientation": "portrait"
+  },
+  "tabBar": {
+    "color": "#86909c",
+    "selectedColor": "#6b4ce6",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "images/tabbar/home.png",
+        "selectedIconPath": "images/tabbar/home-active.png"
+      },
+      {
+        "pagePath": "pages/course/course",
+        "text": "报班",
+        "iconPath": "images/tabbar/course.png",
+        "selectedIconPath": "images/tabbar/course-active.png"
+      },
+      {
+        "pagePath": "pages/my/my",
+        "text": "我的",
+        "iconPath": "images/tabbar/my.png",
+        "selectedIconPath": "images/tabbar/my-active.png"
+      }
+    ]
+  },
+  "style": "v2",
+  "componentFramework": "glass-easel",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
 }

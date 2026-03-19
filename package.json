@@ -1,0 +1,26 @@
+{
+  "name": "miniprogram-1",
+  "version": "1.0.0",
+  "main": "app.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/suryzxx/Siyue-miniprogram.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/suryzxx/Siyue-miniprogram/issues"
+  },
+  "homepage": "https://github.com/suryzxx/Siyue-miniprogram#readme",
+  "description": "",
+  "dependencies": {
+    "tdesign-miniprogram": "^1.12.3"
+  }
+}

@@ -3,7 +3,7 @@
 
   <view class="navbar-content" style="height: 60rpx;">
     <view class="navbar-left" wx:if="{{showLeft}}" bindtap="onLeftTap">
-      <image wx:if="{{leftIcon}}" src="{{leftIcon}}" class="left-icon"></image>
+      <image wx:if="{{leftIcon}}" src="{{leftIcon}}" class="left-icon {{leftIconColor}}"></image>
       <text class="left-text">{{leftText}}</text>
     </view>
 

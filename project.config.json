@@ -2,7 +2,14 @@
   "compileType": "miniprogram",
   "libVersion": "trial",
   "packOptions": {
-    "ignore": [],
+    "ignore": [
+      { "type": "file", "value": "services/assessment.js" },
+      { "type": "file", "value": "services/student.js" },
+      { "type": "file", "value": "services/subscribe.js" },
+      { "type": "file", "value": "services/waitlist.js" },
+      { "type": "file", "value": "utils/status.js" },
+      { "type": "folder", "value": "miniprogram_npm/tdesign-miniprogram/tag" }
+    ],
     "include": []
   },
   "setting": {
@@ -12,7 +19,13 @@
     "minified": true,
     "enhance": true,
     "showShadowRootInWxmlPanel": true,
-    "packNpmRelationList": [],
+    "packNpmManually": true,
+    "packNpmRelationList": [
+      {
+        "packageJsonPath": "./package.json",
+        "miniprogramNpmDistDir": "./miniprogram_npm"
+      }
+    ],
     "babelSetting": {
       "ignore": [],
       "disablePlugins": [],

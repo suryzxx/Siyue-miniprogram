@@ -22,108 +22,259 @@ Component({
   },
 
   data: {
-    showPopup: false,
-    popupType: '',
-    popupTitle: '',
-    popupOptions: [],
-    hasFilters: false,
+    showSemesterPopup: false,
+    showCampusPopup: false,
+    showTeacherPopup: false,
+    semesterOptions: [],
+    campusOptions: [],
+    teacherOptions: [],
+    campusSearchKeyword: '',
+    teacherSearchKeyword: '',
+    tempSelectedSemester: null,
+    tempSelectedCampus: null,
+    tempSelectedTeacher: null,
   },
 
   observers: {
-    'currentFilters': function(currentFilters) {
-      // 监听 currentFilters 变化，计算是否有筛选条件
-      const hasFilters = !!(currentFilters.semester || currentFilters.campusId || currentFilters.teacherId)
-      this.setData({ hasFilters })
+    'filters.semesters': function(semesters) {
+      this.updateSemesterOptions(semesters)
+    },
+    'filters.campuses': function(campuses) {
+      this.updateCampusOptions(campuses, '')
+    },
+    'filters.teachers': function(teachers) {
+      this.updateTeacherOptions(teachers, '')
     }
   },
 
   methods: {
-    onSemesterTap() {
-      const { filters, currentFilters } = this.data
-      const options = filters.semesters.map((item) => ({
+    updateSemesterOptions(semesters) {
+      const { currentFilters } = this.data
+      const options = (semesters || []).map(item => ({
         id: item.id,
         name: item.name,
-        selected: item.id === currentFilters.semester,
+        selected: item.id === currentFilters.semester
       }))
-      this.setData({
-        showPopup: true,
-        popupType: 'semester',
-        popupTitle: '选择学期',
-        popupOptions: options,
+      this.setData({ semesterOptions: options })
+    },
+
+    updateCampusOptions(campuses, keyword) {
+      const { currentFilters } = this.data
+      let list = campuses || []
+      if (keyword) {
+        list = list.filter(item => item.name && item.name.indexOf(keyword) > -1)
+      }
+      const options = list.map(item => ({
+        id: item.id,
+        name: item.name,
+        selected: item.id === currentFilters.campusId
+      }))
+      this.setData({ campusOptions: options })
+    },
+
+    updateTeacherOptions(teachers, keyword) {
+      const { currentFilters } = this.data
+      let list = teachers || []
+      if (keyword) {
+        list = list.filter(item => item.name && item.name.indexOf(keyword) > -1)
+      }
+      const options = list.map(item => ({
+        id: item.id,
+        name: item.name,
+        selected: item.id === currentFilters.teacherId
+      }))
+      this.setData({ teacherOptions: options })
+    },
+
+    onSemesterTap() {
+      this.updateSemesterOptions(this.data.filters.semesters)
+      this.setData({ 
+        showSemesterPopup: true,
+        tempSelectedSemester: this.data.currentFilters.semester || null
       })
     },
 
     onCampusTap() {
-      const { filters, currentFilters } = this.data
-      const options = filters.campuses.map((item) => ({
-        id: item.id,
-        name: item.name,
-        selected: item.id === currentFilters.campusId,
-      }))
-      this.setData({
-        showPopup: true,
-        popupType: 'campus',
-        popupTitle: '选择校区',
-        popupOptions: options,
+      this.updateCampusOptions(this.data.filters.campuses, '')
+      this.setData({ 
+        showCampusPopup: true,
+        campusSearchKeyword: '',
+        tempSelectedCampus: this.data.currentFilters.campusId || null
       })
     },
 
     onTeacherTap() {
-      const { filters, currentFilters } = this.data
-      const options = filters.teachers.map((item) => ({
-        id: item.id,
-        name: item.name,
-        selected: item.id === currentFilters.teacherId,
-      }))
-      this.setData({
-        showPopup: true,
-        popupType: 'teacher',
-        popupTitle: '选择主教老师',
-        popupOptions: options,
+      this.updateTeacherOptions(this.data.filters.teachers, '')
+      this.setData({ 
+        showTeacherPopup: true,
+        teacherSearchKeyword: '',
+        tempSelectedTeacher: this.data.currentFilters.teacherId || null
       })
     },
 
-    onSelectOption(e) {
+    onSelectSemester(e) {
       const { item } = e.currentTarget.dataset
-      const { popupType, currentFilters } = this.data
-      let newFilters = { ...currentFilters }
+      const { semesterOptions, tempSelectedSemester } = this.data
+      
+      const newSelectedId = tempSelectedSemester === item.id ? null : item.id
+      const options = semesterOptions.map(opt => ({
+        ...opt,
+        selected: opt.id === newSelectedId
+      }))
+      
+      this.setData({ 
+        semesterOptions: options,
+        tempSelectedSemester: newSelectedId
+      })
+    },
 
-      if (popupType === 'semester') {
-        newFilters.semester = item.selected ? '' : item.id
-        newFilters.semesterName = item.selected ? '' : item.name
-      } else if (popupType === 'campus') {
-        newFilters.campusId = item.selected ? '' : item.id
-        newFilters.campusName = item.selected ? '' : item.name
-      } else if (popupType === 'teacher') {
-        newFilters.teacherId = item.selected ? '' : item.id
-        newFilters.teacherName = item.selected ? '' : item.name
+    onSelectCampus(e) {
+      const { item } = e.currentTarget.dataset
+      const { campusOptions, tempSelectedCampus } = this.data
+      
+      const newSelectedId = tempSelectedCampus === item.id ? null : item.id
+      const options = campusOptions.map(opt => ({
+        ...opt,
+        selected: opt.id === newSelectedId
+      }))
+      
+      this.setData({ 
+        campusOptions: options,
+        tempSelectedCampus: newSelectedId
+      })
+    },
+
+    onSelectTeacher(e) {
+      const { item } = e.currentTarget.dataset
+      const { teacherOptions, tempSelectedTeacher } = this.data
+      
+      const newSelectedId = tempSelectedTeacher === item.id ? null : item.id
+      const options = teacherOptions.map(opt => ({
+        ...opt,
+        selected: opt.id === newSelectedId
+      }))
+      
+      this.setData({ 
+        teacherOptions: options,
+        tempSelectedTeacher: newSelectedId
+      })
+    },
+
+    onCampusSearch(e) {
+      const keyword = e.detail.value || ''
+      this.setData({ campusSearchKeyword: keyword })
+      this.updateCampusOptions(this.data.filters.campuses, keyword)
+    },
+
+    onTeacherSearch(e) {
+      const keyword = e.detail.value || ''
+      this.setData({ teacherSearchKeyword: keyword })
+      this.updateTeacherOptions(this.data.filters.teachers, keyword)
+    },
+
+    onResetSemester() {
+      const options = this.data.semesterOptions.map(opt => ({
+        ...opt,
+        selected: false
+      }))
+      this.setData({ 
+        semesterOptions: options,
+        tempSelectedSemester: null
+      })
+    },
+
+    onResetCampus() {
+      const options = this.data.campusOptions.map(opt => ({
+        ...opt,
+        selected: false
+      }))
+      this.setData({ 
+        campusOptions: options,
+        tempSelectedCampus: null
+      })
+    },
+
+    onResetTeacher() {
+      const options = this.data.teacherOptions.map(opt => ({
+        ...opt,
+        selected: false
+      }))
+      this.setData({ 
+        teacherOptions: options,
+        tempSelectedTeacher: null
+      })
+    },
+
+    onConfirmSemester() {
+      const { tempSelectedSemester, filters, currentFilters } = this.data
+      const selected = filters.semesters.find(item => item.id === tempSelectedSemester)
+      
+      const newFilters = {
+        ...currentFilters,
+        semester: tempSelectedSemester || '',
+        semesterName: selected ? selected.name : ''
       }
-
-      this.setData({ showPopup: false })
+      
+      this.setData({ showSemesterPopup: false })
       this.triggerEvent('change', newFilters)
     },
 
-    onReset() {
-      this.triggerEvent('change', {
-        semester: '',
-        semesterName: '',
-        campusId: '',
-        campusName: '',
-        teacherId: '',
-        teacherName: '',
-      })
+    onConfirmCampus() {
+      const { tempSelectedCampus, filters, currentFilters } = this.data
+      const selected = filters.campuses.find(item => item.id === tempSelectedCampus)
+      
+      const newFilters = {
+        ...currentFilters,
+        campusId: tempSelectedCampus || '',
+        campusName: selected ? selected.name : ''
+      }
+      
+      this.setData({ showCampusPopup: false })
+      this.triggerEvent('change', newFilters)
     },
 
-    onMaskTap() {
-      this.setData({ showPopup: false })
+    onConfirmTeacher() {
+      const { tempSelectedTeacher, filters, currentFilters } = this.data
+      const selected = filters.teachers.find(item => item.id === tempSelectedTeacher)
+      
+      const newFilters = {
+        ...currentFilters,
+        teacherId: tempSelectedTeacher || '',
+        teacherName: selected ? selected.name : ''
+      }
+      
+      this.setData({ showTeacherPopup: false })
+      this.triggerEvent('change', newFilters)
     },
 
-    onClosePopup() {
-      this.setData({ showPopup: false })
+    onCloseSemesterPopup() {
+      this.setData({ showSemesterPopup: false })
     },
 
-    stopPropagation() {
-      // 阻止事件冒泡
+    onCloseCampusPopup() {
+      this.setData({ showCampusPopup: false })
+    },
+
+    onCloseTeacherPopup() {
+      this.setData({ showTeacherPopup: false })
+    },
+
+    onSemesterPopupChange(e) {
+      if (!e.detail.visible) {
+        this.setData({ showSemesterPopup: false })
+      }
+    },
+
+    onCampusPopupChange(e) {
+      if (!e.detail.visible) {
+        this.setData({ showCampusPopup: false })
+      }
+    },
+
+    onTeacherPopupChange(e) {
+      if (!e.detail.visible) {
+        this.setData({ showTeacherPopup: false })
+      }
     },
   },
 })

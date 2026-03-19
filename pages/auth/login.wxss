@@ -129,7 +129,8 @@ page {
 
 .agreement-row {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
+  justify-content: center;
   gap: 24rpx;
 }
 
@@ -143,7 +144,6 @@ page {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 4rpx;
   transition: all 0.2s ease;
 }
 
@@ -246,7 +246,7 @@ page {
 
 /* 登录按钮 */
 .login-btn {
-  width: 100%;
+  width: 100% !important;
   height: 112rpx;
   display: flex;
   align-items: center;

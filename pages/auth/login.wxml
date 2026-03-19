@@ -5,6 +5,7 @@
     show-right="{{false}}"
     show-back="{{false}}"
     left-icon="/images/icons/close.svg"
+    left-icon-color="black"
     bind:lefttap="onCloseTap"
   />
 

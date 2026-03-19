@@ -2,6 +2,8 @@ const { authService } = require('../../services/auth')
 const { commonService } = require('../../services/common')
 const { setToken } = require('../../utils/request')
 
+const app = getApp()
+
 Page({
   data: {
     navBarHeight: 0,
@@ -10,32 +12,43 @@ Page({
     student: {
       name: '',
       grade: '',
-      sex: 0,  // 0=未知, 1=男, 2=女
+      sex: 0,
       en_name: '',
       birthday: '',
       school: '',
-      city: '',
+      campus_id: '',
       discover_channel: 0
     },
     grades: [],
     gradeIndex: -1,
-    cities: [],
-    cityIndex: -1,
-    genderOptions: [
-      { label: '男', value: 1 },
-      { label: '女', value: 2 }
+    campuses: [],
+    campusIndex: -1,
+    genderPickerOptions: [
+      { label: '男', value: '1' },
+      { label: '女', value: '2' }
     ],
+    genderPickerVisible: false,
+    genderPickerValue: [],
     sourceOptions: [
       { label: '朋友/熟人推荐', value: 1 },
       { label: '小红书', value: 2 },
       { label: '思悦社群', value: 3 },
       { label: '公众号/视频号', value: 4 }
     ],
-    sourceIndex: -1
+    sourceIndex: -1,
+    gradePickerVisible: false,
+    gradePickerValue: [],
+    gradePickerOptions: [],
+    campusPickerVisible: false,
+    campusPickerValue: [],
+    campusPickerOptions: [],
+    sourcePickerVisible: false,
+    sourcePickerValue: [],
+    sourcePickerOptions: [],
+    birthdayPickerVisible: false
   },
 
   onLoad(options) {
-    const app = getApp()
     if (!app.globalData.navBarHeight) {
       app.calculateNavBarHeight()
     }
@@ -44,28 +57,42 @@ Page({
       fromLogin: options.from === 'login'
     })
     this.loadGrades()
-    this.loadCities()
+    this.loadCampuses()
   },
 
   async loadGrades() {
     try {
       const res = await commonService.getGrades()
       if (res.code === 200 && res.data) {
-        this.setData({ grades: res.data })
+        const gradePickerOptions = res.data.map(item => ({
+          label: item.name,
+          value: item.code
+        }))
+        this.setData({ 
+          grades: res.data,
+          gradePickerOptions 
+        })
       }
     } catch (e) {
       console.error('加载年级列表失败', e)
     }
   },
 
-  async loadCities() {
+  async loadCampuses() {
     try {
-      const res = await commonService.getCities()
+      const res = await commonService.getCampusList()
       if (res.code === 200 && res.data) {
-        this.setData({ cities: res.data })
+        const campusPickerOptions = res.data.map(item => ({
+          label: item.name,
+          value: item.id
+        }))
+        this.setData({ 
+          campuses: res.data,
+          campusPickerOptions
+        })
       }
     } catch (e) {
-      console.error('加载城市列表失败', e)
+      console.error('加载校区列表失败', e)
     }
   },
 
@@ -73,48 +100,105 @@ Page({
     this.setData({ 'student.name': e.detail.value })
   },
 
-  onGradeChange(e) {
-    const index = e.detail.value
-    const grade = this.data.grades[index]
-    this.setData({
-      gradeIndex: index,
-      'student.grade': grade?.code || ''
-    })
-  },
-
-  onGenderSelect(e) {
-    const { value } = e.currentTarget.dataset
-    this.setData({ 'student.sex': value })
-  },
-
   onEnglishNameInput(e) {
     this.setData({ 'student.en_name': e.detail.value })
-  },
-
-  onBirthdayChange(e) {
-    this.setData({ 'student.birthday': e.detail.value })
   },
 
   onSchoolInput(e) {
     this.setData({ 'student.school': e.detail.value })
   },
 
-  onCityChange(e) {
-    const index = e.detail.value
-    const city = this.data.cities[index]
-    this.setData({
-      cityIndex: index,
-      'student.city': city?.code || city?.name || ''
+  onGradeCellTap() {
+    this.setData({ gradePickerVisible: true })
+  },
+
+  onGenderCellTap() {
+    this.setData({ genderPickerVisible: true })
+  },
+
+  onCampusCellTap() {
+    this.setData({ campusPickerVisible: true })
+  },
+
+  onSourceCellTap() {
+    const sourcePickerOptions = this.data.sourceOptions.map(item => ({
+      label: item.label,
+      value: String(item.value)
+    }))
+    this.setData({ 
+      sourcePickerVisible: true,
+      sourcePickerOptions
     })
   },
 
-  onSourceChange(e) {
-    const index = e.detail.value
-    const source = this.data.sourceOptions[index]
+  onBirthdayCellTap() {
+    this.setData({ birthdayPickerVisible: true })
+  },
+
+  onPickerConfirm(e) {
+    const { value } = e.detail
+    const key = e.currentTarget.dataset.key
+
+    if (key === 'grade') {
+      const gradeCode = value[0]
+      const gradeIndex = this.data.grades.findIndex(g => g.code === gradeCode)
+      this.setData({
+        gradePickerVisible: false,
+        gradePickerValue: value,
+        gradeIndex,
+        'student.grade': gradeCode
+      })
+    } else if (key === 'gender') {
+      const sexValue = parseInt(value[0], 10)
+      this.setData({
+        genderPickerVisible: false,
+        genderPickerValue: value,
+        'student.sex': sexValue
+      })
+    } else if (key === 'campus') {
+      const campusId = value[0]
+      const campusIndex = this.data.campuses.findIndex(c => c.id === campusId)
+      this.setData({
+        campusPickerVisible: false,
+        campusPickerValue: value,
+        campusIndex: campusIndex >= 0 ? campusIndex : -1,
+        'student.campus_id': campusId
+      })
+    } else if (key === 'source') {
+      const sourceValue = parseInt(value[0], 10)
+      const sourceIndex = this.data.sourceOptions.findIndex(s => s.value === sourceValue)
+      this.setData({
+        sourcePickerVisible: false,
+        sourcePickerValue: value,
+        sourceIndex: sourceIndex >= 0 ? sourceIndex : -1,
+        'student.discover_channel': sourceValue
+      })
+    }
+  },
+
+  onPickerCancel(e) {
+    const key = e.currentTarget.dataset.key
+    if (key === 'grade') {
+      this.setData({ gradePickerVisible: false })
+    } else if (key === 'gender') {
+      this.setData({ genderPickerVisible: false })
+    } else if (key === 'campus') {
+      this.setData({ campusPickerVisible: false })
+    } else if (key === 'source') {
+      this.setData({ sourcePickerVisible: false })
+    }
+  },
+
+  onBirthdayConfirm(e) {
+    const { value } = e.detail
     this.setData({
-      sourceIndex: index,
-      'student.discover_channel': source?.value || 0
+      birthdayPickerVisible: false,
+      'student.birthday': value
     })
+  },
+
+  onBirthdayCancel() {
+    this.setData({ birthdayPickerVisible: false })
   },
 
   async onSubmit() {
@@ -122,7 +206,6 @@ Page({
 
     if (loading) return
 
-    // 必填验证
     if (!student.name || !student.name.trim()) {
       wx.showToast({ title: '请输入学生姓名', icon: 'none' })
       return
@@ -132,40 +215,31 @@ Page({
       wx.showToast({ title: '请选择在读年级', icon: 'none' })
       return
     }
-
     if (!student.birthday) {
       wx.showToast({ title: '请选择出生日期', icon: 'none' })
       return
     }
-
     if (!student.en_name || !student.en_name.trim()) {
       wx.showToast({ title: '请输入学生英文名', icon: 'none' })
       return
     }
-
     if (!student.school || !student.school.trim()) {
       wx.showToast({ title: '请输入学生在读学校', icon: 'none' })
       return
     }
-
-    if (!student.city) {
-      wx.showToast({ title: '请选择学生就读城市', icon: 'none' })
+    if (!student.campus_id) {
+      wx.showToast({ title: '请选择校区', icon: 'none' })
       return
     }
-
     if (!student.discover_channel) {
       wx.showToast({ title: '请选择您了解我们的渠道', icon: 'none' })
       return
     }
-
     this.setData({ loading: true })
     wx.showLoading({ title: '提交中...' })
 
+    let res
     try {
-      const { fromLogin } = this.data
-      let res
-      
-      // 构建学生信息参数
       const studentInfo = {
         name: student.name.trim(),
         en_name: student.en_name || '',
@@ -173,13 +247,11 @@ Page({
         birthday: student.birthday,
         grade: student.grade,
         school: student.school.trim(),
-        city: student.city || '',
+        campus_id: student.campus_id || '',
         discover_channel: student.discover_channel,
         regist_channel: 2
       }
-
       if (fromLogin) {
-        // 新用户首次注册：使用 temp_token
         const tempToken = wx.getStorageSync('token') || ''
         const requestData = {
           ...studentInfo,
@@ -188,7 +260,6 @@ Page({
         console.log('[Student Add] New user registration, Request data:', requestData)
         res = await authService.createStudentWithTempToken(requestData)
       } else {
-        // 老用户新增学生：使用正式 token
         console.log('[Student Add] Existing user adding student, Request data:', studentInfo)
         res = await authService.addStudent(studentInfo)
       }
@@ -197,20 +268,13 @@ Page({
 
       wx.hideLoading()
       this.setData({ loading: false })
-
       if (res.code === 200) {
-        // 保存新 token（仅新用户注册时返回）
         if (res.data && res.data.token) {
           setToken(res.data.token)
         }
-
-        // 更新全局状态
         const app = getApp()
         app.globalData.isLoggedIn = true
-        
-        // 获取用户信息更新学生列表
         await this.fetchAndUpdateStudents()
-
         wx.showToast({ title: '创建成功', icon: 'success' })
         setTimeout(() => {
           if (fromLogin) {
@@ -230,17 +294,13 @@ Page({
     }
   },
 
-  // 获取并更新学生列表
   async fetchAndUpdateStudents() {
     try {
       const res = await authService.getUserInfoWithToken()
       console.log('[Student Add] getUserInfo response:', res)
-      
       if (res.code === 200 && res.data) {
         const app = getApp()
         const data = res.data
-        
-        // 当前学生（主学生）
         const currentStudent = {
           id: data.id,
           code: data.code,
@@ -250,10 +310,9 @@ Page({
           en_name: data.en_name,
           birthday: data.birthday,
           school: data.school,
-          city: data.city
+          city: data.city,
+          campus_id: data.campus_id
         }
-        
-        // 其他学生
         const otherStudents = (data.others || []).map(s => ({
           id: s.id,
           code: s.code,
@@ -263,15 +322,12 @@ Page({
           en_name: s.en_name,
           birthday: s.birthday,
           school: s.school,
-          city: s.city
+          city: s.city,
+          campus_id: s.campus_id
         }))
-        
-        // 所有学生
         const allStudents = [currentStudent, ...otherStudents]
-        
         app.globalData.students = allStudents
         app.globalData.currentStudentId = currentStudent.id
-        
         app.saveLoginState()
       }
     } catch (err) {

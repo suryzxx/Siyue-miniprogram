@@ -221,12 +221,12 @@ Page({
       return
     }
 
-// --- 强行写死开始 ---
-if (currentStudent) {
-  currentStudent.level = 'K3'; // 随便给个等级
-  currentStudent.needTest = false; // 强行改为不需要测试
-}
-// --- 强行写死结束 ---
+// // --- 强行写死开始 ---
+// if (currentStudent) {
+//   currentStudent.level = 'K3'; // 随便给个等级
+//   currentStudent.needTest = false; // 强行改为不需要测试
+// }
+// // --- 强行写死结束 ---
 
     // 体系课需要检查评测等级
     if (classInfo.productType === 'system') {

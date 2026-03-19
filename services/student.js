@@ -23,7 +23,8 @@ const studentService = {
           birthday: data.birthday,
           grade: data.grade,
           school: data.school,
-          city: data.city
+          city: data.city,
+          campus_id: data.campus_id
         }
         
         // 其他学生
@@ -37,7 +38,8 @@ const studentService = {
           birthday: s.birthday,
           grade: s.grade,
           school: s.school,
-          city: s.city
+          city: s.city,
+          campus_id: s.campus_id
         }))
         
         // 所有学生

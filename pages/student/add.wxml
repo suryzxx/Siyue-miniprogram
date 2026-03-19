@@ -13,113 +13,96 @@
         <!-- 基本信息 -->
         <view class="form-section">
           <view class="section-label">基本信息</view>
-          <view class="form-card">
+          <t-cell-group>
             <!-- 姓名 -->
-            <view class="form-field">
-              <text class="field-label">学生姓名</text>
-              <input
-                class="field-input"
-                placeholder="请输入学生姓名"
-                value="{{student.name}}"
-                bindinput="onNameInput"
-              />
-            </view>
+            <t-input
+              label="学生姓名"
+              placeholder="请输入学生姓名"
+              value="{{student.name}}"
+              bind:change="onNameInput"
+              borderless="{{false}}"
+              layout="horizontal"
+              align-items="right"
+            />
 
             <!-- 年级 -->
-            <view class="form-field">
-              <text class="field-label">在读年级</text>
-              <picker mode="selector" range="{{grades}}" range-key="name" value="{{gradeIndex}}" bindchange="onGradeChange">
-                <view class="field-picker">
-                  <text class="{{gradeIndex >= 0 ? 'picker-value' : 'picker-placeholder'}}">
-                    {{gradeIndex >= 0 ? grades[gradeIndex].name : '请选择年级'}}
-                  </text>
-                  <image class="picker-arrow" src="/images/icons/arrow-down.svg" mode="aspectFit" />
-                </view>
-              </picker>
-            </view>
+            <t-cell
+              title="在读年级"
+              note="{{gradeIndex >= 0 ? grades[gradeIndex].name : ''}}"
+              arrow
+              hover
+              bind:click="onGradeCellTap"
+              t-class-note="cell-note-right"
+            />
 
             <!-- 性别 -->
-            <view class="form-field">
-              <text class="field-label">性别</text>
-              <view class="gender-group">
-                <view
-                  wx:for="{{genderOptions}}"
-                  wx:key="value"
-                  class="gender-btn {{student.sex === item.value ? 'is-active' : ''}}"
-                  data-value="{{item.value}}"
-                  bindtap="onGenderSelect"
-                >
-                  <text class="gender-text">{{item.label}}</text>
-                </view>
-              </view>
-            </view>
+            <t-cell
+              title="性别"
+              note="{{student.sex === 1 ? '男' : student.sex === 2 ? '女' : ''}}"
+              arrow
+              hover
+              bind:click="onGenderCellTap"
+              t-class-note="cell-note-right"
+            />
 
             <!-- 生日 -->
-            <view class="form-field">
-              <text class="field-label">出生日期</text>
-              <picker mode="date" value="{{student.birthday}}" start="2010-01-01" end="2026-12-31" bindchange="onBirthdayChange">
-                <view class="field-picker">
-                  <text class="{{student.birthday ? 'picker-value' : 'picker-placeholder'}}">
-                    {{student.birthday || '请选择出生日期'}}
-                  </text>
-                  <image class="picker-arrow" src="/images/icons/arrow-down.svg" mode="aspectFit" />
-                </view>
-              </picker>
-            </view>
-          </view>
+            <t-cell
+              title="出生日期"
+              note="{{student.birthday || ''}}"
+              arrow
+              hover
+              bind:click="onBirthdayCellTap"
+              t-class-note="cell-note-right"
+            />
+          </t-cell-group>
         </view>
+
         <!-- 其他信息 -->
         <view class="form-section">
           <view class="section-label">其他信息</view>
-          <view class="form-card">
+          <t-cell-group>
             <!-- 英文名 -->
-            <view class="form-field">
-              <text class="field-label">英文名</text>
-              <input
-                class="field-input"
-                placeholder="请输入学生英文名"
-                value="{{student.englishName}}"
-                bindinput="onEnglishNameInput"
-              />
-            </view>
+            <t-input
+              label="英文名"
+              placeholder="   请输入学生英文名"
+              value="{{student.en_name}}"
+              bind:change="onEnglishNameInput"
+              borderless="{{false}}"
+              layout="horizontal"
+              align-items="right"
+            />
 
             <!-- 学校 -->
-            <view class="form-field">
-              <text class="field-label">在读学校</text>
-              <input
-                class="field-input"
-                placeholder="请输入学生在读学校"
-                value="{{student.school}}"
-                bindinput="onSchoolInput"
-              />
-            </view>
+            <t-input
+              label="在读学校"
+              placeholder="请输入学生在读学校"
+              value="{{student.school}}"
+              bind:change="onSchoolInput"
+              borderless="{{false}}"
+              layout="horizontal"
+              align-items="right"
+            />
 
-            <!-- 城市 -->
-            <view class="form-field">
-              <text class="field-label">就读城市</text>
-              <picker mode="selector" range="{{cities}}" range-key="name" value="{{cityIndex}}" bindchange="onCityChange">
-                <view class="field-picker">
-                  <text class="{{cityIndex >= 0 ? 'picker-value' : 'picker-placeholder'}}">
-                    {{cityIndex >= 0 ? cities[cityIndex].name : '请选择学生就读城市'}}
-                  </text>
-                  <image class="picker-arrow" src="/images/icons/arrow-down.svg" mode="aspectFit" />
-                </view>
-              </picker>
-            </view>
+            <!-- 校区 -->
+            <t-cell
+              title="选择校区"
+              note="{{campusIndex >= 0 ? campuses[campusIndex].name : ''}}"
+              arrow
+              hover
+              bind:click="onCampusCellTap"
+              t-class-note="cell-note-right"
+            />
 
             <!-- 来源 -->
-            <view class="form-field">
-              <text class="field-label">您是如何了解到我们的？</text>
-              <picker mode="selector" range="{{sourceOptions}}" range-key="label" value="{{sourceIndex}}" bindchange="onSourceChange">
-                <view class="field-picker">
-                  <text class="{{sourceIndex >= 0 ? 'picker-value' : 'picker-placeholder'}}">
-                    {{sourceIndex >= 0 ? sourceOptions[sourceIndex].label : '请选择您了解我们的渠道'}}
-                  </text>
-                  <image class="picker-arrow" src="/images/icons/arrow-down.svg" mode="aspectFit" />
-                </view>
-              </picker>
-            </view>
-          </view>
+            <t-cell
+              title="了解渠道"
+              note="{{sourceIndex >= 0 ? sourceOptions[sourceIndex].label : ''}}"
+              arrow
+              hover
+              bind:click="onSourceCellTap"
+              t-class-note="cell-note-right"
+            />
+          </t-cell-group>
         </view>
 
         <!-- 底部安全区域 -->
@@ -129,9 +112,85 @@
 
     <!-- 底部固定按钮 -->
     <view class="bottom-bar">
-      <view class="submit-btn {{loading ? 'is-loading' : ''}}" bindtap="onSubmit">
-        <text class="submit-text">{{loading ? '提交中...' : '确认添加'}}</text>
-      </view>
+      <t-button
+        theme="primary"
+        size="large"
+        block
+        loading="{{loading}}"
+        disabled="{{loading}}"
+        bind:tap="onSubmit"
+      >
+        {{loading ? '提交中...' : '确认添加'}}
+      </t-button>
     </view>
   </view>
+
+  <!-- 年级选择器 -->
+  <t-picker
+    visible="{{gradePickerVisible}}"
+    value="{{gradePickerValue}}"
+    data-key="grade"
+    title="选择年级"
+    confirm-btn="确认"
+    cancel-btn="取消"
+    bind:confirm="onPickerConfirm"
+    bind:cancel="onPickerCancel"
+  >
+    <t-picker-item options="{{gradePickerOptions}}" />
+  </t-picker>
+
+  <!-- 性别选择器 -->
+  <t-picker
+    visible="{{genderPickerVisible}}"
+    value="{{genderPickerValue}}"
+    data-key="gender"
+    title="选择性别"
+    confirm-btn="确认"
+    cancel-btn="取消"
+    bind:confirm="onPickerConfirm"
+    bind:cancel="onPickerCancel"
+  >
+    <t-picker-item options="{{genderPickerOptions}}" />
+  </t-picker>
+
+  <!-- 校区选择器 -->
+  <t-picker
+    visible="{{campusPickerVisible}}"
+    value="{{campusPickerValue}}"
+    data-key="campus"
+    title="选择校区"
+    confirm-btn="确认"
+    cancel-btn="取消"
+    bind:confirm="onPickerConfirm"
+    bind:cancel="onPickerCancel"
+  >
+    <t-picker-item options="{{campusPickerOptions}}" />
+  </t-picker>
+
+  <!-- 来源选择器 -->
+  <t-picker
+    visible="{{sourcePickerVisible}}"
+    value="{{sourcePickerValue}}"
+    data-key="source"
+    title="选择渠道"
+    confirm-btn="确认"
+    cancel-btn="取消"
+    bind:confirm="onPickerConfirm"
+    bind:cancel="onPickerCancel"
+  >
+    <t-picker-item options="{{sourcePickerOptions}}" />
+  </t-picker>
+
+  <!-- 生日选择器 -->
+  <t-date-time-picker
+    visible="{{birthdayPickerVisible}}"
+    value="{{student.birthday}}"
+    mode="date"
+    title="选择出生日期"
+    start="2010-01-01"
+    end="2026-12-31"
+    format="YYYY-MM-DD"
+    bind:confirm="onBirthdayConfirm"
+    bind:cancel="onBirthdayCancel"
+  />
 </view>

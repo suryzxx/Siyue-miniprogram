@@ -89,31 +89,73 @@ Page({
     wx.showLoading({ title: '创建订单中...' })
 
     try {
+      // 获取 wx.login code
+      const loginRes = await new Promise((resolve, reject) => {
+        wx.login({
+          success: resolve,
+          fail: reject
+        })
+      })
+      
       // 创建订单
       const orderData = {
         classId: course.id,
-        studentId: student.id,
-        waitlistId: waitlistId || undefined,
+        code: loginRes.code
       }
       
-      let orderId = ''
-      try {
-        const res = await orderService.create(orderData)
-        if (res.code === 200 && res.data) {
-          orderId = res.data.id || res.data.orderId
-        }
-      } catch (e) {
-        console.log('创建订单API失败，使用模拟订单', e)
-        orderId = 'order_' + Date.now()
-      }
-
+      const orderRes = await orderService.create(orderData)
       wx.hideLoading()
-
-      // 模拟微信支付
-      this.simulateWechatPay(orderId)
+      
+      if (orderRes.code === 200 && orderRes.data) {
+        const paymentData = orderRes.data
+        
+        // 调用微信支付
+        wx.requestPayment({
+          timeStamp: paymentData.time_stamp,
+          nonceStr: paymentData.nonce_str,
+          package: paymentData.package,
+          signType: paymentData.sign_type || 'RSA',
+          paySign: paymentData.pay_sign,
+          success: () => {
+            // 支付成功
+            const app = getApp()
+            app.addMyClass({
+              id: 'enroll_' + Date.now(),
+              classId: course.id,
+              className: course.title || course.name,
+              productType: course.productType,
+              productTypeName: course.productTypeName,
+              level: course.level,
+              schedule: course.time || course.schedule,
+              campus: course.campus,
+              teacher: course.teacher || course.mainTeacher,
+              studentName: student.name,
+              status: 'confirmed',
+              statusLabel: '已报名',
+              enrollTime: new Date().toLocaleString(),
+              totalSessions: course.sessions || 15,
+              completedSessions: 0,
+            })
+            
+            wx.redirectTo({
+              url: `/pages/order/pay-success?orderId=${paymentData.order_no}`,
+            })
+          },
+          fail: (err) => {
+            if (err.errMsg.includes('cancel')) {
+              wx.showToast({ title: '已取消支付', icon: 'none' })
+            } else {
+              wx.showToast({ title: '支付失败', icon: 'none' })
+            }
+          }
+        })
+      } else {
+        wx.showToast({ title: orderRes.msg || orderRes.message || '创建订单失败', icon: 'none' })
+      }
     } catch (e) {
       wx.hideLoading()
-      wx.showToast({ title: '创建订单失败', icon: 'none' })
+      console.error('创建订单失败:', e)
+      wx.showToast({ title: '创建订单失败，请重试', icon: 'none' })
     }
   },
 

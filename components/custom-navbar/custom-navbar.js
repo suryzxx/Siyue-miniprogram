@@ -32,6 +32,10 @@ Component({
       type: Boolean,
       value: true,
     },
+    leftIconColor: {
+      type: String,
+      value: '',
+    },
   },
   data: {
     statusBarHeight: 0,
